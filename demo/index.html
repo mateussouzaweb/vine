@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vanilla UI Demo</title>
+
+    <script src="../src/core/core.js"></script>
+    <script src="../src/core/selector.js"></script>
+    <script src="../src/core/events.js"></script>
+    <script src="../src/core/component.js"></script>
+
+    <script src="../src/http/http.js"></script>
+    <script src="../src/http/router.js"></script>
+    <script src="../src/storage/local-storage.js"></script>
+
+</head>
+<body>
+
+    <div class="tabs" data-tabs>
+        <a href="" data-tab="tab1">Tab 1</a>
+        <a href="" data-tab="tab2">Tab 2</a>
+        <a href="" data-tab="tab3">Tab 3</a>
+        <a href="" data-tab="tab4">Tab 4</a>
+        <span>Not a TAB</span>
+    </div>
+
+    <div class="tab" id="tab1">
+        <h2>Tab 1</h2>
+    </div>
+    <div class="tab" id="tab2">
+        <h2>Tab 2</h2>
+    </div>
+    <div class="tab" id="tab3">
+        <h2>Tab 3</h2>
+    </div>
+    <div class="tab" id="tab4">
+        <h2>Tab 4</h2>
+    </div>
+
+    <style>
+    .tab{
+        display: none;
+    }
+    .tab.active{
+        display: block;
+    }
+    </style>
+
+
+    <section>
+        <p>Texto</p>
+        <button>Botão</button>
+    </section>
+
+    <script>
+    V.on('button', 'click', function(){
+        console.log('button clicked. Default', this);
+    });
+    V.on('section', 'click', 'button', function(){
+        console.log('button clicked. Section delegate', this);
+    });
+    V.on('section', 'click', function(){
+        console.log('section clicked. Default', this);
+    });
+    V.on(document, 'click', 'section', function(){
+        console.log('section clicked. Document delegate', this);
+    });
+    V.on(document, 'click', function(){
+        console.log('document clicked. Default', this);
+    });
+    V.on(window, 'click', function(){
+        console.log('window clicked. Default', this);
+    });
+
+    V.http.interceptBefore(function(resolve, reject){
+        console.log('executando antes');
+        console.log(this);
+        var self = this;
+        window.setTimeout(function(){
+            resolve(self);
+        }, 1000);
+    });
+
+    V.http.interceptAfter(function(resolve, reject){
+        console.log('executando depois');
+        console.log(this);
+        this.data = 'teste';
+        resolve(this);
+    });
+
+    V.component('[data-tabs]', {
+        onRender: function(resolve, reject){
+
+            var self = this;
+            self.on('click', function(e){
+                console.log('clicked TAB');
+                e.preventDefault();
+
+                console.log('last was', self.get('clicked'));
+                self.get('clicked');
+            });
+
+            self.on('click', 'a', function(e){
+                self.set('clicked', this.dataset.tab);
+                console.log('link clicked');
+                e.preventDefault();
+            });
+
+            resolve(this);
+        },
+        afterRender: function(resolve, reject){
+            resolve(this);
+
+            V.http.get('https://jsonplaceholder.typicode.com/todos/1')
+             .then(response => response.json())
+             .then(json => console.log(json));
+
+        }
+    });
+
+    // V.component('[data-tabs] a', {
+    //     onRender: function(resolve, reject){
+
+    //         var self = this;
+
+    //         self.on('click', function(e){
+    //             console.log('clicked LINK');
+    //             // e.preventDefault();
+
+
+
+
+    //         });
+
+    //         resolve(this);
+
+    //     }
+    // });
+
+    V.mount(document.body).then(function(){
+        console.log('montado');
+    });
+    </script>
+
+</body>
+</html>

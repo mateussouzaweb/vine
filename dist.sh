@@ -16,7 +16,8 @@ touch dist/vanilla.ui.min.js
 cat src/core/core.js >> dist/vanilla.ui.js
 cat src/core/selector.js >> dist/vanilla.ui.js
 cat src/core/events.js >> dist/vanilla.ui.js
-cat src/core/component.js >> dist/vanilla.ui.js
+
+cat src/component/component.js >> dist/vanilla.ui.js
 
 cat src/http/http.js >> dist/vanilla.ui.js
 #cat src/http/router.js >> dist/vanilla.ui.js

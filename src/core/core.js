@@ -1,7 +1,7 @@
 (function () {
 
     // Core lib
-    var Core = {
+    window.V = {
 
         /**
          * Run loop on items
@@ -58,7 +58,5 @@
         }
 
     };
-
-    window.V = Core;
 
 })();

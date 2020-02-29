@@ -62,7 +62,12 @@
 
         var result = {};
 
-        if (typeof data == 'string') {
+        if( data instanceof FormData ){
+            result = data;
+        }else if (typeof data == 'object') {
+            result = data;
+        }else if (typeof data == 'string') {
+
             data.split('&').forEach(function (param) {
 
                 const parts = param.replace(/\+/g, ' ').split('=');
@@ -75,8 +80,6 @@
 
             });
 
-        } else if (typeof data == 'object') {
-            result = data;
         }
 
         return result;
@@ -135,7 +138,13 @@
                 var _data = decodeData(request.data);
 
                 if (request.options.method != 'GET') {
-                    request.options.body = JSON.stringify(_data);
+
+                    if( !_data instanceof FormData ){
+                        _data = JSON.stringify(_data);
+                    }
+
+                    request.options.body = _data;
+
                 } else {
 
                     var query = Object.keys(_data).map(function (k) {

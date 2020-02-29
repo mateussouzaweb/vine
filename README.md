@@ -1,6 +1,6 @@
 # Vanilla UI
 
-Easy and functional components to simplify your life.
+Easy and functional vanilla JS components to simplify your life.
 
 - Everything is async with Promise.
 - Event delegation by default.

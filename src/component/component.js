@@ -4,6 +4,7 @@
 
     /**
     * Promise instance
+    * @private
     * @param {Function} resolve
     * @param {Function} reject
     * @return {void}
@@ -14,6 +15,7 @@
 
     /**
      * Global data
+     * @private
      * @param {Object}
      */
     var _global = {
@@ -27,6 +29,7 @@
 
     /**
      * Abstract component
+     * @private
      * @param {Object}
      */
     var _abstractComponent = {
@@ -47,6 +50,8 @@
 
         /**
          * Set element data
+         * @public
+         * @name V.component.set
          * @param {String} key
          * @param {mixed} value
          * @return {Object}
@@ -62,6 +67,8 @@
 
         /**
          * Get element data
+         * @public
+         * @name V.component.get
          * @param {String} key
          * @param {mixed} defaultValue
          * @return {mixed}
@@ -81,6 +88,8 @@
 
         /**
          * Attach event on component
+         * @public
+         * @name V.component.on
          * @param {String} event
          * @param {String|Function} selector
          * @param {Function} callback
@@ -123,6 +132,8 @@
 
         /**
          * Remove event on component
+         * @public
+         * @name V.component.off
          * @param {String} event
          * @param {String} selector
          * @return {void}
@@ -155,6 +166,7 @@
 
     /**
      * Run before render hooks
+     * @private
      * @param {Object} instance
      * @return {Promise}
      */
@@ -182,6 +194,7 @@
 
     /**
      * Run after render hooks
+     * @private
      * @param {Object} instance
      * @return {Promise}
      */
@@ -214,6 +227,7 @@
 
     /**
      * Run before destroy hooks
+     * @private
      * @param {Object} instance
      * @return {Promise}
      */
@@ -241,6 +255,7 @@
 
     /**
      * Run after destroy hooks
+     * @private
      * @param {Object} instance
      * @return {Promise}
      */
@@ -273,6 +288,7 @@
 
     /**
      * Mount component on matches selector for given target
+     * @private
      * @param {Object} component
      * @param {Node} target
      * @return {Promise}
@@ -313,6 +329,7 @@
 
     /**
      * unMount component on matches selector for given target
+     * @private
      * @param {Object} component
      * @param {Node} target
      * @return {Promise}
@@ -354,6 +371,8 @@
 
         /**
          * Add global callback before component render
+         * @public
+         * @name V.beforeRender
          * @param {Function} callback
          * @return {void}
          */
@@ -363,6 +382,8 @@
 
         /**
          * Add global callback after component render
+         * @public
+         * @name V.afterRender
          * @param {Function} callback
          * @return {void}
          */
@@ -372,6 +393,8 @@
 
         /**
          * Add global callback before component destroy
+         * @public
+         * @name V.beforeDestroy
          * @param {Function} callback
          * @return {void}
          */
@@ -381,6 +404,8 @@
 
         /**
          * Add global callback after component destroy
+         * @public
+         * @name V.afterDestroy
          * @param {Function} callback
          * @return {void}
          */
@@ -390,6 +415,8 @@
 
         /**
          * Create new component
+         * @public
+         * @name V.component
          * @param {String} selector
          * @param {Object} data
          * @return {Promise}
@@ -426,6 +453,8 @@
 
         /**
          * Remove component
+         * @public
+         * @name V.removeComponent
          * @param {String} selector
          * @return {Promise}
          */
@@ -470,6 +499,8 @@
 
         /**
          * Mount components on given target child elements
+         * @public
+         * @name V.mount
          * @param {Node} target
          * @return {Promise}
          */
@@ -490,6 +521,8 @@
 
         /**
          * unMount components on given target child elements
+         * @public
+         * @name V.unMount
          * @param {Node} target
          * @return {Promise}
          */
@@ -510,6 +543,8 @@
 
         /**
          * Mount component to start render process
+         * @public
+         * @name V.mountComponent
          * @param {Object} component
          * @return {Promise}
          */
@@ -544,6 +579,8 @@
 
         /**
          * UnMount component to start destroy process
+         * @public
+         * @name V.unMountComponent
          * @param {mixed} component
          * @return {Promise}
          */
@@ -576,6 +613,8 @@
 
         /**
          * Render component
+         * @public
+         * @name V.render
          * @param {Object} component
          * @return {Promise}
          */
@@ -601,6 +640,8 @@
 
         /**
          * Process component destroy
+         * @public
+         * @name V.destroy
          * @param {Object} component
          * @return {Promise}
          */

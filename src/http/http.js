@@ -4,6 +4,7 @@
 
     /**
      * Global data
+     * @private
      * @param {Object}
      */
     var _global = {
@@ -13,6 +14,7 @@
 
     /**
      * Run intercept before hooks
+     * @private
      * @param {Object} request
      * @return {Promise}
      */
@@ -34,6 +36,7 @@
 
     /**
      * Run intercept after hooks
+     * @private
      * @param {Object} request
      * @return {Promise}
      */
@@ -55,6 +58,7 @@
 
     /**
      * Decode data to the correct format
+     * @private
      * @param {mixed} data
      * @return {Object}
      */
@@ -87,10 +91,17 @@
 
     // PUBLIC
     V.extend({
+
+        /**
+         * HTTP request lib
+         * @name V.http
+         */
         http: {
 
             /**
              * Add interceptor callback before each HTTP request
+             * @public
+             * @name V.http.interceptBefore
              * @param {Function} callback
              * @return {void}
              */
@@ -100,6 +111,8 @@
 
             /**
              * Add interceptor callback after each HTTP request
+             * @public
+             * @name V.http.interceptAfter
              * @param {Function} callback
              * @return {void}
              */
@@ -109,6 +122,9 @@
 
             /**
              * Make HTTP requests
+             * @async
+             * @public
+             * @name V.http.request
              * @param {String} method
              * @param {String} url
              * @param {Object} data
@@ -196,6 +212,8 @@
 
             /**
              * Make GET HTTP requests
+             * @public
+             * @name V.http.get
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
@@ -207,6 +225,8 @@
 
             /**
              * Make POST HTTP requests
+             * @public
+             * @name V.http.post
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
@@ -218,6 +238,8 @@
 
             /**
              * Make PUT HTTP requests
+             * @public
+             * @name V.http.put
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
@@ -229,6 +251,8 @@
 
             /**
              * Make DELETE HTTP requests
+             * @public
+             * @name V.http.delete
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
@@ -237,7 +261,9 @@
             delete: function (url, data, headers) {
                 return this.request('DELETE', url, data, headers);
             }
+
         }
+
     });
 
 })(window.V);

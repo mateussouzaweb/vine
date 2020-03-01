@@ -1,10 +1,16 @@
 (function () {
 
-    // Core lib
+    /**
+     * Vanilla UI core lib
+     * @global
+     * @name V
+     */
     window.V = {
 
         /**
          * Run loop on items
+         * @public
+         * @name V.each
          * @param {Array|Object} items
          * @param {Function} callback
          * @return {void}
@@ -26,6 +32,8 @@
 
         /**
          * Load an plugin on the library
+         * @public
+         * @name V.extend
          * @param {Object} plugin
          * @return {void}
          */
@@ -47,6 +55,8 @@
 
         /**
          * Promisify the callback
+         * @public
+         * @name V.promisify
          * @param {Object} scope
          * @param {Function} callback
          * @return {Promise}

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Creating distribution file..."
+
 if [ -f dist/vanilla.ui.js ]
 then
     rm dist/vanilla.ui.js
@@ -23,5 +25,13 @@ cat src/http/http.js >> dist/vanilla.ui.js
 #cat src/http/router.js >> dist/vanilla.ui.js
 
 curl -X POST -s --data-urlencode 'input@dist/vanilla.ui.js' https://javascript-minifier.com/raw > dist/vanilla.ui.min.js
+
+echo "Done"
+
+echo "Creating documentation..."
+
+# npm install -g jsdoc
+# npm install -g jsdoc-to-markdown
+jsdoc2md ./src/*/*.js > ./docs/README.md
 
 echo "Done"

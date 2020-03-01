@@ -4,6 +4,7 @@
 
     /**
      * Global data
+     * @private
      * @var {Object}
      */
     var _global = {
@@ -16,6 +17,7 @@
 
     /**
      * Normalize string path
+     * @private
      * @param {String} path
      * @return {String}
      */
@@ -31,6 +33,7 @@
 
     /**
      * Process URL and retrieve route params
+     * @private
      * @param {String} path
      * @param {Object} match
      * @return {Object}
@@ -53,6 +56,7 @@
 
     /**
      * Process URL and retrieve query params
+     * @private
      * @param {String} search
      * @return {Object}
      */
@@ -83,6 +87,7 @@
 
     /**
      * Match the current route based on given path
+     * @private
      * @param {String} path
      * @return {Object}
      */
@@ -106,6 +111,7 @@
 
     /**
      * Process route change
+     * @private
      * @param {String} newLocation
      * @param {Boolean} replaceHistory
      * @return {Void}
@@ -187,10 +193,17 @@
 
     // PUBLIC
     V.extend({
+
+        /**
+         * HTTP router lib
+         * @name V.router
+         */
         router: {
 
             /**
              * Add callback before each route transition
+             * @public
+             * @name V.router.beforeChange
              * @param {Function} callback
              * @return {Void}
              */
@@ -200,6 +213,8 @@
 
             /**
              * Add callback after each route transition
+             * @public
+             * @name V.router.afterChange
              * @param {Function} callback
              * @return {Void}
              */
@@ -209,6 +224,8 @@
 
             /**
              * Add route to routes
+             * @public
+             * @name V.router.add
              * @param {Object} definition
              * @return {void}
              */
@@ -239,6 +256,8 @@
 
             /**
              * Retrieve route param value
+             * @public
+             * @name V.router.getParam
              * @param {String} name
              * @return {mixed}
              */
@@ -257,6 +276,8 @@
 
             /**
              * Retrieve query param value
+             * @public
+             * @name V.router.getQuery
              * @param {String} name
              * @return {mixed}
              */
@@ -275,6 +296,8 @@
 
             /**
              * Retrieve the active route config
+             * @public
+             * @name V.router.getActive
              * @return {void}
              */
             getActive: function () {
@@ -283,6 +306,8 @@
 
             /**
              * Retrieve parsed active route path
+             * @public
+             * @name V.router.getLocation
              * @return {string}
              */
             getLocation: function () {
@@ -302,6 +327,8 @@
 
             /**
              * Redirect route to given location path
+             * @public
+             * @name V.router.redirect
              * @param {String} location
              * @return {void}
              */
@@ -315,6 +342,8 @@
 
             /**
              * Go back to the previous route
+             * @public
+             * @name V.router.goBack
              * @param {Number} level
              * @return {void}
              */
@@ -328,6 +357,7 @@
             }
 
         }
+
     });
 
 })(window.V);

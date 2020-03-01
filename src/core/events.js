@@ -4,6 +4,7 @@
 
     /**
      * Attach event to element
+     * @private
      * @param {String} action
      * @param {Mixed} element
      * @param {String} event
@@ -66,6 +67,8 @@
 
         /**
          * Add event to element
+         * @public
+         * @name V.on
          * @param {Node} element
          * @param {String} event
          * @param {String} selector
@@ -78,6 +81,8 @@
 
         /**
          * Remove event from element
+         * @public
+         * @name V.off
          * @param {Node} element
          * @param {String} event
          * @param {String} selector
@@ -90,6 +95,8 @@
 
         /**
          * Trigger event on element
+         * @public
+         * @name V.trigger
          * @param {Node} element
          * @param {String} event
          * @return {void}

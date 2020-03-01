@@ -1,11 +1,17 @@
 (function () {
 
-    // LocalStorage lib
     V.extend({
+
+        /**
+         * Local storage lib
+         * @name V.localStorage
+         */
         localStorage: {
 
             /**
              * Set item on localStorage
+             * @public
+             * @name V.localStorage.set
              * @param {String} name
              * @param {Mixed} value
              * @return {Object}
@@ -21,6 +27,8 @@
 
             /**
              * Retrieve item of localStorage
+             * @public
+             * @name V.localStorage.get
              * @param {String} name
              * @param {Boolean} parse
              * @return {Mixed}
@@ -37,6 +45,7 @@
             }
 
         }
+
     });
 
 })(window.V);

@@ -102,6 +102,7 @@
              * Add interceptor callback before each HTTP request
              * @public
              * @name V.http.interceptBefore
+             * @kind function
              * @param {Function} callback
              * @return {void}
              */
@@ -113,6 +114,7 @@
              * Add interceptor callback after each HTTP request
              * @public
              * @name V.http.interceptAfter
+             * @kind function
              * @param {Function} callback
              * @return {void}
              */
@@ -125,6 +127,7 @@
              * @async
              * @public
              * @name V.http.request
+             * @kind function
              * @param {String} method
              * @param {String} url
              * @param {Object} data
@@ -214,6 +217,7 @@
              * Make GET HTTP requests
              * @public
              * @name V.http.get
+             * @kind function
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
@@ -227,6 +231,7 @@
              * Make POST HTTP requests
              * @public
              * @name V.http.post
+             * @kind function
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
@@ -240,6 +245,7 @@
              * Make PUT HTTP requests
              * @public
              * @name V.http.put
+             * @kind function
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
@@ -253,6 +259,7 @@
              * Make DELETE HTTP requests
              * @public
              * @name V.http.delete
+             * @kind function
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers

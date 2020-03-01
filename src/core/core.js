@@ -11,6 +11,7 @@
          * Run loop on items
          * @public
          * @name V.each
+         * @kind function
          * @param {Array|Object} items
          * @param {Function} callback
          * @return {void}
@@ -34,6 +35,7 @@
          * Load an plugin on the library
          * @public
          * @name V.extend
+         * @kind function
          * @param {Object} plugin
          * @return {void}
          */
@@ -57,6 +59,7 @@
          * Promisify the callback
          * @public
          * @name V.promisify
+         * @kind function
          * @param {Object} scope
          * @param {Function} callback
          * @return {Promise}

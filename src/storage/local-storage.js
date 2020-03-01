@@ -12,6 +12,7 @@
              * Set item on localStorage
              * @public
              * @name V.localStorage.set
+             * @kind function
              * @param {String} name
              * @param {Mixed} value
              * @return {Object}
@@ -29,6 +30,7 @@
              * Retrieve item of localStorage
              * @public
              * @name V.localStorage.get
+             * @kind function
              * @param {String} name
              * @param {Boolean} parse
              * @return {Mixed}

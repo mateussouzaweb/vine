@@ -52,6 +52,7 @@
          * Set element data
          * @public
          * @name V.component.set
+         * @kind function
          * @param {String} key
          * @param {mixed} value
          * @return {Object}
@@ -69,6 +70,7 @@
          * Get element data
          * @public
          * @name V.component.get
+         * @kind function
          * @param {String} key
          * @param {mixed} defaultValue
          * @return {mixed}
@@ -90,6 +92,7 @@
          * Attach event on component
          * @public
          * @name V.component.on
+         * @kind function
          * @param {String} event
          * @param {String|Function} selector
          * @param {Function} callback
@@ -134,6 +137,7 @@
          * Remove event on component
          * @public
          * @name V.component.off
+         * @kind function
          * @param {String} event
          * @param {String} selector
          * @return {void}
@@ -373,6 +377,7 @@
          * Add global callback before component render
          * @public
          * @name V.beforeRender
+         * @kind function
          * @param {Function} callback
          * @return {void}
          */
@@ -384,6 +389,7 @@
          * Add global callback after component render
          * @public
          * @name V.afterRender
+         * @kind function
          * @param {Function} callback
          * @return {void}
          */
@@ -395,6 +401,7 @@
          * Add global callback before component destroy
          * @public
          * @name V.beforeDestroy
+         * @kind function
          * @param {Function} callback
          * @return {void}
          */
@@ -406,6 +413,7 @@
          * Add global callback after component destroy
          * @public
          * @name V.afterDestroy
+         * @kind function
          * @param {Function} callback
          * @return {void}
          */
@@ -417,6 +425,7 @@
          * Create new component
          * @public
          * @name V.component
+         * @kind function
          * @param {String} selector
          * @param {Object} data
          * @return {Promise}
@@ -455,6 +464,7 @@
          * Remove component
          * @public
          * @name V.removeComponent
+         * @kind function
          * @param {String} selector
          * @return {Promise}
          */
@@ -501,6 +511,7 @@
          * Mount components on given target child elements
          * @public
          * @name V.mount
+         * @kind function
          * @param {Node} target
          * @return {Promise}
          */
@@ -523,6 +534,7 @@
          * unMount components on given target child elements
          * @public
          * @name V.unMount
+         * @kind function
          * @param {Node} target
          * @return {Promise}
          */
@@ -545,6 +557,7 @@
          * Mount component to start render process
          * @public
          * @name V.mountComponent
+         * @kind function
          * @param {Object} component
          * @return {Promise}
          */
@@ -581,6 +594,7 @@
          * UnMount component to start destroy process
          * @public
          * @name V.unMountComponent
+         * @kind function
          * @param {mixed} component
          * @return {Promise}
          */
@@ -615,6 +629,7 @@
          * Render component
          * @public
          * @name V.render
+         * @kind function
          * @param {Object} component
          * @return {Promise}
          */
@@ -642,6 +657,7 @@
          * Process component destroy
          * @public
          * @name V.destroy
+         * @kind function
          * @param {Object} component
          * @return {Promise}
          */

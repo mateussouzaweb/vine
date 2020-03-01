@@ -204,6 +204,7 @@
              * Add callback before each route transition
              * @public
              * @name V.router.beforeChange
+             * @kind function
              * @param {Function} callback
              * @return {Void}
              */
@@ -215,6 +216,7 @@
              * Add callback after each route transition
              * @public
              * @name V.router.afterChange
+             * @kind function
              * @param {Function} callback
              * @return {Void}
              */
@@ -226,6 +228,7 @@
              * Add route to routes
              * @public
              * @name V.router.add
+             * @kind function
              * @param {Object} definition
              * @return {void}
              */
@@ -258,6 +261,7 @@
              * Retrieve route param value
              * @public
              * @name V.router.getParam
+             * @kind function
              * @param {String} name
              * @return {mixed}
              */
@@ -278,6 +282,7 @@
              * Retrieve query param value
              * @public
              * @name V.router.getQuery
+             * @kind function
              * @param {String} name
              * @return {mixed}
              */
@@ -298,6 +303,7 @@
              * Retrieve the active route config
              * @public
              * @name V.router.getActive
+             * @kind function
              * @return {void}
              */
             getActive: function () {
@@ -308,6 +314,7 @@
              * Retrieve parsed active route path
              * @public
              * @name V.router.getLocation
+             * @kind function
              * @return {string}
              */
             getLocation: function () {
@@ -329,6 +336,7 @@
              * Redirect route to given location path
              * @public
              * @name V.router.redirect
+             * @kind function
              * @param {String} location
              * @return {void}
              */
@@ -344,6 +352,7 @@
              * Go back to the previous route
              * @public
              * @name V.router.goBack
+             * @kind function
              * @param {Number} level
              * @return {void}
              */

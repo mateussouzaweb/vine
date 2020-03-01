@@ -7,6 +7,7 @@
          * Select an single element
          * @public
          * @name V.$
+         * @kind function
          * @param {String} selector
          * @param {Mixed} context
          * @return {Node}
@@ -20,6 +21,7 @@
          * Select multiples elements
          * @public
          * @name V.$$
+         * @kind function
          * @param {String} selector
          * @param {Mixed} context
          * @return {NodeList}
@@ -33,6 +35,7 @@
          * Parse selector and return array of items
          * @public
          * @name V.items
+         * @kind function
          * @param {Mixed} element
          * @param {Mixed} context
          * @return {Array}

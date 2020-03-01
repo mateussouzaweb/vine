@@ -69,6 +69,7 @@
          * Add event to element
          * @public
          * @name V.on
+         * @kind function
          * @param {Node} element
          * @param {String} event
          * @param {String} selector
@@ -83,6 +84,7 @@
          * Remove event from element
          * @public
          * @name V.off
+         * @kind function
          * @param {Node} element
          * @param {String} event
          * @param {String} selector
@@ -97,6 +99,7 @@
          * Trigger event on element
          * @public
          * @name V.trigger
+         * @kind function
          * @param {Node} element
          * @param {String} event
          * @return {void}

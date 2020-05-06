@@ -13,50 +13,6 @@
     };
 
     /**
-     * Run intercept before hooks
-     * @private
-     * @param {Object} request
-     * @return {Promise}
-     */
-    var interceptBefore = async function (request) {
-
-        var promises = [];
-
-        var hooks = _global.interceptBeforeHooks;
-        for (let index = 0; index < hooks.length; index++) {
-            promises.push(
-                V.promisify(request, hooks[index])
-            );
-        }
-
-        await Promise.all(promises);
-
-        return request;
-    };
-
-    /**
-     * Run intercept after hooks
-     * @private
-     * @param {Object} request
-     * @return {Promise}
-     */
-    var interceptAfter = async function (request) {
-
-        var promises = [];
-
-        var hooks = _global.interceptAfterHooks;
-        for (let index = 0; index < hooks.length; index++) {
-            promises.push(
-                V.promisify(request, hooks[index])
-            );
-        }
-
-        await Promise.all(promises);
-
-        return request;
-    };
-
-    /**
      * Decode data to the correct format
      * @private
      * @param {mixed} data
@@ -90,7 +46,7 @@
     };
 
     // PUBLIC
-    V.extend({
+    V.extend(V, {
 
         /**
          * HTTP request lib
@@ -145,7 +101,10 @@
                     response: null
                 };
 
-                request = await interceptBefore(request);
+                request = await V.promises(
+                    request,
+                    _global.interceptBeforeHooks
+                );
 
                 if (request.headers) {
                     request.options.headers = request.headers;
@@ -183,7 +142,11 @@
                     fetch(request.url, request.options)
                         .then(function (response) {
                             request.response = response;
-                            return interceptAfter(request);
+
+                            return V.promises(
+                                request,
+                                _global.interceptAfterHooks
+                            );
                         })
                         .then(function (request) {
                             return request.response;

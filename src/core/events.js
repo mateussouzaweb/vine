@@ -63,7 +63,7 @@
 
     // PUBLIC
 
-    V.extend({
+    V.extend(V, {
 
         /**
          * Add event to element

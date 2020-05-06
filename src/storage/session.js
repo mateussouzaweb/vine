@@ -1,17 +1,17 @@
-(function () {
+(function (V) {
 
-    V.extend({
+    V.extend(V, {
 
         /**
-         * Local storage lib
-         * @name V.localStorage
+         * Session storage lib
+         * @name V.session
          */
-        localStorage: {
+        session: {
 
             /**
-             * Set item on localStorage
+             * Set item on sessionStorage
              * @public
-             * @name V.localStorage.set
+             * @name V.session.set
              * @kind function
              * @param {String} name
              * @param {Mixed} value
@@ -23,13 +23,13 @@
                     value = JSON.stringify(value);
                 }
 
-                return localStorage.setItem(name, value);
+                return sessionStorage.setItem(name, value);
             },
 
             /**
-             * Retrieve item of localStorage
+             * Retrieve item of sessionStorage
              * @public
-             * @name V.localStorage.get
+             * @name V.session.get
              * @kind function
              * @param {String} name
              * @param {Boolean} parse
@@ -37,7 +37,7 @@
              */
             get: function (name, parse) {
 
-                var value = localStorage.getItem(name);
+                var value = sessionStorage.getItem(name);
 
                 if (parse == true && value) {
                     value = JSON.parse(value);

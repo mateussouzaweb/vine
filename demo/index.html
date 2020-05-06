@@ -10,11 +10,20 @@
     <script src="../src/core/core.js"></script>
     <script src="../src/core/selector.js"></script>
     <script src="../src/core/events.js"></script>
-    <script src="../src/core/component.js"></script>
+
+    <script src="../src/component/component.js"></script>
+    <script src="../src/component/mount.js"></script>
+    <script src="../src/component/render.js"></script>
+    <script src="../src/component/destroy.js"></script>
+    <script src="../src/component/events.js"></script>
+    <script src="../src/component/storage.js"></script>
 
     <script src="../src/http/http.js"></script>
-    <script src="../src/http/router.js"></script>
-    <script src="../src/storage/local-storage.js"></script>
+
+    <script src="../src/router/router.js"></script>
+
+    <script src="../src/storage/local.js"></script>
+    <script src="../src/storage/session.js"></script>
 
 </head>
 <body>
@@ -23,7 +32,7 @@
         <a href="" data-tab="tab1">Tab 1</a>
         <a href="" data-tab="tab2">Tab 2</a>
         <a href="" data-tab="tab3">Tab 3</a>
-        <a href="" data-tab="tab4">Tab 4</a>
+        <a href="" data-tab="tab4"><span>Tab 4<span></a>
         <span>Not a TAB</span>
     </div>
 
@@ -96,7 +105,7 @@
 
             var self = this;
             self.on('click', function(e){
-                console.log('clicked TAB');
+                console.log('clicked TAB AREA', this);
                 e.preventDefault();
 
                 console.log('last was', self.get('clicked'));
@@ -105,7 +114,7 @@
 
             self.on('click', 'a', function(e){
                 self.set('clicked', this.dataset.tab);
-                console.log('link clicked');
+                console.log('link clicked', this);
                 e.preventDefault();
             });
 
@@ -115,33 +124,30 @@
             resolve(this);
 
             V.http.get('https://jsonplaceholder.typicode.com/todos/1')
-             .then(response => response.json())
              .then(json => console.log(json));
 
         }
     });
 
-    // V.component('[data-tabs] a', {
-    //     onRender: function(resolve, reject){
+    V.component('[data-tabs] a', {
+        onRender: function(resolve, reject){
 
-    //         var self = this;
+            var self = this;
 
-    //         self.on('click', function(e){
-    //             console.log('clicked LINK');
-    //             // e.preventDefault();
+            self.on('click', function(e){
+                console.log('clicked LINK', this);
+                // e.preventDefault();
+            });
 
+            resolve(this);
 
+        }
+    });
 
-
-    //         });
-
-    //         resolve(this);
-
-    //     }
-    // });
-
-    V.mount(document.body).then(function(){
-        console.log('montado');
+    window.addEventListener('load', function() {
+        V.mount(document.body).then(function(){
+            console.log('montado');
+        });
     });
     </script>
 

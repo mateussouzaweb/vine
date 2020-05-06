@@ -1,7 +1,7 @@
 (function (V) {
 
     // Selector lib
-    V.extend({
+    V.extend(V, {
 
         /**
          * Select an single element
@@ -13,6 +13,7 @@
          * @return {Node}
          */
         $: function (selector, context) {
+            context = (context instanceof String) ? this.$(context) : context;
             context = (context instanceof Node) ? context : document;
             return context.querySelector(selector);
         },
@@ -27,6 +28,7 @@
          * @return {NodeList}
          */
         $$: function (selector, context) {
+            context = (context instanceof String) ? this.$(context) : context;
             context = (context instanceof Node) ? context : document;
             return context.querySelectorAll(selector);
         },

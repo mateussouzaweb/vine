@@ -36,20 +36,19 @@
          * @public
          * @name V.extend
          * @kind function
+         * @param {Object} library
          * @param {Object} plugin
          * @return {void}
          */
-        extend: function (plugin) {
+        extend: function (library, plugin) {
 
-            const self = this;
+            this.each(plugin, function (value, key) {
 
-            self.each(plugin, function (value, key) {
-
-                if (self[key] !== undefined) {
+                if (library[key] !== undefined) {
                     console.warn('Warning, the method {key} is being overwrite be another plugin', key);
                 }
 
-                self[key] = value;
+                library[key] = value;
 
             });
 
@@ -68,6 +67,42 @@
             return new Promise(function (resolve, reject) {
                 return callback.apply(scope, [resolve, reject]);
             });
+        },
+
+        /**
+        * Fake promise instance
+        * @public
+        * @name V.fakePromise
+        * @kind function
+        * @param {Function} resolve
+        * @return {void}
+        */
+        fakePromise: function (resolve) {
+            resolve(this);
+        },
+
+        /**
+         * Wait the resolution of various promisify callbacks
+         * @param {Object} scope
+         * @param {Array} callbacks
+         * @return {Promise}
+         */
+        promises: async function (scope, callbacks) {
+
+            const self = this;
+            var promises = [];
+
+            for (let index = 0; index < callbacks.length; index++) {
+                if( typeof callbacks[index] === 'function' ){
+                    promises.push(
+                        self.promisify(scope, callbacks[index])
+                    );
+                }
+            }
+
+            await Promise.all(promises);
+
+            return scope;
         }
 
     };

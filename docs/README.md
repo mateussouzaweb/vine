@@ -14,38 +14,48 @@ Vanilla UI core lib
         * [.post(url, data, headers)](#V.http.post) ⇒ <code>Promise</code>
         * [.put(url, data, headers)](#V.http.put) ⇒ <code>Promise</code>
         * [.delete(url, data, headers)](#V.http.delete) ⇒ <code>Promise</code>
-    * [.router](#V.router)
-        * [.beforeChange(callback)](#V.router.beforeChange) ⇒ <code>Void</code>
-        * [.afterChange(callback)](#V.router.afterChange) ⇒ <code>Void</code>
-        * [.add(definition)](#V.router.add) ⇒ <code>void</code>
-        * [.getParam(name)](#V.router.getParam) ⇒ <code>mixed</code>
-        * [.getQuery(name)](#V.router.getQuery) ⇒ <code>mixed</code>
-        * [.getActive()](#V.router.getActive) ⇒ <code>void</code>
-        * [.getLocation()](#V.router.getLocation) ⇒ <code>string</code>
-        * [.redirect(location)](#V.router.redirect) ⇒ <code>void</code>
-        * [.goBack(level)](#V.router.goBack) ⇒ <code>void</code>
-    * [.localStorage](#V.localStorage)
-        * [.set(name, value)](#V.localStorage.set) ⇒ <code>Object</code>
-        * [.get(name, parse)](#V.localStorage.get) ⇒ <code>Mixed</code>
-    * [.beforeRender(callback)](#V.beforeRender) ⇒ <code>void</code>
-    * [.afterRender(callback)](#V.afterRender) ⇒ <code>void</code>
-    * [.beforeDestroy(callback)](#V.beforeDestroy) ⇒ <code>void</code>
-    * [.afterDestroy(callback)](#V.afterDestroy) ⇒ <code>void</code>
+    * [.local](#V.local)
+        * [.set(name, value)](#V.local.set) ⇒ <code>Object</code>
+        * [.get(name, parse)](#V.local.get) ⇒ <code>Mixed</code>
+    * [.session](#V.session)
+        * [.set(name, value)](#V.session.set) ⇒ <code>Object</code>
+        * [.get(name, parse)](#V.session.get) ⇒ <code>Mixed</code>
+    * [.beforeConstructor(callback)](#V.beforeConstructor) ⇒ <code>void</code>
+    * [.afterConstructor(callback)](#V.afterConstructor) ⇒ <code>void</code>
+    * [.beforeDestructor(callback)](#V.beforeDestructor) ⇒ <code>void</code>
+    * [.afterDestructor(callback)](#V.afterDestructor) ⇒ <code>void</code>
     * [.component(selector, data)](#V.component) ⇒ <code>Promise</code>
-        * [.set(key, value)](#V.component.set) ⇒ <code>Object</code>
-        * [.get(key, defaultValue)](#V.component.get) ⇒ <code>mixed</code>
+        * [.element](#V.component.element) : <code>Node</code>
+        * [.element](#V.component.element) : <code>String</code>
+        * [.constructor(resolve, reject)](#V.component.constructor) ⇒ <code>Promise</code>
+        * [.destructor(resolve, reject)](#V.component.destructor) ⇒ <code>Promise</code>
+        * [.beforeDestroy(resolve, reject)](#V.component.beforeDestroy) ⇒ <code>Promise</code>
+        * [.onDestroy(resolve, reject)](#V.component.onDestroy) ⇒ <code>Promise</code>
+        * [.afterDestroy(resolve, reject)](#V.component.afterDestroy) ⇒ <code>Promise</code>
         * [.on(event, selector, callback)](#V.component.on) ⇒ <code>void</code>
         * [.off(event, selector)](#V.component.off) ⇒ <code>void</code>
+        * [.beforeMount(resolve, reject)](#V.component.beforeMount) ⇒ <code>Promise</code>
+        * [.onMount(resolve, reject)](#V.component.onMount) ⇒ <code>Promise</code>
+        * [.afterMount(resolve, reject)](#V.component.afterMount) ⇒ <code>Promise</code>
+        * [.shouldRender(resolve, reject)](#V.component.shouldRender) ⇒ <code>Promise</code>
+        * [.beforeRender(resolve, reject)](#V.component.beforeRender) ⇒ <code>Promise</code>
+        * [.onRender(resolve, reject)](#V.component.onRender) ⇒ <code>Promise</code>
+        * [.afterRender(resolve, reject)](#V.component.afterRender) ⇒ <code>Promise</code>
+        * [.set(key, value)](#V.component.set) ⇒ <code>Object</code>
+        * [.get(key, defaultValue)](#V.component.get) ⇒ <code>mixed</code>
     * [.removeComponent(selector)](#V.removeComponent) ⇒ <code>Promise</code>
+    * [.beforeDestroy(callback)](#V.beforeDestroy) ⇒ <code>void</code>
+    * [.afterDestroy(callback)](#V.afterDestroy) ⇒ <code>void</code>
+    * [.destroy(target)](#V.destroy) ⇒ <code>Promise</code>
+    * [.beforeMount(callback)](#V.beforeMount) ⇒ <code>void</code>
+    * [.afterMount(callback)](#V.afterMount) ⇒ <code>void</code>
     * [.mount(target)](#V.mount) ⇒ <code>Promise</code>
-    * [.unMount(target)](#V.unMount) ⇒ <code>Promise</code>
-    * [.mountComponent(component)](#V.mountComponent) ⇒ <code>Promise</code>
-    * [.unMountComponent(component)](#V.unMountComponent) ⇒ <code>Promise</code>
-    * [.render(component)](#V.render) ⇒ <code>Promise</code>
-    * [.destroy(component)](#V.destroy) ⇒ <code>Promise</code>
+    * [.beforeRender(callback)](#V.beforeRender) ⇒ <code>void</code>
+    * [.afterRender(callback)](#V.afterRender) ⇒ <code>void</code>
     * [.each(items, callback)](#V.each) ⇒ <code>void</code>
-    * [.extend(plugin)](#V.extend) ⇒ <code>void</code>
+    * [.extend(library, plugin)](#V.extend) ⇒ <code>void</code>
     * [.promisify(scope, callback)](#V.promisify) ⇒ <code>Promise</code>
+    * [.fakePromise(resolve)](#V.fakePromise) ⇒ <code>void</code>
     * [.on(element, event, selector, callback)](#V.on) ⇒ <code>function</code>
     * [.off(element, event, selector, callback)](#V.off) ⇒ <code>function</code>
     * [.trigger(element, event)](#V.trigger) ⇒ <code>void</code>
@@ -164,139 +174,23 @@ Make DELETE HTTP requests
 | data | <code>Object</code> | 
 | headers | <code>Object</code> | 
 
-<a name="V.router"></a>
+<a name="V.local"></a>
 
-### V.router
-HTTP router lib
-
-**Kind**: static property of [<code>V</code>](#V)  
-
-* [.router](#V.router)
-    * [.beforeChange(callback)](#V.router.beforeChange) ⇒ <code>Void</code>
-    * [.afterChange(callback)](#V.router.afterChange) ⇒ <code>Void</code>
-    * [.add(definition)](#V.router.add) ⇒ <code>void</code>
-    * [.getParam(name)](#V.router.getParam) ⇒ <code>mixed</code>
-    * [.getQuery(name)](#V.router.getQuery) ⇒ <code>mixed</code>
-    * [.getActive()](#V.router.getActive) ⇒ <code>void</code>
-    * [.getLocation()](#V.router.getLocation) ⇒ <code>string</code>
-    * [.redirect(location)](#V.router.redirect) ⇒ <code>void</code>
-    * [.goBack(level)](#V.router.goBack) ⇒ <code>void</code>
-
-<a name="V.router.beforeChange"></a>
-
-#### router.beforeChange(callback) ⇒ <code>Void</code>
-Add callback before each route transition
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>function</code> | 
-
-<a name="V.router.afterChange"></a>
-
-#### router.afterChange(callback) ⇒ <code>Void</code>
-Add callback after each route transition
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>function</code> | 
-
-<a name="V.router.add"></a>
-
-#### router.add(definition) ⇒ <code>void</code>
-Add route to routes
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| definition | <code>Object</code> | 
-
-<a name="V.router.getParam"></a>
-
-#### router.getParam(name) ⇒ <code>mixed</code>
-Retrieve route param value
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| name | <code>String</code> | 
-
-<a name="V.router.getQuery"></a>
-
-#### router.getQuery(name) ⇒ <code>mixed</code>
-Retrieve query param value
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| name | <code>String</code> | 
-
-<a name="V.router.getActive"></a>
-
-#### router.getActive() ⇒ <code>void</code>
-Retrieve the active route config
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-<a name="V.router.getLocation"></a>
-
-#### router.getLocation() ⇒ <code>string</code>
-Retrieve parsed active route path
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-<a name="V.router.redirect"></a>
-
-#### router.redirect(location) ⇒ <code>void</code>
-Redirect route to given location path
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| location | <code>String</code> | 
-
-<a name="V.router.goBack"></a>
-
-#### router.goBack(level) ⇒ <code>void</code>
-Go back to the previous route
-
-**Kind**: static method of [<code>router</code>](#V.router)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| level | <code>Number</code> | 
-
-<a name="V.localStorage"></a>
-
-### V.localStorage
+### V.local
 Local storage lib
 
 **Kind**: static property of [<code>V</code>](#V)  
 
-* [.localStorage](#V.localStorage)
-    * [.set(name, value)](#V.localStorage.set) ⇒ <code>Object</code>
-    * [.get(name, parse)](#V.localStorage.get) ⇒ <code>Mixed</code>
+* [.local](#V.local)
+    * [.set(name, value)](#V.local.set) ⇒ <code>Object</code>
+    * [.get(name, parse)](#V.local.get) ⇒ <code>Mixed</code>
 
-<a name="V.localStorage.set"></a>
+<a name="V.local.set"></a>
 
-#### localStorage.set(name, value) ⇒ <code>Object</code>
+#### local.set(name, value) ⇒ <code>Object</code>
 Set item on localStorage
 
-**Kind**: static method of [<code>localStorage</code>](#V.localStorage)  
+**Kind**: static method of [<code>local</code>](#V.local)  
 **Access**: public  
 
 | Param | Type |
@@ -304,12 +198,12 @@ Set item on localStorage
 | name | <code>String</code> | 
 | value | <code>Mixed</code> | 
 
-<a name="V.localStorage.get"></a>
+<a name="V.local.get"></a>
 
-#### localStorage.get(name, parse) ⇒ <code>Mixed</code>
+#### local.get(name, parse) ⇒ <code>Mixed</code>
 Retrieve item of localStorage
 
-**Kind**: static method of [<code>localStorage</code>](#V.localStorage)  
+**Kind**: static method of [<code>local</code>](#V.local)  
 **Access**: public  
 
 | Param | Type |
@@ -317,10 +211,47 @@ Retrieve item of localStorage
 | name | <code>String</code> | 
 | parse | <code>Boolean</code> | 
 
-<a name="V.beforeRender"></a>
+<a name="V.session"></a>
 
-### V.beforeRender(callback) ⇒ <code>void</code>
-Add global callback before component render
+### V.session
+Session storage lib
+
+**Kind**: static property of [<code>V</code>](#V)  
+
+* [.session](#V.session)
+    * [.set(name, value)](#V.session.set) ⇒ <code>Object</code>
+    * [.get(name, parse)](#V.session.get) ⇒ <code>Mixed</code>
+
+<a name="V.session.set"></a>
+
+#### session.set(name, value) ⇒ <code>Object</code>
+Set item on sessionStorage
+
+**Kind**: static method of [<code>session</code>](#V.session)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| name | <code>String</code> | 
+| value | <code>Mixed</code> | 
+
+<a name="V.session.get"></a>
+
+#### session.get(name, parse) ⇒ <code>Mixed</code>
+Retrieve item of sessionStorage
+
+**Kind**: static method of [<code>session</code>](#V.session)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| name | <code>String</code> | 
+| parse | <code>Boolean</code> | 
+
+<a name="V.beforeConstructor"></a>
+
+### V.beforeConstructor(callback) ⇒ <code>void</code>
+Add global callback before component constructor
 
 **Kind**: static method of [<code>V</code>](#V)  
 **Access**: public  
@@ -329,22 +260,10 @@ Add global callback before component render
 | --- | --- |
 | callback | <code>function</code> | 
 
-<a name="V.afterRender"></a>
+<a name="V.afterConstructor"></a>
 
-### V.afterRender(callback) ⇒ <code>void</code>
-Add global callback after component render
-
-**Kind**: static method of [<code>V</code>](#V)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>function</code> | 
-
-<a name="V.beforeDestroy"></a>
-
-### V.beforeDestroy(callback) ⇒ <code>void</code>
-Add global callback before component destroy
+### V.afterConstructor(callback) ⇒ <code>void</code>
+Add global callback after component constructor
 
 **Kind**: static method of [<code>V</code>](#V)  
 **Access**: public  
@@ -353,10 +272,22 @@ Add global callback before component destroy
 | --- | --- |
 | callback | <code>function</code> | 
 
-<a name="V.afterDestroy"></a>
+<a name="V.beforeDestructor"></a>
 
-### V.afterDestroy(callback) ⇒ <code>void</code>
-Add global callback after component destroy
+### V.beforeDestructor(callback) ⇒ <code>void</code>
+Add global callback before component destructor
+
+**Kind**: static method of [<code>V</code>](#V)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
+
+<a name="V.afterDestructor"></a>
+
+### V.afterDestructor(callback) ⇒ <code>void</code>
+Add global callback after component destructor
 
 **Kind**: static method of [<code>V</code>](#V)  
 **Access**: public  
@@ -380,36 +311,103 @@ Create new component
 
 
 * [.component(selector, data)](#V.component) ⇒ <code>Promise</code>
-    * [.set(key, value)](#V.component.set) ⇒ <code>Object</code>
-    * [.get(key, defaultValue)](#V.component.get) ⇒ <code>mixed</code>
+    * [.element](#V.component.element) : <code>Node</code>
+    * [.element](#V.component.element) : <code>String</code>
+    * [.constructor(resolve, reject)](#V.component.constructor) ⇒ <code>Promise</code>
+    * [.destructor(resolve, reject)](#V.component.destructor) ⇒ <code>Promise</code>
+    * [.beforeDestroy(resolve, reject)](#V.component.beforeDestroy) ⇒ <code>Promise</code>
+    * [.onDestroy(resolve, reject)](#V.component.onDestroy) ⇒ <code>Promise</code>
+    * [.afterDestroy(resolve, reject)](#V.component.afterDestroy) ⇒ <code>Promise</code>
     * [.on(event, selector, callback)](#V.component.on) ⇒ <code>void</code>
     * [.off(event, selector)](#V.component.off) ⇒ <code>void</code>
+    * [.beforeMount(resolve, reject)](#V.component.beforeMount) ⇒ <code>Promise</code>
+    * [.onMount(resolve, reject)](#V.component.onMount) ⇒ <code>Promise</code>
+    * [.afterMount(resolve, reject)](#V.component.afterMount) ⇒ <code>Promise</code>
+    * [.shouldRender(resolve, reject)](#V.component.shouldRender) ⇒ <code>Promise</code>
+    * [.beforeRender(resolve, reject)](#V.component.beforeRender) ⇒ <code>Promise</code>
+    * [.onRender(resolve, reject)](#V.component.onRender) ⇒ <code>Promise</code>
+    * [.afterRender(resolve, reject)](#V.component.afterRender) ⇒ <code>Promise</code>
+    * [.set(key, value)](#V.component.set) ⇒ <code>Object</code>
+    * [.get(key, defaultValue)](#V.component.get) ⇒ <code>mixed</code>
 
-<a name="V.component.set"></a>
+<a name="V.component.element"></a>
 
-#### component.set(key, value) ⇒ <code>Object</code>
-Set element data
+#### component.element : <code>Node</code>
+Component DOM element
+
+**Kind**: static property of [<code>component</code>](#V.component)  
+**Access**: public  
+<a name="V.component.element"></a>
+
+#### component.element : <code>String</code>
+Component DOM selector
+
+**Kind**: static property of [<code>component</code>](#V.component)  
+**Access**: public  
+<a name="V.component.constructor"></a>
+
+#### component.constructor(resolve, reject) ⇒ <code>Promise</code>
+Component constructor
 
 **Kind**: static method of [<code>component</code>](#V.component)  
 **Access**: public  
 
 | Param | Type |
 | --- | --- |
-| key | <code>String</code> | 
-| value | <code>mixed</code> | 
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
 
-<a name="V.component.get"></a>
+<a name="V.component.destructor"></a>
 
-#### component.get(key, defaultValue) ⇒ <code>mixed</code>
-Get element data
+#### component.destructor(resolve, reject) ⇒ <code>Promise</code>
+Component destructor
 
 **Kind**: static method of [<code>component</code>](#V.component)  
 **Access**: public  
 
 | Param | Type |
 | --- | --- |
-| key | <code>String</code> | 
-| defaultValue | <code>mixed</code> | 
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.beforeDestroy"></a>
+
+#### component.beforeDestroy(resolve, reject) ⇒ <code>Promise</code>
+Component before destroy
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.onDestroy"></a>
+
+#### component.onDestroy(resolve, reject) ⇒ <code>Promise</code>
+Component on destroy
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.afterDestroy"></a>
+
+#### component.afterDestroy(resolve, reject) ⇒ <code>Promise</code>
+Component after destroy
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
 
 <a name="V.component.on"></a>
 
@@ -438,6 +436,123 @@ Remove event on component
 | event | <code>String</code> | 
 | selector | <code>String</code> | 
 
+<a name="V.component.beforeMount"></a>
+
+#### component.beforeMount(resolve, reject) ⇒ <code>Promise</code>
+Component before mount
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.onMount"></a>
+
+#### component.onMount(resolve, reject) ⇒ <code>Promise</code>
+Component on mount
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.afterMount"></a>
+
+#### component.afterMount(resolve, reject) ⇒ <code>Promise</code>
+Component after mount
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.shouldRender"></a>
+
+#### component.shouldRender(resolve, reject) ⇒ <code>Promise</code>
+Component should render
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.beforeRender"></a>
+
+#### component.beforeRender(resolve, reject) ⇒ <code>Promise</code>
+Component before render
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.onRender"></a>
+
+#### component.onRender(resolve, reject) ⇒ <code>Promise</code>
+Component on render
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.afterRender"></a>
+
+#### component.afterRender(resolve, reject) ⇒ <code>Promise</code>
+Component after render
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
+| reject | <code>function</code> | 
+
+<a name="V.component.set"></a>
+
+#### component.set(key, value) ⇒ <code>Object</code>
+Set element data
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| key | <code>String</code> | 
+| value | <code>mixed</code> | 
+
+<a name="V.component.get"></a>
+
+#### component.get(key, defaultValue) ⇒ <code>mixed</code>
+Get element data
+
+**Kind**: static method of [<code>component</code>](#V.component)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| key | <code>String</code> | 
+| defaultValue | <code>mixed</code> | 
+
 <a name="V.removeComponent"></a>
 
 ### V.removeComponent(selector) ⇒ <code>Promise</code>
@@ -449,6 +564,66 @@ Remove component
 | Param | Type |
 | --- | --- |
 | selector | <code>String</code> | 
+
+<a name="V.beforeDestroy"></a>
+
+### V.beforeDestroy(callback) ⇒ <code>void</code>
+Add global callback before component destroy
+
+**Kind**: static method of [<code>V</code>](#V)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
+
+<a name="V.afterDestroy"></a>
+
+### V.afterDestroy(callback) ⇒ <code>void</code>
+Add global callback after component destroy
+
+**Kind**: static method of [<code>V</code>](#V)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
+
+<a name="V.destroy"></a>
+
+### V.destroy(target) ⇒ <code>Promise</code>
+destroy components on given target child elements
+
+**Kind**: static method of [<code>V</code>](#V)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| target | <code>Node</code> | 
+
+<a name="V.beforeMount"></a>
+
+### V.beforeMount(callback) ⇒ <code>void</code>
+Add global callback before component mount
+
+**Kind**: static method of [<code>V</code>](#V)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
+
+<a name="V.afterMount"></a>
+
+### V.afterMount(callback) ⇒ <code>void</code>
+Add global callback after component mount
+
+**Kind**: static method of [<code>V</code>](#V)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
 
 <a name="V.mount"></a>
 
@@ -462,65 +637,29 @@ Mount components on given target child elements
 | --- | --- |
 | target | <code>Node</code> | 
 
-<a name="V.unMount"></a>
+<a name="V.beforeRender"></a>
 
-### V.unMount(target) ⇒ <code>Promise</code>
-unMount components on given target child elements
-
-**Kind**: static method of [<code>V</code>](#V)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| target | <code>Node</code> | 
-
-<a name="V.mountComponent"></a>
-
-### V.mountComponent(component) ⇒ <code>Promise</code>
-Mount component to start render process
+### V.beforeRender(callback) ⇒ <code>void</code>
+Add global callback before component render
 
 **Kind**: static method of [<code>V</code>](#V)  
 **Access**: public  
 
 | Param | Type |
 | --- | --- |
-| component | <code>Object</code> | 
+| callback | <code>function</code> | 
 
-<a name="V.unMountComponent"></a>
+<a name="V.afterRender"></a>
 
-### V.unMountComponent(component) ⇒ <code>Promise</code>
-UnMount component to start destroy process
-
-**Kind**: static method of [<code>V</code>](#V)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| component | <code>mixed</code> | 
-
-<a name="V.render"></a>
-
-### V.render(component) ⇒ <code>Promise</code>
-Render component
+### V.afterRender(callback) ⇒ <code>void</code>
+Add global callback after component render
 
 **Kind**: static method of [<code>V</code>](#V)  
 **Access**: public  
 
 | Param | Type |
 | --- | --- |
-| component | <code>Object</code> | 
-
-<a name="V.destroy"></a>
-
-### V.destroy(component) ⇒ <code>Promise</code>
-Process component destroy
-
-**Kind**: static method of [<code>V</code>](#V)  
-**Access**: public  
-
-| Param | Type |
-| --- | --- |
-| component | <code>Object</code> | 
+| callback | <code>function</code> | 
 
 <a name="V.each"></a>
 
@@ -537,7 +676,7 @@ Run loop on items
 
 <a name="V.extend"></a>
 
-### V.extend(plugin) ⇒ <code>void</code>
+### V.extend(library, plugin) ⇒ <code>void</code>
 Load an plugin on the library
 
 **Kind**: static method of [<code>V</code>](#V)  
@@ -545,6 +684,7 @@ Load an plugin on the library
 
 | Param | Type |
 | --- | --- |
+| library | <code>Object</code> | 
 | plugin | <code>Object</code> | 
 
 <a name="V.promisify"></a>
@@ -559,6 +699,18 @@ Promisify the callback
 | --- | --- |
 | scope | <code>Object</code> | 
 | callback | <code>function</code> | 
+
+<a name="V.fakePromise"></a>
+
+### V.fakePromise(resolve) ⇒ <code>void</code>
+Fake promise instance
+
+**Kind**: static method of [<code>V</code>](#V)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| resolve | <code>function</code> | 
 
 <a name="V.on"></a>
 

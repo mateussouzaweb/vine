@@ -20,18 +20,23 @@
 
     <script src="../src/http/http.js"></script>
 
-    <script src="../src/router/router.js"></script>
-
     <script src="../src/storage/local.js"></script>
     <script src="../src/storage/session.js"></script>
+
+    <script src="../src/router/router.js"></script>
+    <script src="../src/router/component.js"></script>
 
 </head>
 <body>
 
+    <div data-router>
+        Loading...
+    </div>
+
     <div class="tabs" data-tabs>
-        <a href="" data-tab="tab1">Tab 1</a>
-        <a href="" data-tab="tab2">Tab 2</a>
-        <a href="" data-tab="tab3">Tab 3</a>
+        <a href="/home" data-tab="tab1">Tab 1</a>
+        <a href="/login" data-tab="tab2">Tab 2</a>
+        <a href="/episode/123" data-tab="tab3">Tab 3</a>
         <a href="" data-tab="tab4"><span>Tab 4<span></a>
         <span>Not a TAB</span>
     </div>
@@ -104,18 +109,19 @@
         onRender: function(resolve, reject){
 
             var self = this;
-            self.on('click', function(e){
-                console.log('clicked TAB AREA', this);
-                e.preventDefault();
-
-                console.log('last was', self.get('clicked'));
-                self.get('clicked');
-            });
 
             self.on('click', 'a', function(e){
                 self.set('clicked', this.dataset.tab);
                 console.log('link clicked', this);
-                e.preventDefault();
+                //e.preventDefault();
+            });
+
+            self.on('click', function(e){
+                console.log('clicked TAB AREA', this);
+                //e.preventDefault();
+
+                console.log('last was', self.get('clicked'));
+                self.get('clicked');
             });
 
             resolve(this);
@@ -144,9 +150,42 @@
         }
     });
 
-    window.addEventListener('load', function() {
+    V.component('[data-home]', {
+
+    });
+
+    V.component('[data-episode]', {
+
+    });
+
+    V.component('[data-404]', {
+
+    });
+
+
+    // Routers
+    V.router.$mode = 'hash';
+    V.router.add({
+        path: '/home',
+        html: '<div data-home>Home</div>',
+        component: '[data-home]'
+    });
+    V.router.add({
+        path: '/episode/:episodeId',
+        html: '<div data-episode>Episode</div>',
+        component: '[data-episode]'
+    });
+    V.router.add({
+        path: '/404',
+        html: '<div data-404>404</div>',
+        component: '[data-404]'
+    });
+
+    V.on(window, 'load', function() {
+
         V.mount(document.body).then(function(){
             console.log('montado');
+            V.trigger(window, 'popstate');
         });
     });
     </script>

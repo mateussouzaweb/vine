@@ -14,6 +14,17 @@ Vanilla UI core lib
         * [.post(url, data, headers)](#V.http.post) ⇒ <code>Promise</code>
         * [.put(url, data, headers)](#V.http.put) ⇒ <code>Promise</code>
         * [.delete(url, data, headers)](#V.http.delete) ⇒ <code>Promise</code>
+    * [.router](#V.router)
+        * [.beforeChange(callback)](#V.router.beforeChange) ⇒ <code>Void</code>
+        * [.afterChange(callback)](#V.router.afterChange) ⇒ <code>Void</code>
+        * [.normalizePath(path)](#V.router.normalizePath) ⇒ <code>String</code>
+        * [.add(definition)](#V.router.add) ⇒ <code>void</code>
+        * [.change(location, replace)](#V.router.change) ⇒ <code>Void</code>
+        * [.retrieveParamsFor(path, match)](#V.router.retrieveParamsFor) ⇒ <code>Object</code>
+        * [.retrieveQueryFor(search)](#V.router.retrieveQueryFor) ⇒ <code>Object</code>
+        * [.getMatch(path)](#V.router.getMatch) ⇒ <code>Null</code> \| <code>Object</code>
+        * [.redirect(location)](#V.router.redirect) ⇒ <code>void</code>
+        * [.goBack(level)](#V.router.goBack) ⇒ <code>void</code>
     * [.local](#V.local)
         * [.set(name, value)](#V.local.set) ⇒ <code>Object</code>
         * [.get(name, parse)](#V.local.get) ⇒ <code>Mixed</code>
@@ -173,6 +184,147 @@ Make DELETE HTTP requests
 | url | <code>String</code> | 
 | data | <code>Object</code> | 
 | headers | <code>Object</code> | 
+
+<a name="V.router"></a>
+
+### V.router
+HTTP router lib
+
+**Kind**: static property of [<code>V</code>](#V)  
+
+* [.router](#V.router)
+    * [.beforeChange(callback)](#V.router.beforeChange) ⇒ <code>Void</code>
+    * [.afterChange(callback)](#V.router.afterChange) ⇒ <code>Void</code>
+    * [.normalizePath(path)](#V.router.normalizePath) ⇒ <code>String</code>
+    * [.add(definition)](#V.router.add) ⇒ <code>void</code>
+    * [.change(location, replace)](#V.router.change) ⇒ <code>Void</code>
+    * [.retrieveParamsFor(path, match)](#V.router.retrieveParamsFor) ⇒ <code>Object</code>
+    * [.retrieveQueryFor(search)](#V.router.retrieveQueryFor) ⇒ <code>Object</code>
+    * [.getMatch(path)](#V.router.getMatch) ⇒ <code>Null</code> \| <code>Object</code>
+    * [.redirect(location)](#V.router.redirect) ⇒ <code>void</code>
+    * [.goBack(level)](#V.router.goBack) ⇒ <code>void</code>
+
+<a name="V.router.beforeChange"></a>
+
+#### router.beforeChange(callback) ⇒ <code>Void</code>
+Add callback before each route transition
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
+
+<a name="V.router.afterChange"></a>
+
+#### router.afterChange(callback) ⇒ <code>Void</code>
+Add callback after each route transition
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
+
+<a name="V.router.normalizePath"></a>
+
+#### router.normalizePath(path) ⇒ <code>String</code>
+Normalize string path
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| path | <code>String</code> | 
+
+<a name="V.router.add"></a>
+
+#### router.add(definition) ⇒ <code>void</code>
+Add route to routes
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| definition | <code>Object</code> | 
+
+<a name="V.router.change"></a>
+
+#### router.change(location, replace) ⇒ <code>Void</code>
+Process route change
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| location | <code>String</code> | 
+| replace | <code>Boolean</code> | 
+
+<a name="V.router.retrieveParamsFor"></a>
+
+#### router.retrieveParamsFor(path, match) ⇒ <code>Object</code>
+Process URL and retrieve route params
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| path | <code>String</code> | 
+| match | <code>Object</code> | 
+
+<a name="V.router.retrieveQueryFor"></a>
+
+#### router.retrieveQueryFor(search) ⇒ <code>Object</code>
+Process URL and retrieve query params
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| search | <code>String</code> | 
+
+<a name="V.router.getMatch"></a>
+
+#### router.getMatch(path) ⇒ <code>Null</code> \| <code>Object</code>
+Match the route based on given path
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| path | <code>String</code> | 
+
+<a name="V.router.redirect"></a>
+
+#### router.redirect(location) ⇒ <code>void</code>
+Redirect route to given location path
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| location | <code>String</code> | 
+
+<a name="V.router.goBack"></a>
+
+#### router.goBack(level) ⇒ <code>void</code>
+Go back to the previous route
+
+**Kind**: static method of [<code>router</code>](#V.router)  
+**Access**: public  
+
+| Param | Type |
+| --- | --- |
+| level | <code>Number</code> | 
 
 <a name="V.local"></a>
 

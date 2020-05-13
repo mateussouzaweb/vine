@@ -88,7 +88,7 @@
              * @param {String} url
              * @param {Object} data
              * @param {Object} headers
-             * @return {Object}
+             * @return {Promise}
              */
             request: async function (method, url, data, headers) {
 
@@ -117,7 +117,7 @@
 
                 if (request.options.method != 'GET') {
 
-                    if( !_data instanceof FormData ){
+                    if( _data instanceof FormData == false ){
                         _data = JSON.stringify(_data);
                     }
 
@@ -137,42 +137,32 @@
 
                 }
 
-                return new Promise(function (resolve, reject) {
+                return fetch(request.url, request.options)
+                .then(function (response) {
+                    request.response = response;
 
-                    fetch(request.url, request.options)
-                        .then(function (response) {
-                            request.response = response;
+                    return V.promises(
+                        request,
+                        _global.interceptAfterHooks
+                    );
+                })
+                .then(function (request) {
+                    return request.response;
+                })
+                .then(function (response) {
 
-                            return V.promises(
-                                request,
-                                _global.interceptAfterHooks
-                            );
-                        })
-                        .then(function (request) {
-                            return request.response;
-                        })
-                        .then(function (response) {
+                    if (!response.ok) {
+                        throw response;
+                    }
 
-                            if (!response.ok) {
-                                throw response;
-                            }
-
-                            return response.text().then(function (text) {
-                                try {
-                                    var json = JSON.parse(text);
-                                    return json;
-                                } catch (e) {
-                                    return text;
-                                }
-                            });
-                        })
-                        .then(function (response) {
-                            resolve(response);
-                        })
-                        .catch(function (error) {
-                            reject(error);
-                        });
-
+                    return response.text().then(function (text) {
+                        try {
+                            var json = JSON.parse(text);
+                            return json;
+                        } catch (e) {
+                            return text;
+                        }
+                    });
                 });
             },
 

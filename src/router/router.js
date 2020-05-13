@@ -197,7 +197,7 @@
 
                 var regex = route.path;
                 var pattern = ['(:[a-zA-Z]+)'];
-                var replace = ['([-0-9a-z]+)'];
+                var replace = ['([^\/]+)'];
 
                 pattern.forEach(function (value, index) {
                     regex = regex.replace(

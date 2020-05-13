@@ -9,7 +9,7 @@ Vanilla UI core lib
     * [.http](#V.http)
         * [.interceptBefore(callback)](#V.http.interceptBefore) ⇒ <code>void</code>
         * [.interceptAfter(callback)](#V.http.interceptAfter) ⇒ <code>void</code>
-        * [.request(method, url, data, headers)](#V.http.request) ⇒ <code>Object</code>
+        * [.request(method, url, data, headers)](#V.http.request) ⇒ <code>Promise</code>
         * [.get(url, data, headers)](#V.http.get) ⇒ <code>Promise</code>
         * [.post(url, data, headers)](#V.http.post) ⇒ <code>Promise</code>
         * [.put(url, data, headers)](#V.http.put) ⇒ <code>Promise</code>
@@ -84,7 +84,7 @@ HTTP request lib
 * [.http](#V.http)
     * [.interceptBefore(callback)](#V.http.interceptBefore) ⇒ <code>void</code>
     * [.interceptAfter(callback)](#V.http.interceptAfter) ⇒ <code>void</code>
-    * [.request(method, url, data, headers)](#V.http.request) ⇒ <code>Object</code>
+    * [.request(method, url, data, headers)](#V.http.request) ⇒ <code>Promise</code>
     * [.get(url, data, headers)](#V.http.get) ⇒ <code>Promise</code>
     * [.post(url, data, headers)](#V.http.post) ⇒ <code>Promise</code>
     * [.put(url, data, headers)](#V.http.put) ⇒ <code>Promise</code>
@@ -116,7 +116,7 @@ Add interceptor callback after each HTTP request
 
 <a name="V.http.request"></a>
 
-#### http.request(method, url, data, headers) ⇒ <code>Object</code>
+#### http.request(method, url, data, headers) ⇒ <code>Promise</code>
 Make HTTP requests
 
 **Kind**: static method of [<code>http</code>](#V.http)  

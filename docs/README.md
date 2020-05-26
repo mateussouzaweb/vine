@@ -17,7 +17,7 @@ Vanilla UI core lib
     * [.router](#V.router)
         * [.beforeChange(callback)](#V.router.beforeChange) ⇒ <code>Void</code>
         * [.afterChange(callback)](#V.router.afterChange) ⇒ <code>Void</code>
-        * [.normalizePath(path)](#V.router.normalizePath) ⇒ <code>String</code>
+        * [.normalizePath(path, removeQuery)](#V.router.normalizePath) ⇒ <code>String</code>
         * [.add(definition)](#V.router.add) ⇒ <code>void</code>
         * [.change(location, replace)](#V.router.change) ⇒ <code>Void</code>
         * [.retrieveParamsFor(path, match)](#V.router.retrieveParamsFor) ⇒ <code>Object</code>
@@ -195,7 +195,7 @@ HTTP router lib
 * [.router](#V.router)
     * [.beforeChange(callback)](#V.router.beforeChange) ⇒ <code>Void</code>
     * [.afterChange(callback)](#V.router.afterChange) ⇒ <code>Void</code>
-    * [.normalizePath(path)](#V.router.normalizePath) ⇒ <code>String</code>
+    * [.normalizePath(path, removeQuery)](#V.router.normalizePath) ⇒ <code>String</code>
     * [.add(definition)](#V.router.add) ⇒ <code>void</code>
     * [.change(location, replace)](#V.router.change) ⇒ <code>Void</code>
     * [.retrieveParamsFor(path, match)](#V.router.retrieveParamsFor) ⇒ <code>Object</code>
@@ -230,7 +230,7 @@ Add callback after each route transition
 
 <a name="V.router.normalizePath"></a>
 
-#### router.normalizePath(path) ⇒ <code>String</code>
+#### router.normalizePath(path, removeQuery) ⇒ <code>String</code>
 Normalize string path
 
 **Kind**: static method of [<code>router</code>](#V.router)  
@@ -239,6 +239,7 @@ Normalize string path
 | Param | Type |
 | --- | --- |
 | path | <code>String</code> | 
+| removeQuery | <code>Boolean</code> | 
 
 <a name="V.router.add"></a>
 

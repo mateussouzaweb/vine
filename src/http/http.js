@@ -159,7 +159,7 @@
                         try {
                             var json = JSON.parse(text);
                             return json;
-                        } catch (e) {
+                        } catch (error) {
                             return text;
                         }
                     });

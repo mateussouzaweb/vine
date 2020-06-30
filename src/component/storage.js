@@ -15,9 +15,13 @@
          */
         set: function (key, value) {
 
-            this
-                .element
-                ._components[this.namespace][key] = value;
+            var element = this.element;
+
+            if (element._storage === undefined) {
+                element._storage = {};
+            }
+
+            element._storage[key] = value;
 
             return this;
         },
@@ -33,9 +37,13 @@
          */
         get: function (key, defaultValue) {
 
-            var value = this
-                .element
-                ._components[this.namespace][key];
+            var element = this.element;
+
+            if (element._storage === undefined) {
+                element._storage = {};
+            }
+
+            var value = element._storage[key];
 
             if (value === undefined) {
                 return defaultValue;

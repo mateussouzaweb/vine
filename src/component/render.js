@@ -105,11 +105,11 @@
         try {
 
             var callbacks = [].concat(
-                [ component.shouldRender ],
+                [component.shouldRender],
                 _global.beforeRenderHooks,
-                [ component.beforeRender ],
-                [ component.onRender ],
-                [ component.afterRender ],
+                [component.beforeRender],
+                [component.onRender],
+                [component.afterRender],
                 _global.afterRenderHooks
             );
 

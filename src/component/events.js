@@ -1,16 +1,5 @@
 (function (V) {
 
-    // PRIVATE
-
-    /**
-     * Global data
-     * @private
-     * @param {Object}
-     */
-    var _global = {
-        events: {}
-    };
-
     // PUBLIC
 
     V.extend(V._abstractComponent, {
@@ -28,6 +17,7 @@
         on: function (event, selector, callback) {
 
             var self = this;
+            var element = self.element;
 
             if (callback === undefined) {
                 callback = selector;
@@ -36,8 +26,9 @@
                 selector = self.selector + ' ' + selector;
             }
 
-            var vid = self.element.dataset.vid;
-            vid = '[data-vid="' + vid + '"]';
+            var eventId = event + '-' + selector;
+            var vid = element.dataset.vid;
+                vid = '[data-vid="' + vid + '"]';
 
             var fn = function (e) {
 
@@ -47,16 +38,15 @@
                     return;
                 }
 
-                self.element = element;
                 callback.apply(e.target.closest(selector), [e]);
 
             };
 
-            if (!_global.events[event]) {
-                _global.events[event] = {};
+            if (element._events === undefined) {
+                element._events = {};
             }
 
-            _global.events[event][selector] = V.on(
+            element._events[eventId] = V.on(
                 document, event, selector, fn
             );
 
@@ -73,24 +63,28 @@
          */
         off: function (event, selector) {
 
+            var self = this;
+            var element = self.element;
+
             if (selector) {
                 selector = self.selector + ' ' + selector;
             } else {
                 selector = self.selector;
             }
 
-            if (!_global.events[event]) {
-                return;
+            var eventId = event + '-' + selector;
+
+            if (element._events === undefined) {
+                element._events = {};
             }
 
-            var fn = _global.events[event][selector];
+            var fn = element._events[eventId];
 
             if (!fn) {
                 return;
             }
 
-            delete _global.events[event][selector];
-
+            delete element._events[eventId];
             V.off(document, event, selector, fn);
 
         }

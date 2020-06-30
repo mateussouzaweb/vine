@@ -745,7 +745,7 @@ Add global callback after component destroy
 <a name="V.destroy"></a>
 
 ### V.destroy(target) ⇒ <code>Promise</code>
-destroy components on given target child elements
+Destroy components on given target child elements
 
 **Kind**: static method of [<code>V</code>](#V)  
 **Access**: public  

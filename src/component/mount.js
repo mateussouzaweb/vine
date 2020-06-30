@@ -89,26 +89,31 @@
 
             var promises = [];
 
-            V._components.forEach(function (component) {
+            V._components.forEach(function (_component) {
 
-                V.items(component.selector, target)
+                V.items(_component.selector, target)
                 .forEach(function (element) {
 
                     if (element._components === undefined) {
                         element._components = {};
                     }
 
-                    var key = component.namespace;
+                    var key = _component.namespace;
 
                     // Already mounted
                     if (element._components[key] !== undefined) {
                         return;
                     }
 
-                    element._components[key] = {};
-                    element.dataset.vid = Math.random().toString(16).substr(2, 8);
+                    if( !element.dataset.vid ){
+                        element.dataset.vid = Math.random().toString(16).substr(2, 8);
+                    }
 
-                    component.element = element;
+                    // Clone component to this element
+                    var component = Object.assign({}, _component);
+                        component.element = element;
+
+                    element._components[key] = component;
 
                     var callbacks = [].concat(
                         _global.beforeMountHooks,

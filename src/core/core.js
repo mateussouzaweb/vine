@@ -65,7 +65,11 @@
          */
         promisify: function (scope, callback) {
             return new Promise(function (resolve, reject) {
-                return callback.apply(scope, [resolve, reject]);
+                try{
+                    return callback.apply(scope, [resolve, reject]);
+                }catch(error){
+                    return reject(error);
+                }
             });
         },
 

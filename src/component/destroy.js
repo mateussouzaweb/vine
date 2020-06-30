@@ -78,7 +78,7 @@
         },
 
         /**
-         * destroy components on given target child elements
+         * Destroy components on given target child elements
          * @public
          * @name V.destroy
          * @kind function
@@ -89,27 +89,28 @@
 
             var promises = [];
 
-            V._components.forEach(function (component) {
-                V.items(component.selector, target)
+            V._components.forEach(function (_component) {
+                V.items(_component.selector, target)
                 .forEach(function (element) {
 
                     if (element._components === undefined) {
                         return;
                     }
 
-                    var key = component.namespace;
+                    var key = _component.namespace;
+
                     if (element._components[key] === undefined) {
                         return;
                     }
 
-                    component.element = element;
+                    var component = element._components[key];
                     delete element._components[key];
 
                     var callbacks = [].concat(
                         _global.beforeDestroyHooks,
-                        [ component.beforeDestroy ],
-                        [ component.onDestroy ],
-                        [ component.afterDestroy ],
+                        [component.beforeDestroy],
+                        [component.onDestroy],
+                        [component.afterDestroy],
                         _global.afterDestroyHooks
                     );
 

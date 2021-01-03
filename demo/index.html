@@ -7,189 +7,113 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vanilla UI Demo</title>
 
-    <!-- Core -->
-    <script src="../src/core/core.js"></script>
-    <script src="../src/core/selector.js"></script>
-    <script src="../src/core/events.js"></script>
-
-    <script src="../src/component/component.js"></script>
-    <script src="../src/component/mount.js"></script>
-    <script src="../src/component/render.js"></script>
-    <script src="../src/component/destroy.js"></script>
-    <script src="../src/component/events.js"></script>
-    <script src="../src/component/storage.js"></script>
-
-    <script src="../src/http/http.js"></script>
-
-    <script src="../src/storage/local.js"></script>
-    <script src="../src/storage/session.js"></script>
-
-    <script src="../src/router/router.js"></script>
-
-    <!-- Demo -->
-    <script src="components/router.js"></script>
+    <script src="../dist/vanilla.js"></script>
+    <script src="components/route.view.js"></script>
 
 </head>
 <body>
 
-    <div data-router>
+    <div data-navigation>
+        <a href="/home">Home</a>
+        <a href="/login">Link (404)</a>
+        <a href="/episode/123">Episode 123</a>
+        <a href="/episode/456"><span>Episode 456<span></a>
+    </div>
+
+    <div data-route-view>
         Loading...
     </div>
 
-    <div class="tabs" data-tabs>
-        <a href="/home" data-tab="tab1">Tab 1</a>
-        <a href="/login" data-tab="tab2">Tab 2</a>
-        <a href="/episode/123" data-tab="tab3">Tab 3</a>
-        <a href="" data-tab="tab4"><span>Tab 4<span></a>
-        <span>Not a TAB</span>
-    </div>
-
-    <div class="tab" id="tab1">
-        <h2>Tab 1</h2>
-    </div>
-    <div class="tab" id="tab2">
-        <h2>Tab 2</h2>
-    </div>
-    <div class="tab" id="tab3">
-        <h2>Tab 3</h2>
-    </div>
-    <div class="tab" id="tab4">
-        <h2>Tab 4</h2>
-    </div>
-
-    <style>
-    .tab{
-        display: none;
-    }
-    .tab.active{
-        display: block;
-    }
-    </style>
-
-
     <section>
-        <p>Texto</p>
-        <button>Botão</button>
+        <p>Text</p>
+        <button>Button</button>
     </section>
 
     <script>
-    V.on('button', 'click', function(){
-        console.log('button clicked. Default', this);
-    });
-    V.on('section', 'click', 'button', function(){
-        console.log('button clicked. Section delegate', this);
-    });
-    V.on('section', 'click', function(){
-        console.log('section clicked. Default', this);
-    });
-    V.on(document, 'click', 'section', function(){
-        console.log('section clicked. Document delegate', this);
-    });
-    V.on(document, 'click', function(){
-        console.log('document clicked. Default', this);
-    });
-    V.on(window, 'click', function(){
-        console.log('window clicked. Default', this);
-    });
+    // V.on('button', 'click', function(){
+    //     console.log('button clicked. Default', this);
+    // });
+    // V.on('section', 'click', 'button', function(){
+    //     console.log('button clicked. Section delegate', this);
+    // });
+    // V.on('section', 'click', function(){
+    //     console.log('section clicked. Default', this);
+    // });
+    // V.on(document, 'click', 'section', function(){
+    //     console.log('section clicked. Document delegate', this);
+    // });
+    // V.on(document, 'click', function(){
+    //     console.log('document clicked. Default', this);
+    // });
+    // V.on(window, 'click', function(){
+    //     console.log('window clicked. Default', this);
+    // });
 
-    V.http.interceptBefore(function(resolve, reject){
-        console.log('executando antes');
-        console.log(this);
-        var self = this;
-        window.setTimeout(function(){
-            resolve(self);
-        }, 1000);
-    });
+    V.http.interceptBefore(function(){
 
-    V.http.interceptAfter(function(resolve, reject){
-        console.log('executando depois');
-        console.log(this);
-        this.data = 'teste';
-        resolve(this);
+        console.log('HTTP intercept before');
+
+        return new Promise(function(resolve){
+            window.setTimeout(function(){
+                console.log('After 1s...')
+                resolve();
+            }, 1000);
+        })
     });
 
-    V.component('[data-tabs]', {
-        onRender: function(resolve, reject){
-
-            var self = this;
-
-            self.on('click', 'a', function(e){
-                self.set('clicked', this.dataset.tab);
-                console.log('link clicked', this);
-                //e.preventDefault();
-            });
-
-            self.on('click', function(e){
-                console.log('clicked TAB AREA', this);
-                //e.preventDefault();
-
-                console.log('last was', self.get('clicked'));
-                self.get('clicked');
-            });
-
-            resolve(this);
-        },
-        afterRender: function(resolve, reject){
-            resolve(this);
-
-            V.http.get('https://jsonplaceholder.typicode.com/todos/1')
-             .then(json => console.log(json));
-
-        }
-    });
-
-    V.component('[data-tabs] a', {
-        onRender: function(resolve, reject){
-
-            var self = this;
-
-            self.on('click', function(e){
-                console.log('clicked LINK', this);
-                // e.preventDefault();
-            });
-
-            resolve(this);
-
-        }
+    V.http.interceptAfter(function(){
+        console.log('HTTP intercept after');
+        console.log('HTTP is', this);
     });
 
     V.component('[data-home]', {
-
+        template: function(){
+            return 'Home'
+        },
+        onRender: function(){
+            V.http.get('https://jsonplaceholder.typicode.com/todos/1')
+                .then(json => console.log(json));
+        }
     });
 
     V.component('[data-episode]', {
-
+        template: function(){
+            return 'Episode {{ episodeId }}'
+        },
+        beforeRender: function(){
+            this.set('episodeId', V.route.active().param('episodeId'))
+        }
     });
 
     V.component('[data-404]', {
-
+        template: function(){
+            return 'Ops, not found... 404'
+        }
     });
 
-
-    // Routers
-    V.router.$mode = 'hash';
-    V.router.add({
+    // Routes
+    V.route.mode = 'hash';
+    V.route.add({
         path: '/home',
-        html: '<div data-home>Home</div>',
-        component: '[data-home]'
+        component: '<div data-home></div>'
     });
-    V.router.add({
+    V.route.add({
         path: '/episode/:episodeId',
-        html: '<div data-episode>Episode</div>',
-        component: '[data-episode]'
+        component: '<div data-episode></div>'
     });
-    V.router.add({
+    V.route.add({
         path: '/404',
-        html: '<div data-404>404</div>',
-        component: '[data-404]'
+        component: '<div data-404></div>'
     });
 
     V.on(window, 'load', function() {
 
+        V.route.attachEvents()
         V.mount(document.body).then(function(){
-            console.log('montado');
+            console.log('Body mounted');
             V.trigger(window, 'popstate');
         });
+
     });
     </script>
 

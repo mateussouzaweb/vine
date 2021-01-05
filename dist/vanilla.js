@@ -652,7 +652,7 @@ var V = (function (exports) {
         }
         var path = (options$1.mode === 'hash')
             ? window.location.hash.replace('#', '')
-            : window.location.pathname;
+            : window.location.href;
         change(path);
     }
     function linkClick(event) {

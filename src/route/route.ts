@@ -361,7 +361,7 @@ function popstate(){
 
     var path = ( options.mode === 'hash' )
         ? window.location.hash.replace('#', '')
-        : window.location.pathname
+        : window.location.href
 
     change(path)
 

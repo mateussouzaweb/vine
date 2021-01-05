@@ -149,12 +149,12 @@ function paramsFor(path: string, match: {path: string}): Object {
 
 /**
  * Process URL and retrieve query params
- * @param path
+ * @param location
  */
-function queryFor(path: string): Object {
+function queryFor(location: string): Object {
 
     var query = {}
-    var search = ( path.indexOf('?') !== -1 ) ? path.split('?')[1] : path
+    var search = ( location.indexOf('?') !== -1 ) ? location.split('?')[1] : ''
         search = String(search).trim().replace(/^(\?|#|&)/, '')
 
     if (search == '') {

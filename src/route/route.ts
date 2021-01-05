@@ -323,7 +323,7 @@ export function active(): AbstractRoute {
  * @param toLocation
  */
 export function redirect(toLocation: string) {
-    change(toLocation, true)
+    return change(toLocation, true)
 }
 
 /**

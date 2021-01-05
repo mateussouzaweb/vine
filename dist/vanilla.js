@@ -130,20 +130,21 @@ var V = (function (exports) {
                 .replace(/^{{\s?/, '')
                 .replace(/\s?}}$/, '')
                 .replace(/^else$/, '} else {')
-                .replace(/^endif$/, '}')
-                .replace(/^endfor$/, '}')
+                .replace(/^end$/, '}')
                 .replace(/^if\s?(.*)$/, 'if( this.$1 ){')
                 .replace(/^for\s?(.*)\sin\s(.*)$/, 'for( var $1 in this.$2 ){')
+                .replace(/^each\s?(.*)\sin\s(.*)$/, 'for( var _$1 in this.$2 ){ this.$1 = this.$2[_$1];')
                 .replace(/^(?!}|{|for\(|if\()(.*)/, 'this.$1');
             before = template.slice(cursor, match.index);
             cursor = match.index + match[0].length;
-            parser.push('r.push("' + before.replace(/"/g, '\\\\"') + '");');
+            parser.push('r.push("' + before.replace(/"/g, '\\"') + '");');
             parser.push(line.match(/^(}|{|for\(|if\()/) ? line : 'r.push(' + line + ');');
         }
         after = template.substr(cursor, template.length - cursor);
-        parser.push('r.push("' + after.replace(/"/g, '\\\\"') + '");');
+        parser.push('r.push("' + after.replace(/"/g, '\\"') + '");');
         parser.push('return r.join("");');
-        var result = new Function(parser.join('')).apply(data || {});
+        var code = parser.join('').replace(/[\r\t\n]/g, '');
+        var result = new Function(code).apply(data || {});
         return result;
     }
 

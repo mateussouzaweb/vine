@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# npm install -g typescript
+# npm install -g rollup
+
 echo "Creating distribution files..."
 
 tsc --target 'ES2018' \

@@ -9,13 +9,15 @@ extendComponent({
      */
     set: function (key: string|Object, value?: any) {
 
+        var element = this.element
+
         if( typeof key == 'string' ){
-            var element = this.element
             element._state[key] = value
-            return
+        }else{
+            element._state = Object.assign(element._state, key)
         }
 
-        element._state = Object.assign(element._state, key)
+        return this.render();
 
     },
 
@@ -37,13 +39,6 @@ extendComponent({
             value = (value === undefined) ? _default : value
 
         return value
-    },
-
-    /**
-     * Update component after state change
-     */
-    update: async function(){
-        return this.render()
     }
 
 })

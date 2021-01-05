@@ -1,15 +1,12 @@
+import {_set, _get, _remove} from './methods'
+
 /**
  * Set item on sessionStorage
  * @param name
  * @param value
  */
 export function set(name: string, value: string|Object) {
-
-    if (value instanceof Object) {
-        value = JSON.stringify(value)
-    }
-
-    sessionStorage.setItem(name, value as string)
+    return _set(sessionStorage, name, value as string)
 }
 
 /**
@@ -18,12 +15,13 @@ export function set(name: string, value: string|Object) {
  * @param parse
  */
 export function get(name: string, parse?: Boolean): string|Object {
+    return _get(sessionStorage, name, parse)
+}
 
-    var value = sessionStorage.getItem(name)
-
-    if (parse == true && value) {
-        value = JSON.parse(value)
-    }
-
-    return value
+/**
+ * Remove item of sessionStorage
+ * @param name
+ */
+export function remove(name: string) {
+    return _remove(sessionStorage, name)
 }

@@ -7,9 +7,16 @@ extendComponent({
      * @param key
      * @param value
      */
-    set: function (key: string, value: any) {
-        var element = this.element
+    set: function (key: string|Object, value?: any) {
+
+        if( typeof key == 'string' ){
+            var element = this.element
             element._state[key] = value
+            return
+        }
+
+        element._state = Object.assign(element._state, key)
+
     },
 
     /**

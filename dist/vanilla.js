@@ -358,8 +358,12 @@ var V = (function (exports) {
 
     extendComponent({
         set: function (key, value) {
-            var element = this.element;
-            element._state[key] = value;
+            if (typeof key == 'string') {
+                var element = this.element;
+                element._state[key] = value;
+                return;
+            }
+            element._state = Object.assign(element._state, key);
         },
         get: function (key, _default) {
             var element = this.element;

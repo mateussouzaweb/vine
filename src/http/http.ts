@@ -1,12 +1,11 @@
 import {promises} from "../core/promise"
 import {hook} from "../core/utils"
 
-interface RequestObject {
+interface RequestObject extends RequestInit {
     method: string
     url: string
     data: BodyInit
     headers: HeadersInit
-    signal: AbortSignal
 }
 
 /**
@@ -38,30 +37,22 @@ export async function request(method: string, url: string, data?: BodyInit, head
         method: method,
         url: url,
         data: data,
-        headers: headers,
-        signal: null
+        headers: headers
     }
 
     await promises(request, hook('httpInterceptBefore'))
 
-    var options: RequestInit = {}
+    var options = Object.assign({}, request)
 
-    if (request.headers) {
-        options.headers = request.headers
-    }
-    if (request.method) {
-        options.method = request.method
-    }
-    if (request.signal) {
-        options.signal = request.signal
-    }
+    delete options.url
+    delete options.data
 
     if (options.method != 'GET') {
 
-        var body = ( request.data instanceof FormData == false )
-            ? JSON.stringify(request.data) : request.data
-
-        options.body = body
+        if( options.body === undefined || options.body === null ){
+            options.body = ( request.data instanceof FormData == false )
+                ? JSON.stringify(request.data) : request.data
+        }
 
     } else {
 
@@ -84,18 +75,18 @@ export async function request(method: string, url: string, data?: BodyInit, head
     }
 
     var response = await fetch(request.url, options)
-    var responseBody = await response.text()
+    var body = await response.text()
 
     try {
-        var json = JSON.parse(responseBody)
-        responseBody = json
+        var json = JSON.parse(body)
+            body = json
     } catch (error) {
     }
 
     var details = {
         request: request,
         response: response,
-        body: responseBody
+        body: body
     }
 
     await promises(details, hook('httpInterceptAfter'))
@@ -104,7 +95,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
         throw details
     }
 
-    return responseBody
+    return body
 }
 
 /**

@@ -752,7 +752,7 @@ var V = (function (exports) {
         get: get$2
     });
 
-    const __version = '1.0.0';
+    const __version = '1.0.1';
 
     exports.$ = $;
     exports.$$ = $$;

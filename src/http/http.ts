@@ -6,8 +6,7 @@ interface RequestObject {
     url: string
     data: BodyInit
     headers: HeadersInit
-    options: RequestInit
-    response: Response | null
+    signal: AbortSignal
 }
 
 /**
@@ -40,26 +39,29 @@ export async function request(method: string, url: string, data?: BodyInit, head
         url: url,
         data: data,
         headers: headers,
-        options: {},
-        response: null
+        signal: null
     }
 
     await promises(request, hook('httpInterceptBefore'))
 
+    var options: RequestInit = {}
+
     if (request.headers) {
-        request.options.headers = request.headers
+        options.headers = request.headers
     }
     if (request.method) {
-        request.options.method = request.method
+        options.method = request.method
+    }
+    if (request.signal) {
+        options.signal = request.signal
     }
 
-    if (request.options.method != 'GET') {
+    if (options.method != 'GET') {
 
-        if( request.data instanceof FormData == false ){
-            request.data = JSON.stringify(request.data)
-        }
+        var body = ( request.data instanceof FormData == false )
+            ? JSON.stringify(request.data) : request.data
 
-        request.options.body = request.data
+        options.body = body
 
     } else {
 
@@ -81,26 +83,28 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
     }
 
-    return fetch(request.url, request.options)
-    .then(async function (response) {
-        request.response = response
-        await promises(request, hook('httpInterceptAfter'))
-        return request.response
-    })
-    .then(async function (response) {
+    var response = await fetch(request.url, options)
+    var responseBody = await response.text()
 
-        if (!response.ok) {
-            throw response
-        }
+    try {
+        var json = JSON.parse(responseBody)
+        responseBody = json
+    } catch (error) {
+    }
 
-        const text = await response.text()
-        try {
-            var json = JSON.parse(text)
-            return json
-        } catch (error) {
-            return text
-        }
-    })
+    var details = {
+        request: request,
+        response: response,
+        body: responseBody
+    }
+
+    await promises(details, hook('httpInterceptAfter'))
+
+    if (!response.ok) {
+        throw details
+    }
+
+    return responseBody
 }
 
 /**

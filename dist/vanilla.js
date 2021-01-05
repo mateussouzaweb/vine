@@ -358,12 +358,14 @@ var V = (function (exports) {
 
     extendComponent({
         set: function (key, value) {
+            var element = this.element;
             if (typeof key == 'string') {
-                var element = this.element;
                 element._state[key] = value;
-                return;
             }
-            element._state = Object.assign(element._state, key);
+            else {
+                element._state = Object.assign(element._state, key);
+            }
+            return this.render();
         },
         get: function (key, _default) {
             var element = this.element;
@@ -373,9 +375,6 @@ var V = (function (exports) {
             var value = element._state[key];
             value = (value === undefined) ? _default : value;
             return value;
-        },
-        update: async function () {
-            return this.render();
         }
     });
 
@@ -390,22 +389,17 @@ var V = (function (exports) {
             method: method,
             url: url,
             data: data,
-            headers: headers,
-            options: {},
-            response: null
+            headers: headers
         };
         await promises(request, hook('httpInterceptBefore'));
-        if (request.headers) {
-            request.options.headers = request.headers;
-        }
-        if (request.method) {
-            request.options.method = request.method;
-        }
-        if (request.options.method != 'GET') {
-            if (request.data instanceof FormData == false) {
-                request.data = JSON.stringify(request.data);
+        var options = Object.assign({}, request);
+        delete options.url;
+        delete options.data;
+        if (options.method != 'GET') {
+            if (options.body === undefined || options.body === null) {
+                options.body = (request.data instanceof FormData == false)
+                    ? JSON.stringify(request.data) : request.data;
             }
-            request.options.body = request.data;
         }
         else {
             var query = '';
@@ -423,25 +417,24 @@ var V = (function (exports) {
                 request.url += '?' + query;
             }
         }
-        return fetch(request.url, request.options)
-            .then(async function (response) {
-            request.response = response;
-            await promises(request, hook('httpInterceptAfter'));
-            return request.response;
-        })
-            .then(async function (response) {
-            if (!response.ok) {
-                throw response;
-            }
-            const text = await response.text();
-            try {
-                var json = JSON.parse(text);
-                return json;
-            }
-            catch (error) {
-                return text;
-            }
-        });
+        var response = await fetch(request.url, options);
+        var body = await response.text();
+        try {
+            var json = JSON.parse(body);
+            body = json;
+        }
+        catch (error) {
+        }
+        var details = {
+            request: request,
+            response: response,
+            body: body
+        };
+        await promises(details, hook('httpInterceptAfter'));
+        if (!response.ok) {
+            throw details;
+        }
+        return body;
     }
     function options(url, data, headers) {
         return request('OPTIONS', url, data, headers);
@@ -547,9 +540,9 @@ var V = (function (exports) {
         });
         return params;
     }
-    function queryFor(path) {
+    function queryFor(location) {
         var query = {};
-        var search = (path.indexOf('?') !== -1) ? path.split('?')[1] : path;
+        var search = (location.indexOf('?') !== -1) ? location.split('?')[1] : '';
         search = String(search).trim().replace(/^(\?|#|&)/, '');
         if (search == '') {
             return query;
@@ -639,7 +632,7 @@ var V = (function (exports) {
         return _active;
     }
     function redirect(toLocation) {
-        change(toLocation, true);
+        return change(toLocation, true);
     }
     function go(delta) {
         window.history.go(delta);
@@ -712,47 +705,58 @@ var V = (function (exports) {
         attachEvents: attachEvents
     });
 
-    function set(name, value) {
+    function _set(storage, name, value) {
         if (value instanceof Object) {
             value = JSON.stringify(value);
         }
-        localStorage.setItem(name, value);
+        storage.setItem(name, value);
     }
-    function get$1(name, parse) {
-        var value = localStorage.getItem(name);
+    function _get(storage, name, parse) {
+        var value = storage.getItem(name);
         if (parse == true && value) {
             value = JSON.parse(value);
         }
         return value;
+    }
+    function _remove(storage, name) {
+        storage.removeItem(name);
+    }
+
+    function set(name, value) {
+        return _set(localStorage, name, value);
+    }
+    function get$1(name, parse) {
+        return _get(localStorage, name, parse);
+    }
+    function remove(name) {
+        return _remove(localStorage, name);
     }
 
     var local = /*#__PURE__*/Object.freeze({
         __proto__: null,
         set: set,
-        get: get$1
+        get: get$1,
+        remove: remove
     });
 
     function set$1(name, value) {
-        if (value instanceof Object) {
-            value = JSON.stringify(value);
-        }
-        sessionStorage.setItem(name, value);
+        return _set(sessionStorage, name, value);
     }
     function get$2(name, parse) {
-        var value = sessionStorage.getItem(name);
-        if (parse == true && value) {
-            value = JSON.parse(value);
-        }
-        return value;
+        return _get(sessionStorage, name, parse);
+    }
+    function remove$1(name) {
+        return _remove(sessionStorage, name);
     }
 
     var session = /*#__PURE__*/Object.freeze({
         __proto__: null,
         set: set$1,
-        get: get$2
+        get: get$2,
+        remove: remove$1
     });
 
-    const __version = '1.0.1';
+    const __version = '1.0.2';
 
     exports.$ = $;
     exports.$$ = $$;

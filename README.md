@@ -33,14 +33,13 @@ Simple put the distribution file in your project and start coding:
 
 ## Component Lifecycle
 
-You can use the following cycle to understand how component works and attach the appropriated code to id:
+You can use the following cycle to understand how components works and attach the appropriated code to it:
 
 ```html
-Component:
 Construct ↓
-    Mount ↓
+    ↓ Mount ↓
         ⇅ Render (Loop) ↺
-    Destroy ↓
+    ↑ Destroy ↓
 Destruct
 ```
 
@@ -52,7 +51,7 @@ Destruct
 
 2 - MOUNT
 
-- **Only once** with element attached
+- **Only once** for each element attached
 - Useful to setup component events and initial data
 - Global events: ``beforeMount``, ``afterMount``
 - Component events: ``beforeMount``, ``onMount``, ``afterMount``
@@ -67,17 +66,17 @@ Destruct
 
 4 - DESTROY
 
-- **Only once** with the attached element
+- **Only once** for each attached element
 - Destroy the component from the element
 - Useful to remove component events
-- Component to be mounted again later with new mounts
-- Calls destroy on child components also
+- Component can be mounted again later with new mounts
+- Calls destroy on child components also and wait for it
 - Global events: ``beforeDestroy``, ``afterDestroy``
 - Component events: ``beforeDestroy``, ``onDestroy``, ``afterDestroy``
 
 5 - REMOVE
 
-- **Only once** for each attached element
-- Remove the component from index, cannot be used again
+- If mounted, **only once** for each attached element
+- Remove the component from index and cannot be used again
 - This do not run the destroy lifecycle, you should call it first
 - Component events: ``destructor``

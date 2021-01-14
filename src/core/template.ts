@@ -48,7 +48,9 @@ function variables(line: string): Array<string> {
     }
 
     add(/^(?!}|for\(|if\()([A-Za-z0-9_]+)/) // Single var
-    add(/^if\(\s([A-Za-z0-9_]+)\s\)/) // If vars
+    add(/^if\(\s?!?([A-Za-z0-9_]+)/) // If vars
+    add(/&&\s?!?([A-Za-z0-9_]+)/) // && condition vars
+    add(/\|\|\s?!?([A-Za-z0-9_]+)/) // || condition vars
     add(/in\s([A-Za-z0-9_]+)\s\)/) // For vars
 
     return vars
@@ -104,7 +106,7 @@ export function template(template: string, data?: Object): string {
 
         before = template.slice(cursor, match.index)
         cursor = match.index + match[0].length
-        parser.push('r.push("' + before.replace(/"/g, '\\"') + '");')
+        parser.push('r.push(`' + before.replace(/"/g, '\\"') + '`);')
 
         variables(line).filter(function(value){
             if( data[value] === undefined ) {
@@ -117,7 +119,7 @@ export function template(template: string, data?: Object): string {
     }
 
     after = template.substr(cursor, template.length - cursor)
-    parser.push('r.push("' + after.replace(/"/g, '\\"') + '");')
+    parser.push('r.push(`' + after.replace(/"/g, '\\"') + '`);')
     parser.push('return r.join("");')
 
     var code = parser.join("\n")

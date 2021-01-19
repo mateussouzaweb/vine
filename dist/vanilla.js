@@ -115,6 +115,39 @@ var V = (function (exports) {
         return scope;
     }
 
+    function clean(line) {
+        return line
+            .replace(/\s+/g, ' ')
+            .replace(/^{{\s?/, '')
+            .replace(/\s?}}$/, '');
+    }
+    function conditions(line) {
+        return line
+            .replace(/^if\s?(.*)$/, 'if( $1 ){')
+            .replace(/^else$/, '} else {')
+            .replace(/^end$/, '}');
+    }
+    function loops(line) {
+        return line
+            .replace(/^for\s?(.*)\sin\s(.*)$/, 'for( var $1 in $2 ){')
+            .replace(/^each\s?(.*)\s?=>\s?(.*)\sin\s(.*)$/, 'for( var $1 in $3 ){ var $2 = $3[$1];')
+            .replace(/^each\s?(.*)\sin\s(.*)$/, 'for( var _$1 in $2 ){ var $1 = $2[_$1];');
+    }
+    function variables(line) {
+        var vars = [];
+        var add = function (regex) {
+            var match = line.match(regex);
+            if (match) {
+                vars.push(match[1]);
+            }
+        };
+        add(/^(?!}|for\(|if\()([A-Za-z0-9_]+)/);
+        add(/^if\(\s?!?([A-Za-z0-9_]+)/);
+        add(/&&\s?!?([A-Za-z0-9_]+)/);
+        add(/\|\|\s?!?([A-Za-z0-9_]+)/);
+        add(/in\s([A-Za-z0-9_]+)\s\)/);
+        return vars;
+    }
     function template(template, data) {
         var tagRegex = /{{([^}}]+)?}}/g;
         var parser = [];
@@ -123,28 +156,30 @@ var V = (function (exports) {
         var before = '';
         var after = '';
         var match;
-        parser.push('var r=[];');
+        data = data || {};
+        each(data, function (_value, index) {
+            parser.push('var ' + index + ' = this["' + index + '"];');
+        });
+        parser.push('var r = [];');
         while ((match = tagRegex.exec(template))) {
-            line = match[0]
-                .replace(/\s+/, ' ')
-                .replace(/^{{\s?/, '')
-                .replace(/\s?}}$/, '')
-                .replace(/^else$/, '} else {')
-                .replace(/^end$/, '}')
-                .replace(/^if\s?(.*)$/, 'if( this.$1 ){')
-                .replace(/^for\s?(.*)\sin\s(.*)$/, 'for( var $1 in this.$2 ){')
-                .replace(/^each\s?(.*)\sin\s(.*)$/, 'for( var _$1 in this.$2 ){ this.$1 = this.$2[_$1];')
-                .replace(/^(?!}|{|for\(|if\()(.*)/, 'this.$1');
+            line = clean(match[0]);
+            line = conditions(line);
+            line = loops(line);
             before = template.slice(cursor, match.index);
             cursor = match.index + match[0].length;
-            parser.push('r.push("' + before.replace(/"/g, '\\"') + '");');
+            parser.push('r.push(`' + before.replace(/"/g, '\\"') + '`);');
+            variables(line).filter(function (value) {
+                if (data[value] === undefined) {
+                    parser.push('var ' + value + ';');
+                }
+            });
             parser.push(line.match(/^(}|{|for\(|if\()/) ? line : 'r.push(' + line + ');');
         }
         after = template.substr(cursor, template.length - cursor);
-        parser.push('r.push("' + after.replace(/"/g, '\\"') + '");');
+        parser.push('r.push(`' + after.replace(/"/g, '\\"') + '`);');
         parser.push('return r.join("");');
-        var code = parser.join('').replace(/[\r\t\n]/g, '');
-        var result = new Function(code).apply(data || {});
+        var code = parser.join("\n");
+        var result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {});
         return result;
     }
 
@@ -280,6 +315,16 @@ var V = (function (exports) {
             }
             delete element._events[eventId];
             off(document, event, selector, fn);
+        },
+        trigger: function (event, selector) {
+            var self = this;
+            if (selector) {
+                selector = self.selector + ' ' + selector;
+            }
+            else {
+                selector = self.selector;
+            }
+            trigger(selector, event);
         }
     });
 
@@ -357,6 +402,12 @@ var V = (function (exports) {
     });
 
     extendComponent({
+        update: function (key, value) {
+            if (key) {
+                this.set(key, value);
+            }
+            return this.render();
+        },
         set: function (key, value) {
             var element = this.element;
             if (typeof key == 'string') {
@@ -365,7 +416,6 @@ var V = (function (exports) {
             else {
                 element._state = Object.assign(element._state, key);
             }
-            return this.render();
         },
         get: function (key, _default) {
             var element = this.element;
@@ -711,10 +761,13 @@ var V = (function (exports) {
         }
         storage.setItem(name, value);
     }
-    function _get(storage, name, parse) {
+    function _get(storage, name) {
         var value = storage.getItem(name);
-        if (parse == true && value) {
-            value = JSON.parse(value);
+        try {
+            var json = JSON.parse(value);
+            value = json;
+        }
+        catch (error) {
         }
         return value;
     }
@@ -725,8 +778,8 @@ var V = (function (exports) {
     function set(name, value) {
         return _set(localStorage, name, value);
     }
-    function get$1(name, parse) {
-        return _get(localStorage, name, parse);
+    function get$1(name) {
+        return _get(localStorage, name);
     }
     function remove(name) {
         return _remove(localStorage, name);
@@ -742,8 +795,8 @@ var V = (function (exports) {
     function set$1(name, value) {
         return _set(sessionStorage, name, value);
     }
-    function get$2(name, parse) {
-        return _get(sessionStorage, name, parse);
+    function get$2(name) {
+        return _get(sessionStorage, name);
     }
     function remove$1(name) {
         return _remove(sessionStorage, name);

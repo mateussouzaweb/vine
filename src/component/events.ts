@@ -1,5 +1,5 @@
 import {extendComponent} from './component'
-import {on, off} from '../core/events'
+import {on, off, trigger} from '../core/events'
 
 extendComponent({
 
@@ -68,6 +68,25 @@ extendComponent({
 
         delete element._events[eventId]
         off(document, event, selector, fn)
+
+    },
+
+    /**
+     * Trigger event on component
+     * @param event
+     * @param selector
+     */
+    trigger: function(event: string, selector?: any) {
+
+        var self = this
+
+        if (selector) {
+            selector = self.selector + ' ' + selector
+        } else {
+            selector = self.selector
+        }
+
+        trigger(selector, event)
 
     }
 

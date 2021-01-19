@@ -57,6 +57,8 @@ export function extendComponent(definition: Object){
 
 /**
  * Loop through all registered components
+ * @param target
+ * @param callback
  */
 export function eachComponent(target: HTMLElement|HTMLDocument, callback: ComponentCallback) {
     _components.forEach(function (declaration) {

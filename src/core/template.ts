@@ -114,7 +114,7 @@ export function template(template: string, data?: Object): string {
             }
         })
 
-        parser.push( line.match(/^(}|{|for\(|if\()/) ? line : 'r.push(' + line + ');')
+        parser.push( line.match(/^(}|{|for\(|if\()/) ? line : 'r.push(' + line + ');' )
 
     }
 

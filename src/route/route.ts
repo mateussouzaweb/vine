@@ -382,7 +382,7 @@ function linkClick(event: KeyboardEvent){
 
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
-    if ( event.metaKey
+    if (event.metaKey
         || event.ctrlKey
         || event.shiftKey
         || event.altKey) {

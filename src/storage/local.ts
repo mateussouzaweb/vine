@@ -6,16 +6,15 @@ import {_set, _get, _remove} from './methods'
  * @param value
  */
 export function set(name: string, value: string|Object) {
-    return _set(localStorage, name, value as string)
+    return _set(localStorage, name, value)
 }
 
 /**
  * Retrieve item of localStorage
  * @param name
- * @param parse
  */
-export function get(name: string, parse?: Boolean): string|Object {
-    return _get(localStorage, name, parse)
+export function get(name: string): string|Object {
+    return _get(localStorage, name)
 }
 
 /**

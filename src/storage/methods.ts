@@ -17,14 +17,14 @@ export function _set(storage: Storage, name: string, value: string|Object) {
  * Retrieve item of storage
  * @param storage
  * @param name
- * @param parse
  */
-export function _get(storage: Storage, name: string, parse?: Boolean): string|Object {
+export function _get(storage: Storage, name: string): string|Object {
 
     var value = storage.getItem(name)
 
-    if (parse == true && value) {
-        value = JSON.parse(value)
+    try {
+        var json = JSON.parse(value); value = json
+    } catch (error) {
     }
 
     return value

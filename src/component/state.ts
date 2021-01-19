@@ -3,6 +3,20 @@ import {extendComponent} from './component'
 extendComponent({
 
     /**
+     * Set element data and render component
+     * @param key
+     * @param value
+     */
+    update: function (key?: string|Object, value?: any) {
+
+        if( key ){
+            this.set(key, value)
+        }
+
+        return this.render()
+    },
+
+    /**
      * Set element data
      * @param key
      * @param value
@@ -16,8 +30,6 @@ extendComponent({
         }else{
             element._state = Object.assign(element._state, key)
         }
-
-        return this.render();
 
     },
 

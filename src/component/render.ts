@@ -32,7 +32,12 @@ extendComponent({
             return
         }
 
-        var result = template(String(_template), this.get())
+        var variables = this.get()
+        var result = template(
+            String(_template),
+            variables
+        )
+
         this.element.innerHTML = result;
 
     },
@@ -61,8 +66,13 @@ extendComponent({
 
     /**
      * Component render
+     * @param state
      */
-    render: async function(){
+    render: async function(state?: Object){
+
+        if( state !== undefined ){
+            this.set(state)
+        }
 
         var component = this as RenderableComponent
         var pass = await component.shouldRender()

@@ -50,8 +50,12 @@ export async function request(method: string, url: string, data?: BodyInit, head
     if (options.method != 'GET') {
 
         if( options.body === undefined || options.body === null ){
-            options.body = ( request.data instanceof FormData == false )
-                ? JSON.stringify(request.data) : request.data
+            options.body = request.data
+
+            if( options.body instanceof FormData == false ){
+                options.body = JSON.stringify(options.body)
+                options.headers['Content-Type'] = 'application/json; charset=utf8'
+            }
         }
 
     } else {

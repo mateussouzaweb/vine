@@ -1,5 +1,5 @@
 /*! Vanilla UI - https://github.com/mateussouzaweb/vanilla-ui */
-export const __version = '1.0.3'
+export const __version = '1.0.4'
 
 export * from "./core/utils"
 export * from "./core/selector"

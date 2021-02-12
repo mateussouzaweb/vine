@@ -115,6 +115,10 @@ var V = (function (exports) {
         return scope;
     }
 
+    var _helpers = {};
+    function helper(key, callback) {
+        _helpers[key] = callback;
+    }
     function clean(line) {
         return line
             .replace(/\s+/g, ' ')
@@ -156,7 +160,7 @@ var V = (function (exports) {
         var before = '';
         var after = '';
         var match;
-        data = data || {};
+        data = Object.assign({}, _helpers, data || {});
         each(data, function (_value, index) {
             parser.push('var ' + index + ' = this["' + index + '"];');
         });
@@ -179,7 +183,12 @@ var V = (function (exports) {
         parser.push('r.push(`' + after.replace(/"/g, '\\"') + '`);');
         parser.push('return r.join("");');
         var code = parser.join("\n");
-        var result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {});
+        try {
+            var result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {});
+        }
+        catch (error) {
+            console.warn('[V] template parser error:', template, error);
+        }
         return result;
     }
 
@@ -366,7 +375,8 @@ var V = (function (exports) {
             if (_template === undefined || _template === false) {
                 return;
             }
-            var result = template(String(_template), this.get());
+            var variables = this.get();
+            var result = template(String(_template), variables);
             this.element.innerHTML = result;
         },
         shouldRender: async function () {
@@ -375,7 +385,10 @@ var V = (function (exports) {
         beforeRender: fakePromise,
         onRender: fakePromise,
         afterRender: fakePromise,
-        render: async function () {
+        render: async function (state) {
+            if (state !== undefined) {
+                this.set(state);
+            }
             var component = this;
             var pass = await component.shouldRender();
             if (!pass) {
@@ -402,12 +415,6 @@ var V = (function (exports) {
     });
 
     extendComponent({
-        update: function (key, value) {
-            if (key) {
-                this.set(key, value);
-            }
-            return this.render();
-        },
         set: function (key, value) {
             var element = this.element;
             if (typeof key == 'string') {
@@ -447,8 +454,11 @@ var V = (function (exports) {
         delete options.data;
         if (options.method != 'GET') {
             if (options.body === undefined || options.body === null) {
-                options.body = (request.data instanceof FormData == false)
-                    ? JSON.stringify(request.data) : request.data;
+                options.body = request.data;
+                if (options.body instanceof FormData == false) {
+                    options.body = JSON.stringify(options.body);
+                    options.headers['Content-Type'] = 'application/json; charset=utf8';
+                }
             }
         }
         else {
@@ -809,7 +819,7 @@ var V = (function (exports) {
         remove: remove$1
     });
 
-    const __version = '1.0.2';
+    const __version = '1.0.4';
 
     exports.$ = $;
     exports.$$ = $$;
@@ -827,6 +837,7 @@ var V = (function (exports) {
     exports.eachComponent = eachComponent;
     exports.extendComponent = extendComponent;
     exports.fakePromise = fakePromise;
+    exports.helper = helper;
     exports.hook = hook;
     exports.http = http;
     exports.local = local;

@@ -1,5 +1,16 @@
 import { each } from "./utils"
 
+var _helpers = {};
+
+/**
+ * Register a template helper
+ * @param key
+ * @param callback
+ */
+export function helper(key: string, callback?: Function){
+    _helpers[key] = callback
+}
+
 /**
  * Clean line
  * @param line
@@ -91,7 +102,8 @@ export function template(template: string, data?: Object): string {
     var after = ''
     var match: RegExpExecArray | null
 
-    data = data || {}
+    data = Object.assign({}, _helpers, data || {})
+
     each(data, function(_value, index){
         parser.push('var ' + index + ' = this["' + index + '"];')
     });
@@ -123,7 +135,12 @@ export function template(template: string, data?: Object): string {
     parser.push('return r.join("");')
 
     var code = parser.join("\n")
-    var result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
+
+    try{
+        var result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
+    } catch(error){
+        console.warn('[V] template parser error:', template, error)
+    }
 
     return result
 }

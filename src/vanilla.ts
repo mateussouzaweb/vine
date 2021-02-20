@@ -16,5 +16,4 @@ export * from "./component/state";
 
 export * as http from "./http/http"
 export * as route from "./route/route"
-export * as local from "./storage/local"
-export * as session from "./storage/session"
+export * as store from "./store/store"

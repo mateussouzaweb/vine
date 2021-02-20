@@ -6,7 +6,7 @@ type SelectorContext = string|HTMLElement|HTMLDocument
  * @param context
  */
 function getContext(context: SelectorContext): Context {
-    context = (typeof context == 'string') ? $(context) : context
+    context = (typeof context === 'string') ? $(context) : context
     context = (context instanceof Node) ? context : document
     return context
 }
@@ -38,7 +38,7 @@ export function $$$(element: any, context?: SelectorContext): Array<HTMLElement>
 
     var items = []
 
-    if (typeof element == 'string') {
+    if (typeof element === 'string') {
         element = $$(element, context)
     }
 

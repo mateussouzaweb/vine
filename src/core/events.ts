@@ -36,7 +36,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
     items.forEach(function (item) {
         for (var i = 0; i < events.length; i++) {
 
-            if (action == 'add') {
+            if (action === 'add') {
                 item.addEventListener(
                     events[i],
                     handler.bind(item),

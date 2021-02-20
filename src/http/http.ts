@@ -52,7 +52,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
         if( options.body === undefined || options.body === null ){
             options.body = request.data
 
-            if( options.body instanceof FormData == false ){
+            if( options.body instanceof FormData === false ){
                 options.body = JSON.stringify(options.body)
                 options.headers['Content-Type'] = 'application/json; charset=utf8'
             }
@@ -62,7 +62,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
         var query = ''
 
-        if( typeof request.data == 'string' ){
+        if( typeof request.data === 'string' ){
             query = request.data
         }else if( request.data ){
             query = Object.keys(request.data).map(function (k) {

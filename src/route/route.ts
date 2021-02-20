@@ -157,7 +157,7 @@ function queryFor(location: string): Object {
     var search = ( location.indexOf('?') !== -1 ) ? location.split('?')[1] : ''
         search = String(search).trim().replace(/^(\?|#|&)/, '')
 
-    if (search == '') {
+    if (search === '') {
         return query
     }
 
@@ -339,7 +339,7 @@ export function go(delta?: number){
  * @param delta
  */
 export function forward(delta?: number) {
-    go( delta == undefined ? 1 : delta )
+    go( delta === undefined ? 1 : delta )
 }
 
 /**
@@ -347,7 +347,7 @@ export function forward(delta?: number) {
  * @param delta
  */
 export function back(delta?: number) {
-    go( delta == undefined ? -1 : delta )
+    go( delta === undefined ? -1 : delta )
 }
 
 /**
@@ -399,7 +399,7 @@ function linkClick(event: KeyboardEvent){
     if (options.mode !== 'hash'
         && link.href
         && link.href.indexOf('#') > -1
-        && stripHash(link) == stripHash(location)) {
+        && stripHash(link) === stripHash(location)) {
         return
     }
 

@@ -1,6 +1,6 @@
 import { each } from "./utils"
 
-var _helpers = {};
+var _helpers = {}
 
 /**
  * Register a template helper

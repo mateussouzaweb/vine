@@ -11,7 +11,7 @@ extendComponent({
 
         var element = this.element
 
-        if( typeof key == 'string' ){
+        if( typeof key === 'string' ){
             element._state[key] = value
         }else{
             element._state = Object.assign(element._state, key)

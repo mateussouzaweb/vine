@@ -126,7 +126,7 @@ export async function removeComponent(selector: string) {
     var index = null
 
     _components.forEach(function (theComponent, theIndex) {
-        if (theComponent.selector == selector) {
+        if (theComponent.selector === selector) {
             component = theComponent
             index = theIndex
         }

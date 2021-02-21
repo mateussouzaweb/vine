@@ -1,5 +1,5 @@
-import {fakePromise, promises} from '../core/promise'
-import {$$$} from '../core/selector'
+import { fakePromise, promises } from '../core/promise'
+import { $$$ } from '../core/selector'
 
 export interface ComponentElement extends HTMLElement {
     _components: Object
@@ -51,7 +51,7 @@ var _abstractComponent = {
  * Extend component declaration
  * @param definition
  */
-export function extendComponent(definition: Object){
+export function extendComponent(definition: Object) {
     Object.assign(_abstractComponent, definition)
 }
 
@@ -60,7 +60,7 @@ export function extendComponent(definition: Object){
  * @param target
  * @param callback
  */
-export function eachComponent(target: HTMLElement|HTMLDocument, callback: ComponentCallback) {
+export function eachComponent(target: HTMLElement | HTMLDocument, callback: ComponentCallback) {
     _components.forEach(function (declaration) {
         var items = $$$(declaration.selector, target) as ComponentElement[]
         items.forEach(function (element) {
@@ -96,7 +96,7 @@ export async function component(selector: string, data: Object): Promise<Compone
 
     component.selector = selector
 
-    if( !component.namespace ){
+    if (!component.namespace) {
         component.namespace = selector.replace(/[\W_]+/g, '_')
     }
 

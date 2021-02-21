@@ -1,9 +1,9 @@
-import {fakePromise, promises} from '../core/promise'
-import {extendComponent} from './component'
-import {mount, afterMount} from './mount'
-import {template} from '../core/template'
-import {hook} from '../core/utils'
-import type {Component} from './component'
+import { fakePromise, promises } from '../core/promise'
+import { extendComponent } from './component'
+import { mount, afterMount } from './mount'
+import { template } from '../core/template'
+import { hook } from '../core/utils'
+import type { Component } from './component'
 import { destroy } from './destroy'
 
 export interface RenderableComponent extends Component {
@@ -25,11 +25,11 @@ extendComponent({
     /**
      * Component render template
      */
-    renderTemplate: async function(){
+    renderTemplate: async function () {
 
         var _template = await this.template()
 
-        if ( _template === undefined || _template === false ){
+        if (_template === undefined || _template === false) {
             return
         }
 
@@ -46,7 +46,7 @@ extendComponent({
     /**
      * Component should render
      */
-    shouldRender: async function(){
+    shouldRender: async function () {
         return true
     },
 
@@ -69,16 +69,16 @@ extendComponent({
      * Component render
      * @param state
      */
-    render: async function(state?: Object){
+    render: async function (state?: Object) {
 
-        if( state !== undefined ){
+        if (state !== undefined) {
             this.set(state)
         }
 
         var component = this as RenderableComponent
         var pass = await component.shouldRender()
 
-        if( !pass ){
+        if (!pass) {
             return
         }
 
@@ -127,6 +127,6 @@ export function afterRender(callback: Function) {
 }
 
 // API
-afterMount(async function(){
+afterMount(async function () {
     return this.render()
 })

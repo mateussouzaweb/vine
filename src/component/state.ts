@@ -1,4 +1,4 @@
-import {extendComponent} from './component'
+import { extendComponent } from './component'
 
 extendComponent({
 
@@ -7,13 +7,13 @@ extendComponent({
      * @param key
      * @param value
      */
-    set: function (key: string|Object, value?: any) {
+    set: function (key: string | Object, value?: any) {
 
         var element = this.element
 
-        if( typeof key === 'string' ){
+        if (typeof key === 'string') {
             element._state[key] = value
-        }else{
+        } else {
             element._state = Object.assign(element._state, key)
         }
 
@@ -34,7 +34,7 @@ extendComponent({
         }
 
         var value = element._state[key]
-            value = (value === undefined) ? _default : value
+        value = (value === undefined) ? _default : value
 
         return value
     }

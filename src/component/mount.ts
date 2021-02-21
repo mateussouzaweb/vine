@@ -1,7 +1,7 @@
-import {fakePromise, promises} from '../core/promise'
-import {eachComponent, extendComponent} from './component'
-import {hook} from '../core/utils'
-import type {Component} from './component'
+import { fakePromise, promises } from '../core/promise'
+import { eachComponent, extendComponent } from './component'
+import { hook } from '../core/utils'
+import type { Component } from './component'
 
 export interface MountableComponent extends Component {
     beforeMount: Function
@@ -48,7 +48,7 @@ export function afterMount(callback: Function) {
  * Mount components on given target child elements
  * @param target
  */
-export async function mount(target: HTMLElement|HTMLDocument): Promise<HTMLElement|HTMLDocument> {
+export async function mount(target: HTMLElement | HTMLDocument): Promise<HTMLElement | HTMLDocument> {
 
     var callbacks = []
 
@@ -61,13 +61,13 @@ export async function mount(target: HTMLElement|HTMLDocument): Promise<HTMLEleme
             return
         }
 
-        if( !element.dataset.vid ){
+        if (!element.dataset.vid) {
             element.dataset.vid = Math.random().toString(16).substr(2, 8)
         }
 
         // Clone component to this element
         var component = Object.assign({}, declaration) as MountableComponent
-            component.element = element
+        component.element = element
 
         element._components[key] = component
 

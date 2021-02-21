@@ -7,7 +7,7 @@ var _helpers = {}
  * @param key
  * @param callback
  */
-export function helper(key: string, callback?: Function){
+export function helper(key: string, callback?: Function) {
     _helpers[key] = callback
 }
 
@@ -51,9 +51,9 @@ function loops(line: string): string {
 function variables(line: string): Array<string> {
 
     var vars = []
-    var add = function(regex: RegExp){
+    var add = function (regex: RegExp) {
         var match = line.match(regex);
-        if( match ){
+        if (match) {
             vars.push(match[1])
         }
     }
@@ -104,13 +104,13 @@ export function template(template: string, data?: Object): string {
 
     data = Object.assign({}, _helpers, data || {})
 
-    each(data, function(_value, index){
+    each(data, function (_value, index) {
         parser.push('var ' + index + ' = this["' + index + '"];')
     });
 
     parser.push('var r = [];')
 
-    while( (match = tagRegex.exec(template)) ){
+    while ((match = tagRegex.exec(template))) {
 
         line = clean(match[0])
         line = conditions(line)
@@ -120,13 +120,13 @@ export function template(template: string, data?: Object): string {
         cursor = match.index + match[0].length
         parser.push('r.push(`' + before.replace(/"/g, '\\"') + '`);')
 
-        variables(line).filter(function(value){
-            if( data[value] === undefined ) {
+        variables(line).filter(function (value) {
+            if (data[value] === undefined) {
                 parser.push('var ' + value + ';')
             }
         })
 
-        parser.push( line.match(/^(}|{|for\(|if\()/) ? line : 'r.push(' + line + ');' )
+        parser.push(line.match(/^(}|{|for\(|if\()/) ? line : 'r.push(' + line + ');')
 
     }
 
@@ -136,9 +136,9 @@ export function template(template: string, data?: Object): string {
 
     var code = parser.join("\n")
 
-    try{
+    try {
         var result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
-    } catch(error){
+    } catch (error) {
         console.warn('[V] template parser error:', template, error)
     }
 

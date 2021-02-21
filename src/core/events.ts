@@ -1,4 +1,4 @@
-import {$$$} from './selector'
+import { $$$ } from './selector'
 
 /**
  * Attach event to element
@@ -8,7 +8,7 @@ import {$$$} from './selector'
  * @param selector
  * @param callback
  */
-function _event(action: "add" | "remove", element: any, event: string, selector: string|Function, callback?: Function): Function {
+function _event(action: "add" | "remove", element: any, event: string, selector: string | Function, callback?: Function): Function {
 
     var items = $$$(element)
     var events = event.split(' ')
@@ -63,7 +63,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
  * @param selector
  * @param callback
  */
-export function on(element: any, event: string, selector: string|Function, callback?: Function): Function {
+export function on(element: any, event: string, selector: string | Function, callback?: Function): Function {
     return _event('add', element, event, selector, callback)
 }
 
@@ -74,7 +74,7 @@ export function on(element: any, event: string, selector: string|Function, callb
  * @param selector
  * @param callback
  */
-export function off(element: any, event: string, selector: string|Function, callback?: Function): Function {
+export function off(element: any, event: string, selector: string | Function, callback?: Function): Function {
     return _event('remove', element, event, selector, callback)
 }
 

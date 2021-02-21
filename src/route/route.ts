@@ -1,6 +1,6 @@
-import {on} from "../core/events";
-import {promises} from "../core/promise"
-import {hook} from "../core/utils"
+import { on } from "../core/events";
+import { promises } from "../core/promise"
+import { hook } from "../core/utils"
 
 interface AbstractRoute {
     path: string,
@@ -113,7 +113,7 @@ function normalizePath(path: string, removeQuery?: boolean): string {
     path = path.replace(new RegExp('^[/]*'), '')
     path = ('/' + path).replace('//', '/').replace('/?', '?')
 
-    if( removeQuery ){
+    if (removeQuery) {
         path = path.split('?')[0]
     }
 
@@ -125,7 +125,7 @@ function normalizePath(path: string, removeQuery?: boolean): string {
  * @param path
  * @param match
  */
-function paramsFor(path: string, match: {path: string}): Object {
+function paramsFor(path: string, match: { path: string }): Object {
 
     var params = {}
 
@@ -154,8 +154,8 @@ function paramsFor(path: string, match: {path: string}): Object {
 function queryFor(location: string): Object {
 
     var query = {}
-    var search = ( location.indexOf('?') !== -1 ) ? location.split('?')[1] : ''
-        search = String(search).trim().replace(/^(\?|#|&)/, '')
+    var search = (location.indexOf('?') !== -1) ? location.split('?')[1] : ''
+    search = String(search).trim().replace(/^(\?|#|&)/, '')
 
     if (search === '') {
         return query
@@ -196,7 +196,7 @@ export function afterChange(callback: Function) {
  * Add route to routes
  * @param definition
  */
-export function add(definition: Array<Object>|Object) {
+export function add(definition: Array<Object> | Object) {
 
     if (Array.isArray(definition)) {
         return definition.forEach(function (item) {
@@ -234,12 +234,12 @@ export function add(definition: Array<Object>|Object) {
  */
 export async function change(location: string, replace?: boolean) {
 
-    var routeChange = function(){
+    var routeChange = function () {
 
-        if( this.replace ){
+        if (this.replace) {
             options.prevent = true
 
-            if( options.mode === 'history' ){
+            if (options.mode === 'history') {
                 history.pushState({}, null, this.location)
             } else {
                 window.location.hash = this.location
@@ -250,7 +250,7 @@ export async function change(location: string, replace?: boolean) {
 
         var next = this.next
 
-        if( !next ){
+        if (!next) {
             return _active = null
         }
 
@@ -294,7 +294,7 @@ export async function change(location: string, replace?: boolean) {
  * Match the route based on given path
  * @param path
  */
-export function match(path: string): null|Object {
+export function match(path: string): null | Object {
 
     var url = normalizePath(path, true)
     var match = null
@@ -330,7 +330,7 @@ export function redirect(toLocation: string) {
  * Navigate on history
  * @param delta
  */
-export function go(delta?: number){
+export function go(delta?: number) {
     window.history.go(delta)
 }
 
@@ -339,7 +339,7 @@ export function go(delta?: number){
  * @param delta
  */
 export function forward(delta?: number) {
-    go( delta === undefined ? 1 : delta )
+    go(delta === undefined ? 1 : delta)
 }
 
 /**
@@ -347,19 +347,19 @@ export function forward(delta?: number) {
  * @param delta
  */
 export function back(delta?: number) {
-    go( delta === undefined ? -1 : delta )
+    go(delta === undefined ? -1 : delta)
 }
 
 /**
  * Execute route change on popstate event
  */
-function popstate(){
+function popstate() {
 
-    if( options.prevent ){
+    if (options.prevent) {
         return
     }
 
-    var path = ( options.mode === 'hash' )
+    var path = (options.mode === 'hash')
         ? window.location.hash.replace('#', '')
         : window.location.href
 
@@ -371,12 +371,12 @@ function popstate(){
  * Execute route change on link click event
  * @param event
  */
-function linkClick(event: KeyboardEvent){
+function linkClick(event: KeyboardEvent) {
 
     var link = (event.target as HTMLAnchorElement).closest('a')
     var location = window.location
 
-    var stripHash = function (location: Location|HTMLAnchorElement): String {
+    var stripHash = function (location: Location | HTMLAnchorElement): String {
         return location.href.replace(/#.*/, '')
     }
 
@@ -406,7 +406,7 @@ function linkClick(event: KeyboardEvent){
     // Ignore when opening a new or in the same tab
     // _blank, _self, ...
     if (link.target
-        && link.target !== ''){
+        && link.target !== '') {
         return
     }
 
@@ -423,7 +423,7 @@ function linkClick(event: KeyboardEvent){
 /**
  * Attach events route automation
  */
-export function attachEvents(){
+export function attachEvents() {
 
     on(window, 'popstate', popstate)
     on(document, 'click', 'a', linkClick)

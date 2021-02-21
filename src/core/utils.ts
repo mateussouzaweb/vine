@@ -1,5 +1,5 @@
-type ArrayOrObject = Array<any>|Object
-type EachCallback = (value: any, index: number|string, data: ArrayOrObject) => void
+type ArrayOrObject = Array<any> | Object
+type EachCallback = (value: any, index: number | string, data: ArrayOrObject) => void
 
 var _hooks = [];
 
@@ -10,8 +10,8 @@ var _hooks = [];
  */
 export function hook(event: string, callback?: Function) {
 
-    if( callback === undefined ){
-        return ( _hooks[event] ) ? _hooks[event] : []
+    if (callback === undefined) {
+        return (_hooks[event]) ? _hooks[event] : []
     }
 
     _hooks[event] = _hooks[event] || []
@@ -24,7 +24,7 @@ export function hook(event: string, callback?: Function) {
  * @param items
  * @param callback
  */
-export function each(items: ArrayOrObject, callback: EachCallback){
+export function each(items: ArrayOrObject, callback: EachCallback) {
 
     if (Array.isArray(items)) {
         return items.forEach(callback)

@@ -1,5 +1,5 @@
-type Context = HTMLElement|HTMLDocument
-type SelectorContext = string|HTMLElement|HTMLDocument
+type Context = HTMLElement | HTMLDocument
+type SelectorContext = string | HTMLElement | HTMLDocument
 
 /**
  * Retrieve the resolved valid context

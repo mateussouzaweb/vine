@@ -1,5 +1,5 @@
-import {extendComponent} from './component'
-import {on, off, trigger} from '../core/events'
+import { extendComponent } from './component'
+import { on, off, trigger } from '../core/events'
 
 extendComponent({
 
@@ -9,7 +9,7 @@ extendComponent({
      * @param selector
      * @param callback
      */
-    on: function (event: string, selector: string|Function, callback?: Function) {
+    on: function (event: string, selector: string | Function, callback?: Function) {
 
         var self = this
         var element = self.element
@@ -23,7 +23,7 @@ extendComponent({
 
         var eventId = event + '-' + selector
         var vid = element.dataset.vid
-            vid = '[data-vid="' + vid + '"]'
+        vid = '[data-vid="' + vid + '"]'
 
         var fn = function (e: Event) {
 
@@ -76,7 +76,7 @@ extendComponent({
      * @param event
      * @param selector
      */
-    trigger: function(event: string, selector?: any) {
+    trigger: function (event: string, selector?: any) {
 
         var self = this
 

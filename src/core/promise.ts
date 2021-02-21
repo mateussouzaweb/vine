@@ -1,7 +1,7 @@
 /**
  * Simple fake promise
  */
-export async function fakePromise() {}
+export async function fakePromise() { }
 
 /**
  * Take a normal function callback and make it async
@@ -27,7 +27,7 @@ export async function promises(scope: Object, callbacks: Array<() => void>): Pro
     var promises = []
 
     for (let index = 0; index < callbacks.length; index++) {
-        if( typeof callbacks[index] === 'function' ){
+        if (typeof callbacks[index] === 'function') {
             promises.push(
                 promisify(scope, callbacks[index])
             )

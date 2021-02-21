@@ -42,8 +42,8 @@ export function set(name: string, value: any) {
 export function get(name: string, _default: any): any {
 
     var value = _store[name]
-        value = (value === undefined) ? local.get(name) : value
-        value = (value === undefined) ? _default : value
+    value = (value === undefined) ? local.get(name) : value
+    value = (value === undefined) ? _default : value
 
     return value
 }
@@ -71,7 +71,7 @@ export const local = {
      * @param name
      * @param value
      */
-    set: function(name: string, value: string|Object): void {
+    set: function (name: string, value: string | Object): void {
         localStorage.setItem(name, _compress(value))
     },
 
@@ -80,11 +80,11 @@ export const local = {
      * @param name
      * @param _default
      */
-    get: function(name: string, _default?: any): string|Object {
+    get: function (name: string, _default?: any): string | Object {
 
         var value = localStorage.getItem(name)
-            value = _decompress(value)
-            value = (value === undefined) ? _default : value
+        value = _decompress(value)
+        value = (value === undefined) ? _default : value
 
         return value
     },
@@ -93,14 +93,14 @@ export const local = {
      * Remove item of localStorage
      * @param name
      */
-    remove: function(name: string): void {
+    remove: function (name: string): void {
         localStorage.removeItem(name)
     },
 
     /**
      * Retrieve all items at localStorage
      */
-    items: function(): Object {
+    items: function (): Object {
         return localStorage
     }
 
@@ -114,7 +114,7 @@ export const session = {
      * @param name
      * @param value
      */
-    set: function(name: string, value: string|Object): void {
+    set: function (name: string, value: string | Object): void {
         sessionStorage.setItem(name, _compress(value))
     },
 
@@ -123,11 +123,11 @@ export const session = {
      * @param name
      * @param _default
      */
-    get: function(name: string, _default?: any): string|Object {
+    get: function (name: string, _default?: any): string | Object {
 
         var value = sessionStorage.getItem(name)
-            value = _decompress(value)
-            value = (value === undefined) ? _default : value
+        value = _decompress(value)
+        value = (value === undefined) ? _default : value
 
         return value
     },
@@ -136,14 +136,14 @@ export const session = {
      * Remove item of sessionStorage
      * @param name
      */
-    remove: function(name: string): void {
+    remove: function (name: string): void {
         sessionStorage.removeItem(name)
     },
 
     /**
      * Retrieve all items at sessionStorage
      */
-    items: function(): Object {
+    items: function (): Object {
         return sessionStorage
     }
 

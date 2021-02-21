@@ -1,7 +1,7 @@
-import {fakePromise, promises} from '../core/promise'
-import {eachComponent, extendComponent} from './component'
-import {hook} from '../core/utils'
-import type {Component} from './component'
+import { fakePromise, promises } from '../core/promise'
+import { eachComponent, extendComponent } from './component'
+import { hook } from '../core/utils'
+import type { Component } from './component'
 
 export interface DestroyableComponent extends Component {
     beforeDestroy: Function

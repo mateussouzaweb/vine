@@ -1,5 +1,5 @@
-import {promises} from "../core/promise"
-import {hook} from "../core/utils"
+import { promises } from "../core/promise"
+import { hook } from "../core/utils"
 
 interface RequestObject extends RequestInit {
     method: string
@@ -49,10 +49,10 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
     if (options.method != 'GET') {
 
-        if( options.body === undefined || options.body === null ){
+        if (options.body === undefined || options.body === null) {
             options.body = request.data
 
-            if( options.body instanceof FormData === false ){
+            if (options.body instanceof FormData === false) {
                 options.body = JSON.stringify(options.body)
                 options.headers['Content-Type'] = 'application/json; charset=utf8'
             }
@@ -62,9 +62,9 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
         var query = ''
 
-        if( typeof request.data === 'string' ){
+        if (typeof request.data === 'string') {
             query = request.data
-        }else if( request.data ){
+        } else if (request.data) {
             query = Object.keys(request.data).map(function (k) {
                 var _k = encodeURIComponent(k)
                 var _v = encodeURIComponent(request.data[k])
@@ -83,7 +83,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
     try {
         var json = JSON.parse(body)
-            body = json
+        body = json
     } catch (error) {
     }
 

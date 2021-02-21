@@ -4,6 +4,7 @@ import {mount, afterMount} from './mount'
 import {template} from '../core/template'
 import {hook} from '../core/utils'
 import type {Component} from './component'
+import { destroy } from './destroy'
 
 export interface RenderableComponent extends Component {
     template: Function
@@ -82,6 +83,9 @@ extendComponent({
         }
 
         try {
+
+            // Destroy existing child elements
+            await destroy(component.element)
 
             var callbacks = [].concat(
                 hook('componentBeforeRender'),

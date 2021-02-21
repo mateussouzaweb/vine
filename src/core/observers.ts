@@ -13,7 +13,7 @@ export function watch(theEvent: string, callback: Function): void {
     var event = split.shift()
     var namespace = split.join('.')
 
-    _watches.push([namespace, event, callback])
+    _watches.push([event, namespace, callback])
 
 }
 
@@ -29,12 +29,11 @@ export function unwatch(theEvent: string, callback?: Function): void {
     var namespace = split.join('.')
 
     _watches = _watches.filter(function (watcher: Function) {
-
-        var pass = (namespace !== undefined) ? namespace !== watcher[0] : true
-        pass = pass && (event !== undefined) ? event !== watcher[1] : true
-        pass = pass && (callback !== undefined) ? callback !== watcher[2] : true
-
-        return pass
+        return Boolean(
+            (event ? event !== watcher[0] : true)
+            && (namespace ? namespace !== watcher[1] : true)
+            && (callback !== undefined ? callback !== watcher[2] : true)
+        )
     })
 
 }
@@ -52,14 +51,10 @@ export function fire(theEvent: string, data?: any): Promise<any> {
     var promises = []
 
     _watches.forEach(function (watcher: Function) {
-
-        var pass = (namespace !== undefined) ? namespace === watcher[0] : true
-        pass = pass && (event !== undefined) ? event === watcher[1] : true
-
-        if (pass) {
-            promises.push(promisify(watcher[2], data))
+        if ((event ? event === watcher[0] : true)
+            && (namespace ? namespace === watcher[1] : true)) {
+            promises.push(promisify({}, watcher[2], [data]))
         }
-
     })
 
     return Promise.all(promises)

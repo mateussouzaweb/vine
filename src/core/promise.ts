@@ -7,10 +7,11 @@ export async function fakePromise() {}
  * Take a normal function callback and make it async
  * @param scope
  * @param callback
+ * @param data
  */
-export async function promisify(scope: Object, callback: () => void) {
+export async function promisify(scope: Object, callback: () => void, data?: any) {
     try {
-        return await callback.apply(scope)
+        return await callback.apply(scope, data)
     } catch (error) {
         return Promise.reject(error)
     }

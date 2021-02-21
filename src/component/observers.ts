@@ -20,7 +20,7 @@ extendComponent({
      * @param callback
      */
     unwatch: function (event?: string, callback?: Function): void {
-        var key = [String(event), this.namespace, this.element.dataset.vid].join('.')
+        var key = [event, this.namespace, this.element.dataset.vid].join('.')
         return unwatch(key, callback)
     },
 

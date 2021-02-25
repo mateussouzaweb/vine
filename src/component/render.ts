@@ -39,7 +39,7 @@ extendComponent({
             variables
         )
 
-        this.element.innerHTML = result;
+        this.element.innerHTML = result
 
     },
 

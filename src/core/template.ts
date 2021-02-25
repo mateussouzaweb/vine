@@ -52,7 +52,7 @@ function variables(line: string): Array<string> {
 
     var vars = []
     var add = function (regex: RegExp) {
-        var match = line.match(regex);
+        var match = line.match(regex)
         if (match) {
             vars.push(match[1])
         }
@@ -106,7 +106,7 @@ export function template(template: string, data?: Object): string {
 
     each(data, function (_value, index) {
         parser.push('var ' + index + ' = this["' + index + '"];')
-    });
+    })
 
     parser.push('var r = [];')
 

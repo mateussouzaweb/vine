@@ -8,13 +8,13 @@ export * from "./core/observers"
 export * from "./core/promise"
 export * from "./core/template"
 
-export * from "./component/component";
-export * from "./component/destroy";
-export * from "./component/events";
-export * from "./component/observers";
-export * from "./component/mount";
-export * from "./component/render";
-export * from "./component/state";
+export * from "./component/component"
+export * from "./component/destroy"
+export * from "./component/events"
+export * from "./component/observers"
+export * from "./component/mount"
+export * from "./component/render"
+export * from "./component/state"
 
 export * as http from "./http/http"
 export * as route from "./route/route"

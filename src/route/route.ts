@@ -1,4 +1,4 @@
-import { on } from "../core/events";
+import { on } from "../core/events"
 import { promises } from "../core/promise"
 import { hook } from "../core/utils"
 
@@ -79,7 +79,7 @@ var _abstractRoute: AbstractRoute = {
 }
 
 var _routes = []
-var _active = _abstractRoute;
+var _active = _abstractRoute
 
 export var options = {
 

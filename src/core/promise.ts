@@ -9,7 +9,7 @@ export async function fakePromise() { }
  * @param callback
  * @param data
  */
-export async function promisify(scope: Object, callback: () => void, data?: any) {
+export async function promisify(scope: Object, callback: VoidFunction, data?: any) {
     try {
         return await callback.apply(scope, data)
     } catch (error) {
@@ -22,7 +22,7 @@ export async function promisify(scope: Object, callback: () => void, data?: any)
  * @param scope
  * @param callbacks
  */
-export async function promises(scope: Object, callbacks: Array<() => void>): Promise<Object> {
+export async function promises(scope: Object, callbacks: Array<VoidFunction>): Promise<Object> {
 
     var promises = []
 

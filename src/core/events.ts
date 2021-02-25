@@ -1,4 +1,7 @@
 import { $$$ } from './selector'
+import { NamespaceEvent, namespaceEvent } from './utils'
+
+var _events = []
 
 /**
  * Attach event to element
@@ -10,8 +13,17 @@ import { $$$ } from './selector'
  */
 function _event(action: "add" | "remove", element: any, event: string, selector: string | Function, callback?: Function): Function {
 
-    var items = $$$(element)
     var events = event.split(' ')
+
+    // Multi events
+    if( events.length > 1 ){
+        for (var i = 0; i < events.length; i++) {
+            _event(action, element, events[i], selector, callback)
+        }
+        return
+    }
+
+    var items = $$$(element)
     var handler: Function
 
     // Determine handler
@@ -24,34 +36,53 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
     } else {
 
         // Delegated
-        handler = function (e: Event) {
-            var target = (e.target as HTMLElement).closest(<string>selector)
+        handler = function (_event: Event) {
+            var target = (_event.target as HTMLElement).closest(<string>selector)
             if (target) {
-                callback.apply(target, [e])
+                callback.apply(target, [_event])
             }
         }
 
     }
 
-    items.forEach(function (item) {
-        for (var i = 0; i < events.length; i++) {
+    var theEvent = namespaceEvent(event, handler)
 
-            if (action === 'add') {
-                item.addEventListener(
-                    events[i],
-                    handler.bind(item),
-                    false
-                )
-            } else {
-                item.removeEventListener(
-                    events[i],
-                    handler.bind(item),
-                    false
-                )
+    if (action === 'add') {
+
+        _events.push(theEvent)
+
+        items.forEach(function (item) {
+            item.addEventListener(
+                theEvent.event,
+                theEvent.callback.bind(item),
+                false
+            )
+        })
+
+    } else {
+
+        _events = _events.filter(function (watcher: NamespaceEvent) {
+
+            var pass = Boolean(
+                (theEvent.event ? theEvent.event !== watcher.event : true)
+                && (theEvent.namespace ? theEvent.namespace !== watcher.namespace : true)
+                && (typeof handler === 'function' ? handler !== watcher.callback : true)
+            )
+
+            if( !pass ){
+                items.forEach(function (item) {
+                    item.removeEventListener(
+                        watcher.event,
+                        watcher.callback.bind(item),
+                        false
+                    )
+                })
             }
 
-        }
-    })
+            return pass
+        })
+
+    }
 
     return handler
 }
@@ -82,10 +113,11 @@ export function off(element: any, event: string, selector: string | Function, ca
  * Trigger event on element
  * @param element
  * @param event
+ * @param selector
  */
-export function trigger(element: any, event: string) {
+export function trigger(element: any, event: string, selector?: string): void {
 
-    var items = $$$(element)
+    var items = (selector) ? $$$(selector, element) : $$$(element)
     var theEvent = document.createEvent('HTMLEvents')
 
     theEvent.initEvent(event, true, true)

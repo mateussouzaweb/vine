@@ -10,8 +10,8 @@ extendComponent({
      * @param callback
      */
     watch: function (event: string, callback: Function): void {
-        var key = [event, this.namespace, this.element.dataset.vid].join('.')
-        return watch(key, callback)
+        var eventID = [event, this.namespace, this.element.dataset.vid].join('.')
+        return watch(eventID, callback)
     },
 
     /**
@@ -20,8 +20,8 @@ extendComponent({
      * @param callback
      */
     unwatch: function (event?: string, callback?: Function): void {
-        var key = [event, this.namespace, this.element.dataset.vid].join('.')
-        return unwatch(key, callback)
+        var eventID = [event, this.namespace, this.element.dataset.vid].join('.')
+        return unwatch(eventID, callback)
     },
 
     /**
@@ -30,7 +30,8 @@ extendComponent({
      * @param data
      */
     fire: function (event: string, data: any): Promise<any> {
-        return fire(event, data)
+        var eventID = [event, this.namespace, this.element.dataset.vid].join('.')
+        return fire(eventID, data)
     }
 
 })

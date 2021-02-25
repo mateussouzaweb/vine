@@ -1,4 +1,5 @@
 import { promisify } from "./promise"
+import { NamespaceEvent, namespaceEvent } from "./utils"
 
 var _watches = []
 
@@ -8,13 +9,7 @@ var _watches = []
  * @param callback
  */
 export function watch(theEvent: string, callback: Function): void {
-
-    var split = theEvent.split('.')
-    var event = split.shift()
-    var namespace = split.join('.')
-
-    _watches.push([event, namespace, callback])
-
+    _watches.push(namespaceEvent(theEvent, callback))
 }
 
 /**
@@ -24,15 +19,13 @@ export function watch(theEvent: string, callback: Function): void {
  */
 export function unwatch(theEvent: string, callback?: Function): void {
 
-    var split = theEvent.split('.')
-    var event = split.shift()
-    var namespace = split.join('.')
+    var event = namespaceEvent(theEvent, callback)
 
-    _watches = _watches.filter(function (watcher: Function) {
+    _watches = _watches.filter(function (watcher: NamespaceEvent) {
         return Boolean(
-            (event ? event !== watcher[0] : true)
-            && (namespace ? namespace !== watcher[1] : true)
-            && (callback !== undefined ? callback !== watcher[2] : true)
+            (event.event ? event.event !== watcher.event : true)
+            && (event.namespace ? event.namespace !== watcher.namespace : true)
+            && (event.callback !== undefined ? event.callback !== watcher.callback : true)
         )
     })
 
@@ -45,15 +38,13 @@ export function unwatch(theEvent: string, callback?: Function): void {
  */
 export function fire(theEvent: string, data?: any): Promise<any> {
 
-    var split = theEvent.split('.')
-    var event = split.shift()
-    var namespace = split.join('.')
+    var event = namespaceEvent(theEvent)
     var promises = []
 
-    _watches.forEach(function (watcher: Function) {
-        if ((event ? event === watcher[0] : true)
-            && (namespace ? namespace === watcher[1] : true)) {
-            promises.push(promisify({}, watcher[2], [data]))
+    _watches.forEach(function (watcher: NamespaceEvent) {
+        if ((event.event ? event.event === watcher.event : true)
+            && (event.namespace ? event.namespace === watcher.namespace : true)) {
+            promises.push(promisify({}, watcher.callback, [data]))
         }
     })
 

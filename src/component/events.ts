@@ -1,5 +1,6 @@
 import { extendComponent } from './component'
 import { on, off, trigger } from '../core/events'
+import { beforeDestroy } from './destroy'
 
 extendComponent({
 
@@ -9,38 +10,17 @@ extendComponent({
      * @param selector
      * @param callback
      */
-    on: function (event: string, selector: string | Function, callback?: Function) {
-
-        var self = this
-        var element = self.element
+    on: function (event: string, selector: string | Function, callback?: Function): Function {
 
         if (callback === undefined) {
             callback = selector as Function
-            selector = self.selector
-        } else {
-            selector = self.selector + ' ' + selector
+            selector = ''
         }
 
-        var eventId = event + '-' + selector
-        var vid = element.dataset.vid
-        vid = '[data-vid="' + vid + '"]'
+        var element = this.element
+        var eventID = [event, this.namespace, element.dataset.vid].join('.')
 
-        var fn = function (e: Event) {
-
-            var element = (e.target as HTMLElement).closest(vid)
-
-            if (!element) {
-                return
-            }
-
-            callback.apply((e.target as HTMLElement).closest(selector as string), [e])
-
-        }
-
-        element._events[eventId] = on(
-            document, event, selector, fn
-        )
-
+        return on(element, eventID, selector, callback)
     },
 
     /**
@@ -48,27 +28,12 @@ extendComponent({
      * @param event
      * @param selector
      */
-    off: function (event: string, selector?: string) {
+    off: function (event?: string, selector?: string): Function {
 
-        var self = this
-        var element = self.element
+        var element = this.element
+        var eventID = [event, this.namespace, element.dataset.vid].join('.')
 
-        if (selector) {
-            selector = self.selector + ' ' + selector
-        } else {
-            selector = self.selector
-        }
-
-        var eventId = event + '-' + selector
-        var fn = element._events[eventId]
-
-        if (!fn) {
-            return
-        }
-
-        delete element._events[eventId]
-        off(document, event, selector, fn)
-
+        return off(element, eventID, selector)
     },
 
     /**
@@ -76,18 +41,17 @@ extendComponent({
      * @param event
      * @param selector
      */
-    trigger: function (event: string, selector?: any) {
+    trigger: function (event: string, selector?: any): void {
 
-        var self = this
+        var element = this.element
+        var eventID = [event, this.namespace, element.dataset.vid].join('.')
 
-        if (selector) {
-            selector = self.selector + ' ' + selector
-        } else {
-            selector = self.selector
-        }
-
-        trigger(selector, event)
-
+        return trigger(element, eventID, selector)
     }
 
+})
+
+// API
+beforeDestroy(async function () {
+    return this.off()
 })

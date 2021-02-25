@@ -1,7 +1,14 @@
 type ArrayOrObject = Array<any> | Object
 type EachCallback = (value: any, index: number | string, data: ArrayOrObject) => void
 
-var _hooks = [];
+export interface NamespaceEvent {
+    event: string
+    namespace: string
+    complete: string,
+    callback?: VoidFunction
+}
+
+var _hooks = []
 
 /**
  * Add hook or retrieve hooks for event
@@ -35,4 +42,22 @@ export function each(items: ArrayOrObject, callback: EachCallback) {
         callback(items[key], key, items)
     }
 
+}
+
+/**
+ * Split event into event and namespace
+ * @param theEvent
+ * @param callback
+ */
+export function namespaceEvent(theEvent: string, callback?: Function): NamespaceEvent {
+
+    var split = theEvent.split('.')
+    var event = split.shift()
+    var namespace = split.join('.')
+
+    return {
+        event: event,
+        namespace: namespace,
+        callback: callback
+    } as NamespaceEvent
 }

@@ -18,6 +18,16 @@ var V = (function (exports) {
             callback(items[key], key, items);
         }
     }
+    function namespaceEvent(theEvent, callback) {
+        var split = theEvent.split('.');
+        var event = split.shift();
+        var namespace = split.join('.');
+        return {
+            event: event,
+            namespace: namespace,
+            callback: callback
+        };
+    }
 
     function getContext(context) {
         context = (typeof context === 'string') ? $(context) : context;
@@ -52,32 +62,49 @@ var V = (function (exports) {
         return items;
     }
 
+    var _events = [];
     function _event(action, element, event, selector, callback) {
-        var items = $$$(element);
         var events = event.split(' ');
+        if (events.length > 1) {
+            for (var i = 0; i < events.length; i++) {
+                _event(action, element, events[i], selector, callback);
+            }
+            return;
+        }
+        var items = $$$(element);
         var handler;
         if (callback === undefined) {
             handler = selector;
             selector = null;
         }
         else {
-            handler = function (e) {
-                var target = e.target.closest(selector);
+            handler = function (_event) {
+                var target = _event.target.closest(selector);
                 if (target) {
-                    callback.apply(target, [e]);
+                    callback.apply(target, [_event]);
                 }
             };
         }
-        items.forEach(function (item) {
-            for (var i = 0; i < events.length; i++) {
-                if (action === 'add') {
-                    item.addEventListener(events[i], handler.bind(item), false);
+        var theEvent = namespaceEvent(event, handler);
+        if (action === 'add') {
+            _events.push(theEvent);
+            items.forEach(function (item) {
+                item.addEventListener(theEvent.event, theEvent.callback.bind(item), false);
+            });
+        }
+        else {
+            _events = _events.filter(function (watcher) {
+                var pass = Boolean((theEvent.event ? theEvent.event !== watcher.event : true)
+                    && (theEvent.namespace ? theEvent.namespace !== watcher.namespace : true)
+                    && (typeof handler === 'function' ? handler !== watcher.callback : true));
+                if (!pass) {
+                    items.forEach(function (item) {
+                        item.removeEventListener(watcher.event, watcher.callback.bind(item), false);
+                    });
                 }
-                else {
-                    item.removeEventListener(events[i], handler.bind(item), false);
-                }
-            }
-        });
+                return pass;
+            });
+        }
         return handler;
     }
     function on(element, event, selector, callback) {
@@ -86,8 +113,8 @@ var V = (function (exports) {
     function off(element, event, selector, callback) {
         return _event('remove', element, event, selector, callback);
     }
-    function trigger(element, event) {
-        var items = $$$(element);
+    function trigger(element, event, selector) {
+        var items = (selector) ? $$$(selector, element) : $$$(element);
         var theEvent = document.createEvent('HTMLEvents');
         theEvent.initEvent(event, true, true);
         items.forEach(function (item) {
@@ -117,30 +144,23 @@ var V = (function (exports) {
 
     var _watches = [];
     function watch(theEvent, callback) {
-        var split = theEvent.split('.');
-        var event = split.shift();
-        var namespace = split.join('.');
-        _watches.push([event, namespace, callback]);
+        _watches.push(namespaceEvent(theEvent, callback));
     }
     function unwatch(theEvent, callback) {
-        var split = theEvent.split('.');
-        var event = split.shift();
-        var namespace = split.join('.');
+        var event = namespaceEvent(theEvent, callback);
         _watches = _watches.filter(function (watcher) {
-            return Boolean((event ? event !== watcher[0] : true)
-                && (namespace ? namespace !== watcher[1] : true)
-                && (callback !== undefined ? callback !== watcher[2] : true));
+            return Boolean((event.event ? event.event !== watcher.event : true)
+                && (event.namespace ? event.namespace !== watcher.namespace : true)
+                && (event.callback !== undefined ? event.callback !== watcher.callback : true));
         });
     }
     function fire(theEvent, data) {
-        var split = theEvent.split('.');
-        var event = split.shift();
-        var namespace = split.join('.');
+        var event = namespaceEvent(theEvent);
         var promises = [];
         _watches.forEach(function (watcher) {
-            if ((event ? event === watcher[0] : true)
-                && (namespace ? namespace === watcher[1] : true)) {
-                promises.push(promisify({}, watcher[2], [data]));
+            if ((event.event ? event.event === watcher.event : true)
+                && (event.namespace ? event.namespace === watcher.namespace : true)) {
+                promises.push(promisify({}, watcher.callback, [data]));
             }
         });
         return Promise.all(promises);
@@ -318,67 +338,41 @@ var V = (function (exports) {
 
     extendComponent({
         on: function (event, selector, callback) {
-            var self = this;
-            var element = self.element;
             if (callback === undefined) {
                 callback = selector;
-                selector = self.selector;
+                selector = '';
             }
-            else {
-                selector = self.selector + ' ' + selector;
-            }
-            var eventId = event + '-' + selector;
-            var vid = element.dataset.vid;
-            vid = '[data-vid="' + vid + '"]';
-            var fn = function (e) {
-                var element = e.target.closest(vid);
-                if (!element) {
-                    return;
-                }
-                callback.apply(e.target.closest(selector), [e]);
-            };
-            element._events[eventId] = on(document, event, selector, fn);
+            var element = this.element;
+            var eventID = [event, this.namespace, element.dataset.vid].join('.');
+            return on(element, eventID, selector, callback);
         },
         off: function (event, selector) {
-            var self = this;
-            var element = self.element;
-            if (selector) {
-                selector = self.selector + ' ' + selector;
-            }
-            else {
-                selector = self.selector;
-            }
-            var eventId = event + '-' + selector;
-            var fn = element._events[eventId];
-            if (!fn) {
-                return;
-            }
-            delete element._events[eventId];
-            off(document, event, selector, fn);
+            var element = this.element;
+            var eventID = [event, this.namespace, element.dataset.vid].join('.');
+            return off(element, eventID, selector);
         },
         trigger: function (event, selector) {
-            var self = this;
-            if (selector) {
-                selector = self.selector + ' ' + selector;
-            }
-            else {
-                selector = self.selector;
-            }
-            trigger(selector, event);
+            var element = this.element;
+            var eventID = [event, this.namespace, element.dataset.vid].join('.');
+            return trigger(element, eventID, selector);
         }
+    });
+    beforeDestroy(async function () {
+        return this.off();
     });
 
     extendComponent({
         watch: function (event, callback) {
-            var key = [event, this.namespace, this.element.dataset.vid].join('.');
-            return watch(key, callback);
+            var eventID = [event, this.namespace, this.element.dataset.vid].join('.');
+            return watch(eventID, callback);
         },
         unwatch: function (event, callback) {
-            var key = [event, this.namespace, this.element.dataset.vid].join('.');
-            return unwatch(key, callback);
+            var eventID = [event, this.namespace, this.element.dataset.vid].join('.');
+            return unwatch(eventID, callback);
         },
         fire: function (event, data) {
-            return fire(event, data);
+            var eventID = [event, this.namespace, this.element.dataset.vid].join('.');
+            return fire(eventID, data);
         }
     });
     beforeDestroy(async function () {
@@ -890,7 +884,7 @@ var V = (function (exports) {
         session: session
     });
 
-    const __version = '1.0.5';
+    const __version = '1.0.6';
 
     exports.$ = $;
     exports.$$ = $$;
@@ -913,6 +907,7 @@ var V = (function (exports) {
     exports.hook = hook;
     exports.http = http;
     exports.mount = mount;
+    exports.namespaceEvent = namespaceEvent;
     exports.off = off;
     exports.on = on;
     exports.promises = promises;

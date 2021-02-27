@@ -27,19 +27,28 @@ extendComponent({
      */
     renderTemplate: async function () {
 
-        var _template = await this.template()
+        var current = this.element.innerHTML;
+        var theTemplate = await this.template()
 
-        if (_template === undefined || _template === false) {
+        if (theTemplate === undefined || theTemplate === null || theTemplate === false) {
             return
         }
 
         var variables = this.get()
         var result = template(
-            String(_template),
+            String(theTemplate),
             variables
         )
 
-        this.element.innerHTML = result
+        if( result != current ){
+
+            // Destroy existing child elements
+            await destroy(this.element)
+
+            // Mount new template
+            this.element.innerHTML = result
+
+        }
 
     },
 
@@ -83,9 +92,6 @@ extendComponent({
         }
 
         try {
-
-            // Destroy existing child elements
-            await destroy(component.element)
 
             var callbacks = [].concat(
                 hook('componentBeforeRender'),

@@ -264,9 +264,6 @@ var V = (function (exports) {
                 if (element._state === undefined) {
                     element._state = {};
                 }
-                if (element._events === undefined) {
-                    element._events = {};
-                }
                 callback.apply(element, [element, declaration]);
             });
         });
@@ -413,13 +410,17 @@ var V = (function (exports) {
     extendComponent({
         template: fakePromise,
         renderTemplate: async function () {
-            var _template = await this.template();
-            if (_template === undefined || _template === false) {
+            var current = this.element.innerHTML;
+            var theTemplate = await this.template();
+            if (theTemplate === undefined || theTemplate === null || theTemplate === false) {
                 return;
             }
             var variables = this.get();
-            var result = template(String(_template), variables);
-            this.element.innerHTML = result;
+            var result = template(String(theTemplate), variables);
+            if (result != current) {
+                await destroy(this.element);
+                this.element.innerHTML = result;
+            }
         },
         shouldRender: async function () {
             return true;
@@ -437,7 +438,6 @@ var V = (function (exports) {
                 return;
             }
             try {
-                await destroy(component.element);
                 var callbacks = [].concat(hook('componentBeforeRender'), [component.beforeRender], [component.renderTemplate], [component.onRender], [component.afterRender], hook('componentAfterRender'));
                 await promises(component, callbacks);
                 await mount(component.element);
@@ -829,8 +829,8 @@ var V = (function (exports) {
     }
     function get$1(name, _default) {
         var value = _store[name];
-        value = (value === undefined) ? local.get(name) : value;
-        value = (value === undefined) ? _default : value;
+        value = (value === undefined || value === null) ? local.get(name) : value;
+        value = (value === undefined || value === null) ? _default : value;
         return value;
     }
     function remove(name) {
@@ -846,7 +846,7 @@ var V = (function (exports) {
         get: function (name, _default) {
             var value = localStorage.getItem(name);
             value = _decompress(value);
-            value = (value === undefined) ? _default : value;
+            value = (value === undefined || value === null) ? _default : value;
             return value;
         },
         remove: function (name) {
@@ -863,7 +863,7 @@ var V = (function (exports) {
         get: function (name, _default) {
             var value = sessionStorage.getItem(name);
             value = _decompress(value);
-            value = (value === undefined) ? _default : value;
+            value = (value === undefined || value === null) ? _default : value;
             return value;
         },
         remove: function (name) {
@@ -884,7 +884,7 @@ var V = (function (exports) {
         session: session
     });
 
-    const __version = '1.0.6';
+    const __version = '1.0.7';
 
     exports.$ = $;
     exports.$$ = $$;

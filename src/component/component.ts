@@ -71,9 +71,6 @@ export function eachComponent(target: HTMLElement | HTMLDocument, callback: Comp
             if (element._state === undefined) {
                 element._state = {}
             }
-            if (element._events === undefined) {
-                element._events = {}
-            }
 
             callback.apply(element, [element, declaration])
 

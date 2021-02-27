@@ -42,8 +42,8 @@ export function set(name: string, value: any) {
 export function get(name: string, _default: any): any {
 
     var value = _store[name]
-    value = (value === undefined) ? local.get(name) : value
-    value = (value === undefined) ? _default : value
+    value = (value === undefined || value === null) ? local.get(name) : value
+    value = (value === undefined || value === null) ? _default : value
 
     return value
 }
@@ -84,7 +84,7 @@ export const local = {
 
         var value = localStorage.getItem(name)
         value = _decompress(value)
-        value = (value === undefined) ? _default : value
+        value = (value === undefined || value === null) ? _default : value
 
         return value
     },
@@ -127,7 +127,7 @@ export const session = {
 
         var value = sessionStorage.getItem(name)
         value = _decompress(value)
-        value = (value === undefined) ? _default : value
+        value = (value === undefined || value === null) ? _default : value
 
         return value
     },

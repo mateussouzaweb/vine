@@ -29,7 +29,8 @@ function clean(line: string): string {
 function conditions(line: string): string {
     return line
         .replace(/^if\s?(.*)$/, 'if( $1 ){') // if condition
-        .replace(/^else$/, '} else {') // else condition
+        .replace(/^elseif\s?(.*)$/, '}else if( $1 ){') // else if condition
+        .replace(/^else$/, '}else{') // else condition
         .replace(/^end$/, '}') // Close end if/for/each
 }
 
@@ -58,8 +59,12 @@ function variables(line: string): Array<string> {
         }
     }
 
-    add(/^(?!}|for\(|if\()([A-Za-z0-9_]+)/) // Single var
+    if( line.match(/^(}|for\(|if\()/) === null ){
+        add(/^([A-Za-z0-9_]+)/) // Single var
+    }
+
     add(/^if\(\s?!?([A-Za-z0-9_]+)/) // If vars
+    add(/^}else\sif\(\s?!?([A-Za-z0-9_]+)/) // Else if vars
     add(/&&\s?!?([A-Za-z0-9_]+)/) // && condition vars
     add(/\|\|\s?!?([A-Za-z0-9_]+)/) // || condition vars
     add(/in\s([A-Za-z0-9_]+)\s\)/) // For vars
@@ -74,6 +79,7 @@ function variables(line: string): Array<string> {
  * {{ VARIABLE }} - simple variable
  *
  * {{ if VARIABLE }} - if condition
+ * {{ elseif VARIABLE }} - else if condition (requires if)
  * {{ else }} - else condition (requires if)
  * {{ end }} - end if/else condition
  *

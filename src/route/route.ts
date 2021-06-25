@@ -109,9 +109,10 @@ function normalizePath(path: string, removeQuery?: boolean): string {
 
     path = path.replace(window.location.origin, '')
     path = path.replace(options.base, '')
+    path = path.replace('/?', '?')
     path = path.replace(new RegExp('[/]*$'), '')
     path = path.replace(new RegExp('^[/]*'), '')
-    path = ('/' + path).replace('//', '/').replace('/?', '?')
+    path = ('/' + path).replace('//', '/')
 
     if (removeQuery) {
         path = path.split('?')[0]

@@ -543,13 +543,13 @@ var V = (function (exports) {
         }
         return body;
     }
-    function options(url, data, headers) {
+    function options$1(url, data, headers) {
         return request('OPTIONS', url, data, headers);
     }
     function head(url, data, headers) {
         return request('HEAD', url, data, headers);
     }
-    function get(url, data, headers) {
+    function get$1(url, data, headers) {
         return request('GET', url, data, headers);
     }
     function post(url, data, headers) {
@@ -570,9 +570,9 @@ var V = (function (exports) {
         interceptBefore: interceptBefore,
         interceptAfter: interceptAfter,
         request: request,
-        options: options,
+        options: options$1,
         head: head,
-        get: get,
+        get: get$1,
         post: post,
         put: put,
         patch: patch,
@@ -615,17 +615,18 @@ var V = (function (exports) {
     };
     var _routes = [];
     var _active = _abstractRoute;
-    var options$1 = {
+    var options = {
         mode: window.history.pushState ? 'history' : 'hash',
         base: '',
         prevent: false
     };
     function normalizePath(path, removeQuery) {
         path = path.replace(window.location.origin, '');
-        path = path.replace(options$1.base, '');
+        path = path.replace(options.base, '');
+        path = path.replace('/?', '?');
         path = path.replace(new RegExp('[/]*$'), '');
         path = path.replace(new RegExp('^[/]*'), '');
-        path = ('/' + path).replace('//', '/').replace('/?', '?');
+        path = ('/' + path).replace('//', '/');
         if (removeQuery) {
             path = path.split('?')[0];
         }
@@ -690,14 +691,14 @@ var V = (function (exports) {
     async function change(location, replace) {
         var routeChange = function () {
             if (this.replace) {
-                options$1.prevent = true;
-                if (options$1.mode === 'history') {
+                options.prevent = true;
+                if (options.mode === 'history') {
                     history.pushState({}, null, this.location);
                 }
                 else {
                     window.location.hash = this.location;
                 }
-                options$1.prevent = false;
+                options.prevent = false;
             }
             var next = this.next;
             if (!next) {
@@ -751,10 +752,10 @@ var V = (function (exports) {
         go(delta === undefined ? -1 : delta);
     }
     function popstate() {
-        if (options$1.prevent) {
+        if (options.prevent) {
             return;
         }
-        var path = (options$1.mode === 'hash')
+        var path = (options.mode === 'hash')
             ? window.location.hash.replace('#', '')
             : window.location.href;
         change(path);
@@ -775,7 +776,7 @@ var V = (function (exports) {
             || link.hostname && location.hostname !== link.hostname) {
             return;
         }
-        if (options$1.mode !== 'hash'
+        if (options.mode !== 'hash'
             && link.href
             && link.href.indexOf('#') > -1
             && stripHash(link) === stripHash(location)) {
@@ -798,7 +799,7 @@ var V = (function (exports) {
 
     var route = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        options: options$1,
+        options: options,
         beforeChange: beforeChange,
         afterChange: afterChange,
         add: add,
@@ -831,7 +832,7 @@ var V = (function (exports) {
     function set(name, value) {
         _store[name] = value;
     }
-    function get$1(name, _default) {
+    function get(name, _default) {
         var value = _store[name];
         value = (value === undefined || value === null) ? local.get(name) : value;
         value = (value === undefined || value === null) ? _default : value;
@@ -881,14 +882,14 @@ var V = (function (exports) {
     var store = /*#__PURE__*/Object.freeze({
         __proto__: null,
         set: set,
-        get: get$1,
+        get: get,
         remove: remove,
         items: items,
         local: local,
         session: session
     });
 
-    const __version = '1.0.8';
+    const __version = '1.0.9';
 
     exports.$ = $;
     exports.$$ = $$;

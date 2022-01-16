@@ -140,7 +140,7 @@ function paramsFor(path: string, match: { path: string }): Object {
 
     url.forEach(function (value: string, index: number) {
         if (parts[index] !== undefined && ':'.charCodeAt(0) === parts[index].charCodeAt(0)) {
-            var key = parts[index].substr(1)
+            var key = parts[index].substring(1)
             params[key] = decodeURIComponent(value)
         }
     })

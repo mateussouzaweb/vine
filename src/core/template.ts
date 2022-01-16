@@ -136,7 +136,7 @@ export function template(template: string, data?: Object): string {
 
     }
 
-    after = template.substr(cursor, template.length - cursor)
+    after = template.substring(cursor, cursor + (template.length - cursor))
     parser.push('r.push(`' + after.replace(/"/g, '\\"') + '`);')
     parser.push('return r.join("");')
 

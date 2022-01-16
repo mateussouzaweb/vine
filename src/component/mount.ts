@@ -62,7 +62,7 @@ export async function mount(target: HTMLElement | HTMLDocument): Promise<HTMLEle
         }
 
         if (!element.dataset.vid) {
-            element.dataset.vid = Math.random().toString(16).substr(2, 8)
+            element.dataset.vid = Math.random().toString(16).substring(2, 10)
         }
 
         // Clone component to this element

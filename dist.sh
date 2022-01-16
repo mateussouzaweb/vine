@@ -23,10 +23,4 @@ curl -X POST -s \
     --data-urlencode 'input@dist/vanilla.js' \
     https://javascript-minifier.com/raw > dist/vanilla.min.js
 
-echo "Creating documentation..."
-
-# npm install -g jsdoc
-# npm install -g jsdoc-to-markdown
-# jsdoc2md ./src/*/*.js > ./docs/README.md
-
 echo "DONE!"

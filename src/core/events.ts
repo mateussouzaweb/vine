@@ -118,9 +118,10 @@ export function off(element: any, event: string, selector: string | Function, ca
 export function trigger(element: any, event: string, selector?: string): void {
 
     var items = (selector) ? $$$(selector, element) : $$$(element)
-    var theEvent = document.createEvent('HTMLEvents')
-
-    theEvent.initEvent(event, true, true)
+    var theEvent = new Event(event, {
+        'bubbles': true,
+        'cancelable': true
+    })
 
     items.forEach(function (item) {
         item.dispatchEvent(theEvent)

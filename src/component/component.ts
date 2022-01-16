@@ -60,7 +60,7 @@ export function extendComponent(definition: Object) {
  * @param target
  * @param callback
  */
-export function eachComponent(target: HTMLElement | HTMLDocument, callback: ComponentCallback) {
+export function eachComponent(target: HTMLElement | Document, callback: ComponentCallback) {
     _components.forEach(function (declaration) {
         var items = $$$(declaration.selector, target) as ComponentElement[]
         items.forEach(function (element) {

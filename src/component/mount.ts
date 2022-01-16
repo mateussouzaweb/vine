@@ -48,7 +48,7 @@ export function afterMount(callback: Function) {
  * Mount components on given target child elements
  * @param target
  */
-export async function mount(target: HTMLElement | HTMLDocument): Promise<HTMLElement | HTMLDocument> {
+export async function mount(target: HTMLElement | Document): Promise<HTMLElement | Document> {
 
     var callbacks = []
 

@@ -1,5 +1,5 @@
-type Context = HTMLElement | HTMLDocument
-type SelectorContext = string | HTMLElement | HTMLDocument
+type Context = HTMLElement | Document
+type SelectorContext = string | HTMLElement | Document
 
 /**
  * Retrieve the resolved valid context
@@ -46,7 +46,7 @@ export function $$$(element: any, context?: SelectorContext): Array<HTMLElement>
         items.push(element)
     }
 
-    if (element instanceof HTMLDocument) {
+    if (element instanceof Document) {
         items.push(element)
     }
 

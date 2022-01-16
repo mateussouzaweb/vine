@@ -37,6 +37,23 @@ extendComponent({
         value = (value === undefined) ? _default : value
 
         return value
+    },
+
+    /**
+     * Clone element data
+     * @public
+     * @param key
+     * @param _default
+     */
+    clone: function (key: string, _default?: any): any {
+
+        var result = this.get(key, _default)
+
+        if (result instanceof Object) {
+            return Object.assign({}, result)
+        }
+
+        return result
     }
 
 })

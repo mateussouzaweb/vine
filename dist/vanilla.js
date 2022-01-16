@@ -13,8 +13,8 @@ var V = (function (exports) {
         if (Array.isArray(items)) {
             return items.forEach(callback);
         }
-        const keys = Object.keys(items);
-        for (const key of keys) {
+        var keys = Object.keys(items);
+        for (var key of keys) {
             callback(items[key], key, items);
         }
     }
@@ -48,7 +48,7 @@ var V = (function (exports) {
         if (element instanceof Window) {
             items.push(element);
         }
-        if (element instanceof HTMLDocument) {
+        if (element instanceof Document) {
             items.push(element);
         }
         if (element instanceof Element) {
@@ -115,8 +115,10 @@ var V = (function (exports) {
     }
     function trigger(element, event, selector) {
         var items = (selector) ? $$$(selector, element) : $$$(element);
-        var theEvent = document.createEvent('HTMLEvents');
-        theEvent.initEvent(event, true, true);
+        var theEvent = new Event(event, {
+            'bubbles': true,
+            'cancelable': true
+        });
         items.forEach(function (item) {
             item.dispatchEvent(theEvent);
         });
@@ -234,7 +236,7 @@ var V = (function (exports) {
             });
             parser.push(line.match(/^(}|{|for\(|if\()/) ? line : 'r.push(' + line + ');');
         }
-        after = template.substr(cursor, template.length - cursor);
+        after = template.substring(cursor, cursor + (template.length - cursor));
         parser.push('r.push(`' + after.replace(/"/g, '\\"') + '`);');
         parser.push('return r.join("");');
         var code = parser.join("\n");
@@ -399,7 +401,7 @@ var V = (function (exports) {
                 return;
             }
             if (!element.dataset.vid) {
-                element.dataset.vid = Math.random().toString(16).substr(2, 8);
+                element.dataset.vid = Math.random().toString(16).substring(2, 10);
             }
             var component = Object.assign({}, declaration);
             component.element = element;
@@ -479,6 +481,13 @@ var V = (function (exports) {
             var value = element._state[key];
             value = (value === undefined) ? _default : value;
             return value;
+        },
+        clone: function (key, _default) {
+            var result = this.get(key, _default);
+            if (result instanceof Object) {
+                return Object.assign({}, result);
+            }
+            return result;
         }
     });
 
@@ -605,7 +614,7 @@ var V = (function (exports) {
         location() {
             var params = this._params;
             var location = this.path;
-            for (const key in params) {
+            for (var key in params) {
                 if (params.hasOwnProperty(key)) {
                     location = location.replace(':' + key, params[key]);
                 }
@@ -642,7 +651,7 @@ var V = (function (exports) {
             .filter(Boolean);
         url.forEach(function (value, index) {
             if (parts[index] !== undefined && ':'.charCodeAt(0) === parts[index].charCodeAt(0)) {
-                const key = parts[index].substr(1);
+                var key = parts[index].substring(1);
                 params[key] = decodeURIComponent(value);
             }
         });
@@ -656,9 +665,9 @@ var V = (function (exports) {
             return query;
         }
         search.split('&').forEach(function (param) {
-            const parts = param.replace(/\+/g, ' ').split('=');
-            const key = decodeURIComponent(parts.shift());
-            const value = parts.length > 0 ? decodeURIComponent(parts.join('=')) : null;
+            var parts = param.replace(/\+/g, ' ').split('=');
+            var key = decodeURIComponent(parts.shift());
+            var value = parts.length > 0 ? decodeURIComponent(parts.join('=')) : null;
             if (query[key] === undefined) {
                 query[key] = value;
             }
@@ -728,7 +737,7 @@ var V = (function (exports) {
         var url = normalizePath(path, true);
         var match = null;
         for (let index = 0; index < _routes.length; index++) {
-            const item = _routes[index];
+            var item = _routes[index];
             if (url.match(item.regex)) {
                 match = item;
                 break;
@@ -844,7 +853,7 @@ var V = (function (exports) {
     function items() {
         return _store;
     }
-    const local = {
+    var local = {
         set: function (name, value) {
             localStorage.setItem(name, _compress(value));
         },
@@ -861,7 +870,7 @@ var V = (function (exports) {
             return localStorage;
         }
     };
-    const session = {
+    var session = {
         set: function (name, value) {
             sessionStorage.setItem(name, _compress(value));
         },
@@ -889,7 +898,7 @@ var V = (function (exports) {
         session: session
     });
 
-    const __version = '1.0.9';
+    var __version = '1.0.10';
 
     exports.$ = $;
     exports.$$ = $$;
@@ -929,4 +938,4 @@ var V = (function (exports) {
 
     return exports;
 
-}({}));
+})({});

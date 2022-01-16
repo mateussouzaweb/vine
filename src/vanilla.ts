@@ -1,5 +1,5 @@
 /*! Vanilla UI - https://github.com/mateussouzaweb/vanilla-ui */
-export var __version = '1.0.9'
+export var __version = '1.0.10'
 
 export * from "./core/utils"
 export * from "./core/selector"

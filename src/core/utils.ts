@@ -37,8 +37,8 @@ export function each(items: ArrayOrObject, callback: EachCallback) {
         return items.forEach(callback)
     }
 
-    const keys = Object.keys(items)
-    for (const key of keys) {
+    var keys = Object.keys(items)
+    for (var key of keys) {
         callback(items[key], key, items)
     }
 

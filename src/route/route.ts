@@ -67,7 +67,7 @@ var _abstractRoute: AbstractRoute = {
         var params = this._params
         var location = this.path
 
-        for (const key in params) {
+        for (var key in params) {
             if (params.hasOwnProperty(key)) {
                 location = location.replace(':' + key, params[key])
             }
@@ -140,7 +140,7 @@ function paramsFor(path: string, match: { path: string }): Object {
 
     url.forEach(function (value: string, index: number) {
         if (parts[index] !== undefined && ':'.charCodeAt(0) === parts[index].charCodeAt(0)) {
-            const key = parts[index].substr(1)
+            var key = parts[index].substr(1)
             params[key] = decodeURIComponent(value)
         }
     })
@@ -164,9 +164,9 @@ function queryFor(location: string): Object {
 
     search.split('&').forEach(function (param) {
 
-        const parts = param.replace(/\+/g, ' ').split('=')
-        const key = decodeURIComponent(parts.shift())
-        const value = parts.length > 0 ? decodeURIComponent(parts.join('=')) : null
+        var parts = param.replace(/\+/g, ' ').split('=')
+        var key = decodeURIComponent(parts.shift())
+        var value = parts.length > 0 ? decodeURIComponent(parts.join('=')) : null
 
         if (query[key] === undefined) {
             query[key] = value
@@ -301,7 +301,7 @@ export function match(path: string): null | Object {
     var match = null
 
     for (let index = 0; index < _routes.length; index++) {
-        const item = _routes[index]
+        var item = _routes[index]
 
         if (url.match(item.regex)) {
             match = item

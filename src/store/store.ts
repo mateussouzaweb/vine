@@ -64,7 +64,7 @@ export function items(): Object {
 }
 
 // LOCAL STORAGE
-export const local = {
+export var local = {
 
     /**
      * Set item on localStorage
@@ -107,7 +107,7 @@ export const local = {
 }
 
 // SESSION STORAGE
-export const session = {
+export var session = {
 
     /**
      * Set item on sessionStorage

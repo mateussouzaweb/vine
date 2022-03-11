@@ -36,7 +36,7 @@ export function $$(selector: string, context?: SelectorContext): NodeListOf<HTML
  */
 export function $$$(element: any, context?: SelectorContext): Array<HTMLElement> {
 
-    var items = []
+    const items = []
 
     if (typeof element === 'string') {
         element = $$(element, context)

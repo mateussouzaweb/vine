@@ -33,7 +33,7 @@ export function interceptAfter(callback: Function) {
  */
 export async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit) {
 
-    var request: RequestObject = {
+    const request: RequestObject = {
         method: method,
         url: url,
         data: data,
@@ -42,7 +42,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
     await promises(request, hook('httpInterceptBefore'))
 
-    var options = Object.assign({}, request)
+    const options = Object.assign({}, request)
 
     delete options.url
     delete options.data
@@ -60,14 +60,14 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
     } else {
 
-        var query = ''
+        let query = ''
 
         if (typeof request.data === 'string') {
             query = request.data
         } else if (request.data) {
             query = Object.keys(request.data).map(function (k) {
-                var _k = encodeURIComponent(k)
-                var _v = encodeURIComponent(request.data[k])
+                const _k = encodeURIComponent(k)
+                const _v = encodeURIComponent(request.data[k])
                 return _k + "=" + _v
             }).join('&')
         }
@@ -78,16 +78,16 @@ export async function request(method: string, url: string, data?: BodyInit, head
 
     }
 
-    var response = await fetch(request.url, options)
-    var body = await response.text()
+    const response = await fetch(request.url, options)
+    let body = await response.text()
 
     try {
-        var json = JSON.parse(body)
+        const json = JSON.parse(body)
         body = json
     } catch (error) {
     }
 
-    var details = {
+    const details = {
         request: request,
         response: response,
         body: body

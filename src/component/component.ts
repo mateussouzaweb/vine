@@ -17,8 +17,8 @@ export interface Component {
 
 type ComponentCallback = (element: ComponentElement, definition: Component) => void
 
-var _components = []
-var _abstractComponent = {
+const _components = []
+const _abstractComponent = {
 
     /**
      * Component DOM element
@@ -62,7 +62,7 @@ export function extendComponent(definition: Object) {
  */
 export function eachComponent(target: HTMLElement | Document, callback: ComponentCallback) {
     _components.forEach(function (declaration) {
-        var items = $$$(declaration.selector, target) as ComponentElement[]
+        const items = $$$(declaration.selector, target) as ComponentElement[]
         items.forEach(function (element) {
 
             if (element._components === undefined) {
@@ -85,7 +85,7 @@ export function eachComponent(target: HTMLElement | Document, callback: Componen
  */
 export async function component(selector: string, data: Object): Promise<Component> {
 
-    var component = Object.assign(
+    const component = Object.assign(
         {},
         _abstractComponent,
         data
@@ -99,7 +99,7 @@ export async function component(selector: string, data: Object): Promise<Compone
 
     try {
 
-        var callbacks = [].concat(
+        const callbacks = [].concat(
             [component.constructor]
         )
 
@@ -119,8 +119,8 @@ export async function component(selector: string, data: Object): Promise<Compone
  */
 export async function removeComponent(selector: string) {
 
-    var component = null
-    var index = null
+    let component = null
+    let index = null
 
     _components.forEach(function (theComponent, theIndex) {
         if (theComponent.selector === selector) {
@@ -135,7 +135,7 @@ export async function removeComponent(selector: string) {
 
     try {
 
-        var callbacks = [].concat(
+        const callbacks = [].concat(
             [component.destructor]
         )
 

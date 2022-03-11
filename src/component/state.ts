@@ -9,7 +9,7 @@ extendComponent({
      */
     set: function (key: string | Object, value?: any) {
 
-        var element = this.element
+        const element = this.element
 
         if (typeof key === 'string') {
             element._state[key] = value
@@ -27,13 +27,13 @@ extendComponent({
      */
     get: function (key: string, _default?: any): any {
 
-        var element = this.element
+        const element = this.element
 
         if (key === undefined) {
             return element._state
         }
 
-        var value = element._state[key]
+        let value = element._state[key]
         value = (value === undefined) ? _default : value
 
         return value
@@ -47,7 +47,7 @@ extendComponent({
      */
     clone: function (key: string, _default?: any): any {
 
-        var result = this.get(key, _default)
+        const result = this.get(key, _default)
 
         if (result instanceof Object) {
             return Object.assign({}, result)

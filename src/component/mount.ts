@@ -50,11 +50,11 @@ export function afterMount(callback: Function) {
  */
 export async function mount(target: HTMLElement | Document): Promise<HTMLElement | Document> {
 
-    var callbacks = []
+    const callbacks = []
 
     eachComponent(target, function (element, declaration) {
 
-        var key = declaration.namespace
+        const key = declaration.namespace
 
         // Already mounted
         if (element._components[key] !== undefined) {
@@ -66,12 +66,12 @@ export async function mount(target: HTMLElement | Document): Promise<HTMLElement
         }
 
         // Clone component to this element
-        var component = Object.assign({}, declaration) as MountableComponent
+        const component = Object.assign({}, declaration) as MountableComponent
         component.element = element
 
         element._components[key] = component
 
-        var componentCallbacks = [].concat(
+        const componentCallbacks = [].concat(
             hook('componentBeforeMount'),
             [component.beforeMount],
             [component.onMount],

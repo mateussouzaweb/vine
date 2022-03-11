@@ -17,8 +17,8 @@ extendComponent({
             selector = ''
         }
 
-        var element = this.element
-        var eventID = [event, this.namespace, element.dataset.vid].join('.')
+        const element = this.element
+        const eventID = [event, this.namespace, element.dataset.vid].join('.')
 
         return on(element, eventID, selector, callback)
     },
@@ -30,8 +30,8 @@ extendComponent({
      */
     off: function (event?: string, selector?: string): Function {
 
-        var element = this.element
-        var eventID = [event, this.namespace, element.dataset.vid].join('.')
+        const element = this.element
+        const eventID = [event, this.namespace, element.dataset.vid].join('.')
 
         return off(element, eventID, selector)
     },
@@ -43,8 +43,8 @@ extendComponent({
      */
     trigger: function (event: string, selector?: any): void {
 
-        var element = this.element
-        var eventID = [event, this.namespace, element.dataset.vid].join('.')
+        const element = this.element
+        const eventID = [event, this.namespace, element.dataset.vid].join('.')
 
         return trigger(element, eventID, selector)
     }

@@ -1,7 +1,7 @@
 import { $$$ } from './selector'
 import { NamespaceEvent, namespaceEvent } from './utils'
 
-var _events = []
+let _events = []
 
 /**
  * Attach event to element
@@ -13,18 +13,18 @@ var _events = []
  */
 function _event(action: "add" | "remove", element: any, event: string, selector: string | Function, callback?: Function): Function {
 
-    var events = event.split(' ')
+    const events = event.split(' ')
 
     // Multi events
     if( events.length > 1 ){
-        for (var i = 0; i < events.length; i++) {
+        for (let i = 0; i < events.length; i++) {
             _event(action, element, events[i], selector, callback)
         }
         return
     }
 
-    var items = $$$(element)
-    var handler: Function
+    const items = $$$(element)
+    let handler: Function
 
     // Determine handler
     if (callback === undefined) {
@@ -37,7 +37,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
 
         // Delegated
         handler = function (_event: Event) {
-            var target = (_event.target as HTMLElement).closest(<string>selector)
+            const target = (_event.target as HTMLElement).closest(<string>selector)
             if (target) {
                 callback.apply(target, [_event])
             }
@@ -45,7 +45,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
 
     }
 
-    var theEvent = namespaceEvent(event, handler)
+    const theEvent = namespaceEvent(event, handler)
 
     if (action === 'add') {
 
@@ -63,7 +63,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
 
         _events = _events.filter(function (watcher: NamespaceEvent) {
 
-            var pass = Boolean(
+            const pass = Boolean(
                 (theEvent.event ? theEvent.event !== watcher.event : true)
                 && (theEvent.namespace ? theEvent.namespace !== watcher.namespace : true)
                 && (typeof handler === 'function' ? handler !== watcher.callback : true)
@@ -117,8 +117,8 @@ export function off(element: any, event: string, selector: string | Function, ca
  */
 export function trigger(element: any, event: string, selector?: string): void {
 
-    var items = (selector) ? $$$(selector, element) : $$$(element)
-    var theEvent = new Event(event, {
+    const items = (selector) ? $$$(selector, element) : $$$(element)
+    const theEvent = new Event(event, {
         'bubbles': true,
         'cancelable': true
     })

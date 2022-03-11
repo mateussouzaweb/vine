@@ -1,7 +1,7 @@
 import { promisify } from "./promise"
 import { NamespaceEvent, namespaceEvent } from "./utils"
 
-var _watches = []
+let _watches = []
 
 /**
  * Add watch to a event
@@ -19,7 +19,7 @@ export function watch(theEvent: string, callback: Function): void {
  */
 export function unwatch(theEvent: string, callback?: Function): void {
 
-    var event = namespaceEvent(theEvent, callback)
+    const event = namespaceEvent(theEvent, callback)
 
     _watches = _watches.filter(function (watcher: NamespaceEvent) {
         return Boolean(
@@ -38,8 +38,8 @@ export function unwatch(theEvent: string, callback?: Function): void {
  */
 export function fire(theEvent: string, data?: any): Promise<any> {
 
-    var event = namespaceEvent(theEvent)
-    var promises = []
+    const event = namespaceEvent(theEvent)
+    const promises = []
 
     _watches.forEach(function (watcher: NamespaceEvent) {
         if ((event.event ? event.event === watcher.event : true)

@@ -8,7 +8,7 @@ export interface NamespaceEvent {
     callback?: VoidFunction
 }
 
-var _hooks = []
+const _hooks = []
 
 /**
  * Add hook or retrieve hooks for event
@@ -37,8 +37,8 @@ export function each(items: ArrayOrObject, callback: EachCallback) {
         return items.forEach(callback)
     }
 
-    var keys = Object.keys(items)
-    for (var key of keys) {
+    const keys = Object.keys(items)
+    for (const key of keys) {
         callback(items[key], key, items)
     }
 
@@ -51,9 +51,9 @@ export function each(items: ArrayOrObject, callback: EachCallback) {
  */
 export function namespaceEvent(theEvent: string, callback?: Function): NamespaceEvent {
 
-    var split = theEvent.split('.')
-    var event = split.shift()
-    var namespace = split.join('.')
+    const split = theEvent.split('.')
+    const event = split.shift()
+    const namespace = split.join('.')
 
     return {
         event: event,

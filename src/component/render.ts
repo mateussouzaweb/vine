@@ -27,15 +27,15 @@ extendComponent({
      */
     renderTemplate: async function () {
 
-        var current = this.element.innerHTML;
-        var theTemplate = await this.template()
+        const current = this.element.innerHTML;
+        const theTemplate = await this.template()
 
         if (theTemplate === undefined || theTemplate === null || theTemplate === false) {
             return
         }
 
-        var variables = this.get()
-        var result = template(
+        const variables = this.get()
+        const result = template(
             String(theTemplate),
             variables
         )
@@ -84,8 +84,8 @@ extendComponent({
             this.set(state)
         }
 
-        var component = this as RenderableComponent
-        var pass = await component.shouldRender()
+        const component = this as RenderableComponent
+        const pass = await component.shouldRender()
 
         if (!pass) {
             return
@@ -93,7 +93,7 @@ extendComponent({
 
         try {
 
-            var callbacks = [].concat(
+            const callbacks = [].concat(
                 hook('componentBeforeRender'),
                 [component.beforeRender],
                 [component.renderTemplate],

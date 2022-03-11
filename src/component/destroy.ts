@@ -50,20 +50,20 @@ export function afterDestroy(callback: Function) {
  */
 export async function destroy(target: HTMLElement) {
 
-    var callbacks = []
+    const callbacks = []
 
     eachComponent(target, function (element, declaration) {
 
-        var key = declaration.namespace
+        const key = declaration.namespace
 
         if (element._components[key] === undefined) {
             return
         }
 
-        var component = element._components[key] as DestroyableComponent
+        const component = element._components[key] as DestroyableComponent
         delete element._components[key]
 
-        var componentCallbacks = [].concat(
+        const componentCallbacks = [].concat(
             hook('componentBeforeDestroy'),
             [component.beforeDestroy],
             [component.onDestroy],

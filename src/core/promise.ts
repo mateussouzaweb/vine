@@ -24,7 +24,7 @@ export async function promisify(scope: Object, callback: VoidFunction, data?: an
  */
 export async function promises(scope: Object, callbacks: Array<VoidFunction>): Promise<Object> {
 
-    var promises = []
+    const promises = []
 
     for (let index = 0; index < callbacks.length; index++) {
         if (typeof callbacks[index] === 'function') {

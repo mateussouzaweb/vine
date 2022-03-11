@@ -1,4 +1,4 @@
-var _store = {}
+const _store = {}
 
 /**
  * Compress value
@@ -19,7 +19,7 @@ function _compress(value: any): any {
  */
 function _decompress(value: any): any {
     try {
-        var json = JSON.parse(value); value = json
+        const json = JSON.parse(value); value = json
     } catch (error) {
     }
     return value
@@ -41,7 +41,7 @@ export function set(name: string, value: any) {
  */
 export function get(name: string, _default: any): any {
 
-    var value = _store[name]
+    let value = _store[name]
     value = (value === undefined || value === null) ? local.get(name) : value
     value = (value === undefined || value === null) ? _default : value
 
@@ -64,7 +64,7 @@ export function items(): Object {
 }
 
 // LOCAL STORAGE
-export var local = {
+export const local = {
 
     /**
      * Set item on localStorage
@@ -82,7 +82,7 @@ export var local = {
      */
     get: function (name: string, _default?: any): string | Object {
 
-        var value = localStorage.getItem(name)
+        let value = localStorage.getItem(name)
         value = _decompress(value)
         value = (value === undefined || value === null) ? _default : value
 
@@ -107,7 +107,7 @@ export var local = {
 }
 
 // SESSION STORAGE
-export var session = {
+export const session = {
 
     /**
      * Set item on sessionStorage
@@ -125,7 +125,7 @@ export var session = {
      */
     get: function (name: string, _default?: any): string | Object {
 
-        var value = sessionStorage.getItem(name)
+        let value = sessionStorage.getItem(name)
         value = _decompress(value)
         value = (value === undefined || value === null) ? _default : value
 

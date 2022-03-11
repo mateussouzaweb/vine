@@ -15,9 +15,9 @@ interface AbstractRoute {
 /**
  * Abstract route
  * @private
- * @var {Object}
+ * @const {Object}
  */
-var _abstractRoute: AbstractRoute = {
+const _abstractRoute: AbstractRoute = {
 
     path: null,
     regex: null,
@@ -64,10 +64,10 @@ var _abstractRoute: AbstractRoute = {
      */
     location(): string {
 
-        var params = this._params
-        var location = this.path
+        const params = this._params
+        let location = this.path
 
-        for (var key in params) {
+        for (const key in params) {
             if (params.hasOwnProperty(key)) {
                 location = location.replace(':' + key, params[key])
             }
@@ -78,10 +78,10 @@ var _abstractRoute: AbstractRoute = {
 
 }
 
-var _routes = []
-var _active = _abstractRoute
+const _routes = []
+let _active = _abstractRoute
 
-export var options = {
+export const options = {
 
     /**
      * Route mode definition
@@ -128,19 +128,19 @@ function normalizePath(path: string, removeQuery?: boolean): string {
  */
 function paramsFor(path: string, match: { path: string }): Object {
 
-    var params = {}
+    const params = {}
 
-    var parts = normalizePath(match.path, true)
+    const parts = normalizePath(match.path, true)
         .split('/')
         .filter(Boolean)
 
-    var url = normalizePath(path, true)
+    const url = normalizePath(path, true)
         .split('/')
         .filter(Boolean)
 
     url.forEach(function (value: string, index: number) {
         if (parts[index] !== undefined && ':'.charCodeAt(0) === parts[index].charCodeAt(0)) {
-            var key = parts[index].substring(1)
+            const key = parts[index].substring(1)
             params[key] = decodeURIComponent(value)
         }
     })
@@ -154,8 +154,8 @@ function paramsFor(path: string, match: { path: string }): Object {
  */
 function queryFor(location: string): Object {
 
-    var query = {}
-    var search = (location.indexOf('?') !== -1) ? location.split('?')[1] : ''
+    const query = {}
+    let search = (location.indexOf('?') !== -1) ? location.split('?')[1] : ''
     search = String(search).trim().replace(/^(\?|#|&)/, '')
 
     if (search === '') {
@@ -164,9 +164,9 @@ function queryFor(location: string): Object {
 
     search.split('&').forEach(function (param) {
 
-        var parts = param.replace(/\+/g, ' ').split('=')
-        var key = decodeURIComponent(parts.shift())
-        var value = parts.length > 0 ? decodeURIComponent(parts.join('=')) : null
+        const parts = param.replace(/\+/g, ' ').split('=')
+        const key = decodeURIComponent(parts.shift())
+        const value = parts.length > 0 ? decodeURIComponent(parts.join('=')) : null
 
         if (query[key] === undefined) {
             query[key] = value
@@ -205,7 +205,7 @@ export function add(definition: Array<Object> | Object) {
         })
     }
 
-    var route = Object.assign(
+    const route = Object.assign(
         {},
         _abstractRoute,
         definition
@@ -213,9 +213,9 @@ export function add(definition: Array<Object> | Object) {
 
     route.path = normalizePath(route.path, true)
 
-    var regex = route.path
-    var pattern = ['(:[a-zA-Z]+)']
-    var replace = ['([^\/]+)']
+    let regex = route.path
+    const pattern = ['(:[a-zA-Z]+)']
+    const replace = ['([^\/]+)']
 
     pattern.forEach(function (value, index) {
         regex = regex.replace(
@@ -235,7 +235,7 @@ export function add(definition: Array<Object> | Object) {
  */
 export async function change(location: string, replace?: boolean) {
 
-    var routeChange = function () {
+    const routeChange = function () {
 
         if (this.replace) {
             options.prevent = true
@@ -249,14 +249,14 @@ export async function change(location: string, replace?: boolean) {
             options.prevent = false
         }
 
-        var next = this.next
+        const next = this.next
 
         if (!next) {
             return _active = null
         }
 
-        var query = queryFor(this.location)
-        var params = paramsFor(this.location, next)
+        const query = queryFor(this.location)
+        const params = paramsFor(this.location, next)
 
         next._query = query
         next._params = params
@@ -268,7 +268,7 @@ export async function change(location: string, replace?: boolean) {
 
         location = normalizePath(location)
 
-        var change = {
+        const change = {
             previous: _active,
             next: match(location),
             location: location,
@@ -297,11 +297,11 @@ export async function change(location: string, replace?: boolean) {
  */
 export function match(path: string): null | Object {
 
-    var url = normalizePath(path, true)
-    var match = null
+    const url = normalizePath(path, true)
+    let match = null
 
     for (let index = 0; index < _routes.length; index++) {
-        var item = _routes[index]
+        const item = _routes[index]
 
         if (url.match(item.regex)) {
             match = item
@@ -360,7 +360,7 @@ function popstate() {
         return
     }
 
-    var path = (options.mode === 'hash')
+    const path = (options.mode === 'hash')
         ? window.location.hash.replace('#', '')
         : window.location.href
 
@@ -374,10 +374,10 @@ function popstate() {
  */
 function linkClick(event: KeyboardEvent) {
 
-    var link = (event.target as HTMLAnchorElement).closest('a')
-    var location = window.location
+    const link = (event.target as HTMLAnchorElement).closest('a')
+    const location = window.location
 
-    var stripHash = function (location: Location | HTMLAnchorElement): String {
+    const stripHash = function (location: Location | HTMLAnchorElement): String {
         return location.href.replace(/#.*/, '')
     }
 

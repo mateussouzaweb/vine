@@ -1,6 +1,6 @@
 import { each } from "./utils"
 
-var _helpers = {}
+const _helpers = {}
 
 /**
  * Register a template helper
@@ -51,9 +51,9 @@ function loops(line: string): string {
  */
 function variables(line: string): Array<string> {
 
-    var vars = []
-    var add = function (regex: RegExp) {
-        var match = line.match(regex)
+    const vars = []
+    const add = function (regex: RegExp) {
+        const match = line.match(regex)
         if (match) {
             vars.push(match[1])
         }
@@ -100,13 +100,13 @@ function variables(line: string): Array<string> {
  */
 export function template(template: string, data?: Object): string {
 
-    var tagRegex = /{{([^}}]+)?}}/g
-    var parser = []
-    var cursor = 0
-    var line = ''
-    var before = ''
-    var after = ''
-    var match: RegExpExecArray | null
+    let tagRegex = /{{([^}}]+)?}}/g
+    let parser = []
+    let cursor = 0
+    let line = ''
+    let before = ''
+    let after = ''
+    let match: RegExpExecArray | null
 
     data = Object.assign({}, _helpers, data || {})
 
@@ -140,13 +140,14 @@ export function template(template: string, data?: Object): string {
     parser.push('r.push(`' + after.replace(/"/g, '\\"') + '`);')
     parser.push('return r.join("");')
 
-    var code = parser.join("\n")
+    const code = parser.join("\n")
 
     try {
-        var result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
+        const result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
+        return result
     } catch (error) {
         console.warn('[V] template parser error:', template, error)
     }
 
-    return result
+    return null
 }

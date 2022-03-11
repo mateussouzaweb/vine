@@ -1,5 +1,5 @@
 install:
-	sudo npm install -g typescript rollup terser
+	npm install -g typescript rollup terser
 
 compile:
 	tsc src/vanilla.ts \

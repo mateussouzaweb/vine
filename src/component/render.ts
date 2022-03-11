@@ -27,7 +27,7 @@ extendComponent({
      */
     renderTemplate: async function () {
 
-        const current = this.element.innerHTML;
+        const current = this.element.innerHTML
         const theTemplate = await this.template()
 
         if (theTemplate === undefined || theTemplate === null || theTemplate === false) {
@@ -40,7 +40,7 @@ extendComponent({
             variables
         )
 
-        if( result != current ){
+        if (result != current) {
 
             // Destroy existing child elements
             await destroy(this.element)

@@ -16,7 +16,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
     const events = event.split(' ')
 
     // Multi events
-    if( events.length > 1 ){
+    if (events.length > 1) {
         for (let i = 0; i < events.length; i++) {
             _event(action, element, events[i], selector, callback)
         }
@@ -69,7 +69,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
                 && (typeof handler === 'function' ? handler !== watcher.callback : true)
             )
 
-            if( !pass ){
+            if (!pass) {
                 items.forEach(function (item) {
                     item.removeEventListener(
                         watcher.event,

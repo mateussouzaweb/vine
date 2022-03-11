@@ -59,7 +59,7 @@ function variables(line: string): Array<string> {
         }
     }
 
-    if( line.match(/^(}|for\(|if\()/) === null ){
+    if (line.match(/^(}|for\(|if\()/) === null) {
         add(/^([A-Za-z0-9_]+)/) // Single var
     }
 

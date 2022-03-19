@@ -1,10 +1,11 @@
-const _store = {}
+let _store: Record<string, any> = {}
 
 /**
  * Compress value
  * @param value
+ * @returns
  */
-function _compress(value: any): any {
+function _compress(value: any) {
 
     if (value instanceof Object) {
         value = JSON.stringify(value)
@@ -16,51 +17,58 @@ function _compress(value: any): any {
 /**
  * Decompress value
  * @param value
+ * @returns
  */
-function _decompress(value: any): any {
+function _decompress(value: any) {
     try {
-        const json = JSON.parse(value); value = json
+        const json = JSON.parse(value)
+        value = json
     } catch (error) {
     }
     return value
 }
 
-/**
- * Set item on memoryStorage
- * @param name
- * @param value
- */
-export function set(name: string, value: any) {
-    _store[name] = value
-}
+// MEMORY STORAGE
+export const memory = {
 
-/**
- * Retrieve item of memoryStorage
- * @param name
- * @param _default
- */
-export function get(name: string, _default: any): any {
+    /**
+     * Set item
+     * @param name
+     * @param value
+     */
+    set: (name: string, value: any) => {
+        _store[name] = value
+    },
 
-    let value = _store[name]
-    value = (value === undefined || value === null) ? local.get(name) : value
-    value = (value === undefined || value === null) ? _default : value
+    /**
+     * Retrieve item of localStorage
+     * @param name
+     * @param _default
+     * @returns
+     */
+    get: (name: string, _default?: any): any => {
 
-    return value
-}
+        let value = _store[name]
+        value = (value === undefined || value === null) ? local.get(name) : value
+        value = (value === undefined || value === null) ? _default : value
 
-/**
- * Remove item of memoryStorage
- * @param name
- */
-export function remove(name: string): void {
-    delete _store[name]
-}
+        return value
+    },
 
-/**
- * Retrieve all items at memoryStorage
- */
-export function items(): Object {
-    return _store
+    /**
+     * Remove item
+     * @param name
+     */
+    remove: (name: string) => {
+        delete _store[name]
+    },
+
+    /**
+     * Retrieve all items
+     * @returns
+     */
+    items: (): Object => _store
+
 }
 
 // LOCAL STORAGE
@@ -71,7 +79,7 @@ export const local = {
      * @param name
      * @param value
      */
-    set: function (name: string, value: string | Object): void {
+    set: (name: string, value: any) => {
         localStorage.setItem(name, _compress(value))
     },
 
@@ -79,11 +87,12 @@ export const local = {
      * Retrieve item of localStorage
      * @param name
      * @param _default
+     * @returns
      */
-    get: function (name: string, _default?: any): string | Object {
+    get: (name: string, _default?: any) => {
 
-        let value = localStorage.getItem(name)
-        value = _decompress(value)
+        let _value = localStorage.getItem(name)
+        let value = _decompress(_value)
         value = (value === undefined || value === null) ? _default : value
 
         return value
@@ -93,16 +102,15 @@ export const local = {
      * Remove item of localStorage
      * @param name
      */
-    remove: function (name: string): void {
+    remove: (name: string) => {
         localStorage.removeItem(name)
     },
 
     /**
      * Retrieve all items at localStorage
+     * @returns
      */
-    items: function (): Object {
-        return localStorage
-    }
+    items: (): Object => localStorage
 
 }
 
@@ -114,7 +122,7 @@ export const session = {
      * @param name
      * @param value
      */
-    set: function (name: string, value: string | Object): void {
+    set: (name: string, value: any) => {
         sessionStorage.setItem(name, _compress(value))
     },
 
@@ -122,11 +130,12 @@ export const session = {
      * Retrieve item of sessionStorage
      * @param name
      * @param _default
+     * @returns
      */
-    get: function (name: string, _default?: any): string | Object {
+    get: (name: string, _default?: any) => {
 
-        let value = sessionStorage.getItem(name)
-        value = _decompress(value)
+        let _value = sessionStorage.getItem(name)
+        let value = _decompress(_value)
         value = (value === undefined || value === null) ? _default : value
 
         return value
@@ -136,15 +145,14 @@ export const session = {
      * Remove item of sessionStorage
      * @param name
      */
-    remove: function (name: string): void {
+    remove: (name: string) => {
         sessionStorage.removeItem(name)
     },
 
     /**
      * Retrieve all items at sessionStorage
+     * @returns
      */
-    items: function (): Object {
-        return sessionStorage
-    }
+    items: (): Object => sessionStorage
 
 }

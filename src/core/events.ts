@@ -76,8 +76,7 @@ function _event(
             )
         })
 
-        return handler;
-
+        return handler
     }
 
     _events = _events.filter((watcher) => {

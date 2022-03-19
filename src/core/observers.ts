@@ -34,7 +34,11 @@ export function unwatch(event: string, callback?: Function) {
 export async function fire(event: string, data?: any) {
     for (const watcher of _watches) {
         if (event === watcher.event) {
-            await watcher.callback.apply({}, [data])
+            try {
+                await watcher.callback.apply({}, [data])
+            } catch (error) {
+                return Promise.reject(error)
+            }
         }
     }
 }

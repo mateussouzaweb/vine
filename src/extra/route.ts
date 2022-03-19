@@ -1,21 +1,19 @@
 import { on } from "../core/events"
-import { promises } from "../core/promise"
-import { hook } from "../core/utils"
 
-interface AbstractRoute {
-    path: string,
-    regex: RegExp,
-    _query: Object,
-    _params: Object,
-    param: Function,
-    query: Function,
+declare interface AbstractRoute {
+    path: string
+    regex: RegExp
+    _query: Object
+    _params: Object
+    param: Function
+    query: Function
     location: Function
+    [key: string]: any
 }
 
 /**
  * Abstract route
  * @private
- * @const {Object}
  */
 const _abstractRoute: AbstractRoute = {
 
@@ -78,7 +76,9 @@ const _abstractRoute: AbstractRoute = {
 
 }
 
-const _routes = []
+let _routes: Array<AbstractRoute> = []
+let _before: Array<Function> = []
+let _after: Array<Function> = []
 let _active = _abstractRoute
 
 export const options = {
@@ -104,8 +104,9 @@ export const options = {
  * Normalize string path
  * @param path
  * @param removeQuery
+ * @returns
  */
-function normalizePath(path: string, removeQuery?: boolean): string {
+function normalizePath(path: string, removeQuery?: boolean) {
 
     path = path.replace(window.location.origin, '')
     path = path.replace(options.base, '')
@@ -125,10 +126,9 @@ function normalizePath(path: string, removeQuery?: boolean): string {
  * Process URL and retrieve route params
  * @param path
  * @param match
+ * @returns
  */
-function paramsFor(path: string, match: { path: string }): Object {
-
-    const params = {}
+function paramsFor(path: string, match: { path: string }) {
 
     const parts = normalizePath(match.path, true)
         .split('/')
@@ -138,8 +138,10 @@ function paramsFor(path: string, match: { path: string }): Object {
         .split('/')
         .filter(Boolean)
 
-    url.forEach(function (value: string, index: number) {
-        if (parts[index] !== undefined && ':'.charCodeAt(0) === parts[index].charCodeAt(0)) {
+    const params: Record<string, string> = {}
+    url.forEach((value: string, index: number) => {
+        if (parts[index] !== undefined
+            && ':'.charCodeAt(0) === parts[index].charCodeAt(0)) {
             const key = parts[index].substring(1)
             params[key] = decodeURIComponent(value)
         }
@@ -151,18 +153,19 @@ function paramsFor(path: string, match: { path: string }): Object {
 /**
  * Process URL and retrieve query params
  * @param location
+ * @returns
  */
-function queryFor(location: string): Object {
+function queryFor(location: string) {
 
-    const query = {}
+    const query: Record<string, string> = {}
     let search = (location.indexOf('?') !== -1) ? location.split('?')[1] : ''
-    search = String(search).trim().replace(/^(\?|#|&)/, '')
+        search = String(search).trim().replace(/^(\?|#|&)/, '')
 
     if (search === '') {
         return query
     }
 
-    search.split('&').forEach(function (param) {
+    search.split('&').forEach((param) => {
 
         const parts = param.replace(/\+/g, ' ').split('=')
         const key = decodeURIComponent(parts.shift())
@@ -178,62 +181,11 @@ function queryFor(location: string): Object {
 }
 
 /**
- * Add callback before each route transition
- * @param callback
- */
-export function beforeChange(callback: Function) {
-    hook('routeBeforeChange', callback)
-}
-
-/**
- * Add callback after each route transition
- * @param callback
- */
-export function afterChange(callback: Function) {
-    hook('routeAfterChange', callback)
-}
-
-/**
- * Add route to routes
- * @param definition
- */
-export function add(definition: Array<Object> | Object) {
-
-    if (Array.isArray(definition)) {
-        return definition.forEach(function (item) {
-            add(item)
-        })
-    }
-
-    const route = Object.assign(
-        {},
-        _abstractRoute,
-        definition
-    )
-
-    route.path = normalizePath(route.path, true)
-
-    let regex = route.path
-    const pattern = ['(:[a-zA-Z]+)']
-    const replace = ['([^\/]+)']
-
-    pattern.forEach(function (value, index) {
-        regex = regex.replace(
-            new RegExp(value, 'g'), replace[index]
-        )
-    })
-
-    route.regex = new RegExp('^' + regex + '$', 'i')
-    _routes.push(route)
-
-}
-
-/**
  * Process route change
  * @param location
  * @param replace
  */
-export async function change(location: string, replace?: boolean) {
+async function change(location: string, replace?: boolean) {
 
     const routeChange = function () {
 
@@ -250,7 +202,6 @@ export async function change(location: string, replace?: boolean) {
         }
 
         const next = this.next
-
         if (!next) {
             return _active = null
         }
@@ -275,15 +226,23 @@ export async function change(location: string, replace?: boolean) {
             replace: replace
         }
 
-        // if (!change.next) {
-        //     throw 'Route not found: ' + location
-        // }
+        for (const callback of _after) {
+            try {
+                await callback.apply(change)
+            } catch (error) {
+                return Promise.reject(error)
+            }
+        }
 
-        await promises(change, [].concat(
-            hook('routeBeforeChange'),
-            [routeChange],
-            hook('routeAfterChange')
-        ))
+        await routeChange.apply(change)
+
+        for (const callback of _after) {
+            try {
+                await callback.apply(change)
+            } catch (error) {
+                return Promise.reject(error)
+            }
+        }
 
     } catch (error) {
         console.warn('[V] Route error:', error)
@@ -292,10 +251,56 @@ export async function change(location: string, replace?: boolean) {
 }
 
 /**
+ * Add callback before each route transition
+ * @param callback
+ */
+export function beforeChange(callback: Function) {
+    _before.push(callback)
+}
+
+/**
+ * Add callback after each route transition
+ * @param callback
+ */
+export function afterChange(callback: Function) {
+    _after.push(callback)
+}
+
+/**
+ * Add route to routes
+ * @param definition
+ */
+export function add(definition: AbstractRoute) {
+
+    const route = Object.assign(
+        {},
+        _abstractRoute,
+        definition
+    )
+
+    route.path = normalizePath(route.path, true)
+
+    let regex = route.path
+    const pattern = ['(:[a-zA-Z]+)']
+    const replace = ['([^\/]+)']
+
+    pattern.forEach((value, index) => {
+        regex = regex.replace(
+            new RegExp(value, 'g'), replace[index]
+        )
+    })
+
+    route.regex = new RegExp('^' + regex + '$', 'i')
+    _routes.push(route)
+
+}
+
+/**
  * Match the route based on given path
  * @param path
+ * @returns
  */
-export function match(path: string): null | Object {
+export function match(path: string): null | AbstractRoute {
 
     const url = normalizePath(path, true)
     let match = null
@@ -314,6 +319,7 @@ export function match(path: string): null | Object {
 
 /**
  * Return the current active route
+ * @returns
  */
 export function active(): AbstractRoute {
     return _active
@@ -354,30 +360,29 @@ export function back(delta?: number) {
 /**
  * Execute route change on popstate event
  */
-function popstate() {
+function onPopState() {
 
     if (options.prevent) {
         return
     }
 
-    const path = (options.mode === 'hash')
+    return change(
+        (options.mode === 'hash')
         ? window.location.hash.replace('#', '')
         : window.location.href
-
-    change(path)
-
+    )
 }
 
 /**
  * Execute route change on link click event
  * @param event
  */
-function linkClick(event: KeyboardEvent) {
+function onLinkClick(event: KeyboardEvent) {
 
     const link = (event.target as HTMLAnchorElement).closest('a')
     const location = window.location
 
-    const stripHash = function (location: Location | HTMLAnchorElement): String {
+    const stripHash = (location: Location | HTMLAnchorElement) => {
         return location.href.replace(/#.*/, '')
     }
 
@@ -425,8 +430,6 @@ function linkClick(event: KeyboardEvent) {
  * Attach events route automation
  */
 export function attachEvents() {
-
-    on(window, 'popstate', popstate)
-    on(document, 'click', 'a', linkClick)
-
+    on(window, 'popstate', onPopState)
+    on(document, 'click', 'a', onLinkClick)
 }

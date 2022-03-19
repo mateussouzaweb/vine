@@ -81,19 +81,19 @@ export async function register(selector: Selector, definition: {
 }) {
 
     if (!definition.selector) {
-        definition.selector = selector;
+        definition.selector = selector
     }
     if (!definition.namespace) {
         definition.namespace = Math.random().toString(16).substring(2, 10)
     }
     if (typeof definition.onMount !== 'function') {
-        definition.onMount = function () { }
+        definition.onMount = () => { }
     }
     if (typeof definition.onRender !== 'function') {
-        definition.onRender = function () { }
+        definition.onRender = () => { }
     }
     if (typeof definition.onDestroy !== 'function') {
-        definition.onDestroy = function () { }
+        definition.onDestroy = () => { }
     }
 
     _definitions.push(definition as Definition)

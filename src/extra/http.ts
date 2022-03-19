@@ -1,19 +1,19 @@
-import { promises } from "../core/promise"
-import { hook } from "../core/utils"
-
-interface RequestObject extends RequestInit {
+declare interface RequestObject extends RequestInit {
     method: string
     url: string
     data: BodyInit
     headers: HeadersInit
 }
 
+let _before: Array<Function> = []
+let _after: Array<Function> = []
+
 /**
  * Add interceptor callback before each HTTP request
  * @param callback
  */
 export function interceptBefore(callback: Function) {
-    hook('httpInterceptBefore', callback)
+    _before.push(callback)
 }
 
 /**
@@ -21,7 +21,7 @@ export function interceptBefore(callback: Function) {
  * @param callback
  */
 export function interceptAfter(callback: Function) {
-    hook('httpInterceptAfter', callback)
+    _after.push(callback)
 }
 
 /**
@@ -30,6 +30,7 @@ export function interceptAfter(callback: Function) {
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
 export async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit) {
 
@@ -40,7 +41,13 @@ export async function request(method: string, url: string, data?: BodyInit, head
         headers: headers
     }
 
-    await promises(request, hook('httpInterceptBefore'))
+    for (const callback of _before) {
+        try {
+            await callback.apply(request)
+        } catch (error) {
+            return Promise.reject(error)
+        }
+    }
 
     const options = Object.assign({}, request)
 
@@ -65,7 +72,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
         if (typeof request.data === 'string') {
             query = request.data
         } else if (request.data) {
-            query = Object.keys(request.data).map(function (k) {
+            query = Object.keys(request.data).map((k) => {
                 const _k = encodeURIComponent(k)
                 const _v = encodeURIComponent(request.data[k])
                 return _k + "=" + _v
@@ -93,7 +100,13 @@ export async function request(method: string, url: string, data?: BodyInit, head
         body: body
     }
 
-    await promises(details, hook('httpInterceptAfter'))
+    for (const callback of _after) {
+        try {
+            await callback.apply(details)
+        } catch (error) {
+            return Promise.reject(error)
+        }
+    }
 
     if (!response.ok) {
         throw details
@@ -107,9 +120,10 @@ export async function request(method: string, url: string, data?: BodyInit, head
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
-export function options(url: string, data?: BodyInit, headers?: HeadersInit) {
-    return request('OPTIONS', url, data, headers)
+export async function options(url: string, data?: BodyInit, headers?: HeadersInit) {
+    return await request('OPTIONS', url, data, headers)
 }
 
 /**
@@ -117,9 +131,10 @@ export function options(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
-export function head(url: string, data?: BodyInit, headers?: HeadersInit) {
-    return request('HEAD', url, data, headers)
+export async function head(url: string, data?: BodyInit, headers?: HeadersInit) {
+    return await request('HEAD', url, data, headers)
 }
 
 /**
@@ -127,9 +142,10 @@ export function head(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
-export function get(url: string, data?: BodyInit, headers?: HeadersInit) {
-    return request('GET', url, data, headers)
+export async function get(url: string, data?: BodyInit, headers?: HeadersInit) {
+    return await request('GET', url, data, headers)
 }
 
 /**
@@ -137,9 +153,10 @@ export function get(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
-export function post(url: string, data?: BodyInit, headers?: HeadersInit) {
-    return request('POST', url, data, headers)
+export async function post(url: string, data?: BodyInit, headers?: HeadersInit) {
+    return await request('POST', url, data, headers)
 }
 
 /**
@@ -147,9 +164,10 @@ export function post(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
-export function put(url: string, data?: BodyInit, headers?: HeadersInit) {
-    return request('PUT', url, data, headers)
+export async function put(url: string, data?: BodyInit, headers?: HeadersInit) {
+    return await request('PUT', url, data, headers)
 }
 
 /**
@@ -157,9 +175,10 @@ export function put(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
-export function patch(url: string, data?: BodyInit, headers?: HeadersInit) {
-    return request('PATCH', url, data, headers)
+export async function patch(url: string, data?: BodyInit, headers?: HeadersInit) {
+    return await request('PATCH', url, data, headers)
 }
 
 /**
@@ -167,7 +186,8 @@ export function patch(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param url
  * @param data
  * @param headers
+ * @returns
  */
-export function _delete(url: string, data?: BodyInit, headers?: HeadersInit) {
-    return request('DELETE', url, data, headers)
+export async function _delete(url: string, data?: BodyInit, headers?: HeadersInit) {
+    return await request('DELETE', url, data, headers)
 }

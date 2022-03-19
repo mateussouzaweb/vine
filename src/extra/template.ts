@@ -1,6 +1,4 @@
-import { each } from "./utils"
-
-const _helpers = {}
+let _helpers: Record<string,Function> = {}
 
 /**
  * Register a template helper
@@ -14,8 +12,9 @@ export function helper(key: string, callback?: Function) {
 /**
  * Clean line
  * @param line
+ * @returns
  */
-function clean(line: string): string {
+function clean(line: string) {
     return line
         .replace(/\s+/g, ' ') // Remove double space
         .replace(/^{{\s?/, '') // Remove starting tag
@@ -25,8 +24,9 @@ function clean(line: string): string {
 /**
  * Parse conditions in line
  * @param line
+ * @returns
  */
-function conditions(line: string): string {
+function parseConditions(line: string) {
     return line
         .replace(/^if\s?(.*)$/, 'if( $1 ){') // if condition
         .replace(/^elseif\s?(.*)$/, '}else if( $1 ){') // else if condition
@@ -37,8 +37,9 @@ function conditions(line: string): string {
 /**
  * Parse loops in line
  * @param line
+ * @returns
  */
-function loops(line: string): string {
+function parseLoops(line: string) {
     return line
         .replace(/^for\s?(.*)\sin\s(.*)$/, 'for( var $1 in $2 ){') // for condition
         .replace(/^each\s?(.*)\s?=>\s?(.*)\sin\s(.*)$/, 'for( var $1 in $3 ){ var $2 = $3[$1];') // each condition
@@ -48,11 +49,12 @@ function loops(line: string): string {
 /**
  * Find variables in line
  * @param line
+ * @returns
  */
-function variables(line: string): Array<string> {
+function findVariables(line: string) {
 
-    const vars = []
-    const add = function (regex: RegExp) {
+    const vars: Array<string> = []
+    const add = (regex: RegExp) => {
         const match = line.match(regex)
         if (match) {
             vars.push(match[1])
@@ -97,8 +99,9 @@ function variables(line: string): Array<string> {
  *
  * @param template
  * @param data
+ * @returns
  */
-export function template(template: string, data?: Object): string {
+export function parse(template: string, data?: Object) {
 
     let tagRegex = /{{([^}}]+)?}}/g
     let parser = []
@@ -110,23 +113,24 @@ export function template(template: string, data?: Object): string {
 
     data = Object.assign({}, _helpers, data || {})
 
-    each(data, function (_value, index) {
-        parser.push('var ' + index + ' = this["' + index + '"];')
-    })
+    const keys = Object.keys(data)
+    for (const key of keys) {
+        parser.push('var ' + key + ' = this["' + key + '"];')
+    }
 
     parser.push('var r = [];')
 
     while ((match = tagRegex.exec(template))) {
 
         line = clean(match[0])
-        line = conditions(line)
-        line = loops(line)
+        line = parseConditions(line)
+        line = parseLoops(line)
 
         before = template.slice(cursor, match.index)
         cursor = match.index + match[0].length
         parser.push('r.push(`' + before.replace(/"/g, '\\"') + '`);')
 
-        variables(line).filter(function (value) {
+        findVariables(line).filter((value) => {
             if (data[value] === undefined) {
                 parser.push('var ' + value + ';')
             }
@@ -144,10 +148,10 @@ export function template(template: string, data?: Object): string {
 
     try {
         const result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
-        return result
+        return result as string
     } catch (error) {
         console.warn('[V] template parser error:', template, error)
     }
 
-    return null
+    return ''
 }

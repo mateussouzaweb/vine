@@ -1,7 +1,12 @@
-import { $$$ } from './selector'
-import { NamespaceEvent, namespaceEvent } from './utils'
+import { $$ } from './selector'
 
-let _events = []
+declare interface Trigger {
+    event: string
+    namespace: string,
+    callback: Function
+}
+
+let _events: Array<Trigger> = []
 
 /**
  * Attach event to element
@@ -11,7 +16,13 @@ let _events = []
  * @param selector
  * @param callback
  */
-function _event(action: "add" | "remove", element: any, event: string, selector: string | Function, callback?: Function): Function {
+function _event(
+    action: "add" | "remove",
+    element: any,
+    event: string,
+    selector: string | Function,
+    callback?: Function
+) {
 
     const events = event.split(' ')
 
@@ -23,7 +34,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
         return
     }
 
-    const items = $$$(element)
+    const items = element instanceof Window ? [element] : $$(element)
     let handler: Function
 
     // Determine handler
@@ -36,53 +47,59 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
     } else {
 
         // Delegated
-        handler = function (_event: Event) {
-            const target = (_event.target as HTMLElement).closest(<string>selector)
+        handler = (event: Event) => {
+            const target = (event.target as HTMLElement).closest(<string>selector)
             if (target) {
-                callback.apply(target, [_event])
+                callback.apply(target, [event])
             }
         }
 
     }
 
-    const theEvent = namespaceEvent(event, handler)
+    const split = event.split('.')
+    const theEvent = split.shift()
+    const namespace = split.join('.')
 
     if (action === 'add') {
 
-        _events.push(theEvent)
+        _events.push({
+            event: theEvent,
+            namespace: namespace,
+            callback: handler
+        })
 
-        items.forEach(function (item) {
+        items.forEach((item: Node | Window) => {
             item.addEventListener(
-                theEvent.event,
-                theEvent.callback.bind(item),
+                theEvent,
+                handler.bind(item),
                 false
             )
         })
 
-    } else {
-
-        _events = _events.filter(function (watcher: NamespaceEvent) {
-
-            const pass = Boolean(
-                (theEvent.event ? theEvent.event !== watcher.event : true)
-                && (theEvent.namespace ? theEvent.namespace !== watcher.namespace : true)
-                && (typeof handler === 'function' ? handler !== watcher.callback : true)
-            )
-
-            if (!pass) {
-                items.forEach(function (item) {
-                    item.removeEventListener(
-                        watcher.event,
-                        watcher.callback.bind(item),
-                        false
-                    )
-                })
-            }
-
-            return pass
-        })
+        return handler;
 
     }
+
+    _events = _events.filter((watcher) => {
+
+        const pass = Boolean(
+            theEvent !== watcher.event
+            && (namespace === '' || namespace !== watcher.namespace)
+            && (typeof handler !== 'function' || handler !== watcher.callback)
+        )
+
+        if (!pass) {
+            items.forEach((item: Node | Window) => {
+                item.removeEventListener(
+                    watcher.event,
+                    watcher.callback.bind(item),
+                    false
+                )
+            })
+        }
+
+        return pass
+    })
 
     return handler
 }
@@ -94,7 +111,7 @@ function _event(action: "add" | "remove", element: any, event: string, selector:
  * @param selector
  * @param callback
  */
-export function on(element: any, event: string, selector: string | Function, callback?: Function): Function {
+export function on(element: any, event: string, selector: string | Function, callback?: Function) {
     return _event('add', element, event, selector, callback)
 }
 
@@ -105,7 +122,7 @@ export function on(element: any, event: string, selector: string | Function, cal
  * @param selector
  * @param callback
  */
-export function off(element: any, event: string, selector: string | Function, callback?: Function): Function {
+export function off(element: any, event: string, selector: string | Function, callback?: Function) {
     return _event('remove', element, event, selector, callback)
 }
 
@@ -115,15 +132,18 @@ export function off(element: any, event: string, selector: string | Function, ca
  * @param event
  * @param selector
  */
-export function trigger(element: any, event: string, selector?: string): void {
+export function trigger(element: any, event: string, selector?: string) {
 
-    const items = (selector) ? $$$(selector, element) : $$$(element)
+    const items = (selector !== undefined)
+        ? $$(selector, element)
+        : (element instanceof Window) ? [element] : $$(element)
+
     const theEvent = new Event(event, {
         'bubbles': true,
         'cancelable': true
     })
 
-    items.forEach(function (item) {
+    items.forEach((item: Node | Window) => {
         item.dispatchEvent(theEvent)
     })
 

@@ -1,52 +1,40 @@
-import { promisify } from "./promise"
-import { NamespaceEvent, namespaceEvent } from "./utils"
+declare interface Watcher {
+    event: string
+    callback: Function
+}
 
-let _watches = []
+let _watches: Array<Watcher> = []
 
 /**
  * Add watch to a event
- * @param theEvent
+ * @param event
  * @param callback
  */
-export function watch(theEvent: string, callback: Function): void {
-    _watches.push(namespaceEvent(theEvent, callback))
+export function watch(event: string, callback: Function) {
+    _watches.push({ event: event, callback: callback })
 }
 
 /**
  * Unwatch a event
- * @param theEvent
+ * @param event
  * @param callback
  */
-export function unwatch(theEvent: string, callback?: Function): void {
-
-    const event = namespaceEvent(theEvent, callback)
-
-    _watches = _watches.filter(function (watcher: NamespaceEvent) {
-        return Boolean(
-            (event.event ? event.event !== watcher.event : true)
-            && (event.namespace ? event.namespace !== watcher.namespace : true)
-            && (event.callback !== undefined ? event.callback !== watcher.callback : true)
-        )
+export function unwatch(event: string, callback?: Function) {
+    _watches = _watches.filter((watcher) => {
+        return event !== watcher.event
+            && (callback === undefined || callback !== watcher.callback)
     })
-
 }
 
 /**
  * Fire event data
- * @param theEvent
+ * @param event
  * @param data
  */
-export function fire(theEvent: string, data?: any): Promise<any> {
-
-    const event = namespaceEvent(theEvent)
-    const promises = []
-
-    _watches.forEach(function (watcher: NamespaceEvent) {
-        if ((event.event ? event.event === watcher.event : true)
-            && (event.namespace ? event.namespace === watcher.namespace : true)) {
-            promises.push(promisify({}, watcher.callback, [data]))
+export async function fire(event: string, data?: any) {
+    for (const watcher of _watches) {
+        if (event === watcher.event) {
+            await watcher.callback.apply({}, [data])
         }
-    })
-
-    return Promise.all(promises)
+    }
 }

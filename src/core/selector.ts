@@ -1,11 +1,12 @@
-type Context = HTMLElement | Document
-type SelectorContext = string | HTMLElement | Document
+declare type Selectable = HTMLElement | Element | Document
+declare type Context = string | Selectable
 
 /**
  * Retrieve the resolved valid context
  * @param context
+ * @returns
  */
-function getContext(context: SelectorContext): Context {
+function getContext(context?: Context): Selectable {
     context = (typeof context === 'string') ? $(context) : context
     context = (context instanceof Node) ? context : document
     return context
@@ -15,47 +16,32 @@ function getContext(context: SelectorContext): Context {
  * Select an single element
  * @param selector
  * @param context
+ * @returns
  */
-export function $(selector: string, context?: SelectorContext): HTMLElement {
+export function $(selector: string, context?: Context) {
     return getContext(context).querySelector(selector)
 }
 
 /**
- * Select multiples elements
+ * Select multiple elements
  * @param selector
  * @param context
+ * @returns
  */
-export function $$(selector: string, context?: SelectorContext): NodeListOf<HTMLElement> {
-    return getContext(context).querySelectorAll(selector)
-}
+export function $$(selector: any, context?: Context) {
 
-/**
- * Parse selector and return array of items
- * @param element
- * @param context
- */
-export function $$$(element: any, context?: SelectorContext): Array<HTMLElement> {
+    const items: Array<Selectable> = []
 
-    const items = []
-
-    if (typeof element === 'string') {
-        element = $$(element, context)
+    if (typeof selector === 'string') {
+        selector = getContext(context).querySelectorAll(selector)
     }
 
-    if (element instanceof Window) {
-        items.push(element)
+    if (selector instanceof Node) {
+        items.push(selector as Selectable)
     }
 
-    if (element instanceof Document) {
-        items.push(element)
-    }
-
-    if (element instanceof Element) {
-        items.push(element)
-    }
-
-    if (element instanceof NodeList) {
-        Array.prototype.forEach.call(element, function (item: HTMLElement) {
+    if (selector instanceof NodeList) {
+        Array.prototype.forEach.call(selector, (item: Selectable) => {
             items.push(item)
         })
     }

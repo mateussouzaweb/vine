@@ -10,19 +10,18 @@ Some of the features:
 
 - Very small memory usage.
 - Full async (everything can be asynchronous).
+- Optimized selector with context.
 - Event delegation by default.
-- Hookable and extendable system.
 - Components with `mount`, `render` and `destroy` events.
-- State management and events for components.
-- Template engine with IF/ELSE and FOR loops.
-- Route library.
+- State and template management for components.
+- Support to build observable event system.
+- Template parse engine with IF/ELSE and FOR loops.
+- Route handling library.
 - HTTP request library.
-- Local and session storage library.
-- Easy multi-components communication in a same element.
 
 ## Usage
 
-Simple put the distribution file in your project and start coding:
+Just put the distribution file in your project and start coding:
 
 ```html
 <script src="vanilla.min.js"></script>
@@ -33,50 +32,45 @@ Simple put the distribution file in your project and start coding:
 
 ## Component Lifecycle
 
-You can use the following cycle to understand how components works and attach the appropriated code to it:
+You can use the following cycle to understand how components work and attach the appropriate code when building components:
 
 ```html
-Construct ↓
+Register ↓
     ↓ Mount ↓
         ⇅ Render (Loop) ↺
     ↑ Destroy ↓
-Destruct
+UnRegister
 ```
 
-1 - CONSTRUCT
+1 - REGISTER
 
 - **Only once** without element attached
-- Setup component to be attached on elements
-- Component events: ``constructor``
+- Setup component to be attached to elements
 
 2 - MOUNT
 
 - **Only once** for each element attached
-- Useful to setup component events and initial data
-- Global events: ``beforeMount``, ``afterMount``
-- Component events: ``beforeMount``, ``onMount``, ``afterMount``
+- Useful to set up component events
+- Component event: ``onMount``
 
 3 - RENDER ↺
 
-- **After mount and each time the component state changes**
-- Calls mount/render on child components after render and wait for it
-- Condition events: ``shouldRender``
-- Global events: ``beforeRender``, ``afterRender``
-- Component events: ``template``, ``beforeRender``, ``onRender``, ``afterRender``
+- **After mount and each time the component renders again**
+- Update output from template
+- Calls lifecycle events on child components after render and wait for it
+- Component events: ``template``, ``onRender``
 
 4 - DESTROY
 
-- **Only once** for each attached element
-- Destroy the component from the element
+- **Only once** for each attached element if mounted
+- Destroys the component from the element
+- Can be mounted again later with new mounts
+- Destroy child components also and wait for it
 - Useful to remove component events
-- Component can be mounted again later with new mounts
-- Calls destroy on child components also and wait for it
-- Global events: ``beforeDestroy``, ``afterDestroy``
-- Component events: ``beforeDestroy``, ``onDestroy``, ``afterDestroy``
+- Component events: ``onDestroy``
 
-5 - REMOVE
+5 - UNREGISTER
 
-- If mounted, **only once** for each attached element
-- Remove the component from index and cannot be used again
-- This do not run the destroy lifecycle, you should call it first
-- Component events: ``destructor``
+- **Only once** without element attached
+- Removes the component definition from index, cannot be used again
+- This does not run the destroy lifecycle, you should call it first

@@ -1,85 +1,24 @@
 import { on } from "../core/events"
 
-declare interface AbstractRoute {
+declare interface Route {
     path: string
     regex: RegExp
-    _query: Object
-    _params: Object
-    param: Function
-    query: Function
-    location: Function
     [key: string]: any
 }
 
-/**
- * Abstract route
- * @private
- */
-const _abstractRoute: AbstractRoute = {
-
-    path: null,
-    regex: null,
-
-    _query: {},
-    _params: {},
-
-    /**
-     * Retrieve route param value
-     * @param name
-     */
-    param(name?: string): string {
-
-        if (name === undefined) {
-            return this._params
-        }
-
-        if (this._params[name] !== undefined) {
-            return this._params[name]
-        }
-
-        return undefined
-    },
-
-    /**
-     * Retrieve query value
-     * @param name
-     */
-    query(name?: string): string {
-
-        if (name === undefined) {
-            return this._query
-        }
-
-        if (this._query[name] !== undefined) {
-            return this._query[name]
-        }
-
-        return undefined
-    },
-
-    /**
-     * Retrieve parsed route path location
-     */
-    location(): string {
-
-        const params = this._params
-        let location = this.path
-
-        for (const key in params) {
-            if (params.hasOwnProperty(key)) {
-                location = location.replace(':' + key, params[key])
-            }
-        }
-
-        return location
-    }
-
+declare interface RouteChange {
+    previous: Route,
+    next: Route,
+    toLocation: string,
+    replace: boolean
 }
 
-let _routes: Array<AbstractRoute> = []
-let _before: Array<Function> = []
-let _after: Array<Function> = []
-let _active = _abstractRoute
+declare type Callback = (change: RouteChange) => void | Promise<void>
+
+let _routes: Array<Route> = []
+let _before: Array<Callback> = []
+let _after: Array<Callback> = []
+let _active: Route
 
 export const options = {
 
@@ -101,12 +40,28 @@ export const options = {
 }
 
 /**
+ * Add callback before each route transition
+ * @param callback
+ */
+ export function beforeChange(callback: Callback) {
+    _before.push(callback)
+}
+
+/**
+ * Add callback after each route transition
+ * @param callback
+ */
+export function afterChange(callback: Callback) {
+    _after.push(callback)
+}
+
+/**
  * Normalize string path
  * @param path
  * @param removeQuery
  * @returns
  */
-function normalizePath(path: string, removeQuery?: boolean) {
+export function normalizePath(path: string, removeQuery?: boolean) {
 
     path = path.replace(window.location.origin, '')
     path = path.replace(options.base, '')
@@ -125,16 +80,16 @@ function normalizePath(path: string, removeQuery?: boolean) {
 /**
  * Process URL and retrieve route params
  * @param path
- * @param match
+ * @param format
  * @returns
  */
-function paramsFor(path: string, match: { path: string }) {
+export function paramsFor(path: string, format: string) {
 
-    const parts = normalizePath(match.path, true)
+    const url = normalizePath(path, true)
         .split('/')
         .filter(Boolean)
 
-    const url = normalizePath(path, true)
+    const parts = normalizePath(format, true)
         .split('/')
         .filter(Boolean)
 
@@ -155,11 +110,11 @@ function paramsFor(path: string, match: { path: string }) {
  * @param location
  * @returns
  */
-function queryFor(location: string) {
+export function queryFor(location: string) {
 
     const query: Record<string, string> = {}
     let search = (location.indexOf('?') !== -1) ? location.split('?')[1] : ''
-        search = String(search).trim().replace(/^(\?|#|&)/, '')
+    search = String(search).trim().replace(/^(\?|#|&)/, '')
 
     if (search === '') {
         return query
@@ -181,102 +136,81 @@ function queryFor(location: string) {
 }
 
 /**
- * Process route change
- * @param location
- * @param replace
+ * Retrieve route param value
+ * @param name
+ * @param route
+ * @returns
  */
-async function change(location: string, replace?: boolean) {
+export function getParam(name?: string, route?: Route) {
 
-    const routeChange = function () {
-
-        if (this.replace) {
-            options.prevent = true
-
-            if (options.mode === 'history') {
-                history.pushState({}, null, this.location)
-            } else {
-                window.location.hash = this.location
-            }
-
-            options.prevent = false
-        }
-
-        const next = this.next
-        if (!next) {
-            return _active = null
-        }
-
-        const query = queryFor(this.location)
-        const params = paramsFor(this.location, next)
-
-        next._query = query
-        next._params = params
-        _active = next
-
+    if (route === undefined) {
+        route = active()
     }
 
-    try {
+    const params = paramsFor(route.location, route.path)
 
-        location = normalizePath(location)
-
-        const change = {
-            previous: _active,
-            next: match(location),
-            location: location,
-            replace: replace
-        }
-
-        for (const callback of _after) {
-            try {
-                await callback.apply(change)
-            } catch (error) {
-                return Promise.reject(error)
-            }
-        }
-
-        await routeChange.apply(change)
-
-        for (const callback of _after) {
-            try {
-                await callback.apply(change)
-            } catch (error) {
-                return Promise.reject(error)
-            }
-        }
-
-    } catch (error) {
-        console.warn('[V] Route error:', error)
+    if (name === undefined) {
+        return params
     }
 
+    return params[name]
 }
 
 /**
- * Add callback before each route transition
- * @param callback
+ * Retrieve query value
+ * @param name
+ * @param route
+ * @returns
  */
-export function beforeChange(callback: Function) {
-    _before.push(callback)
+export function getQuery(name?: string, route?: Route) {
+
+    if (route === undefined) {
+        route = active()
+    }
+
+    const query = queryFor(route.location)
+
+    if (name === undefined) {
+        return query
+    }
+
+    return query[name]
 }
 
 /**
- * Add callback after each route transition
- * @param callback
+ * Create and retrieve parsed route path location
+ * @param route
+ * @param params
+ * @returns
  */
-export function afterChange(callback: Function) {
-    _after.push(callback)
+export function getLocation(route?: Route, params?: Record<string, string>) {
+
+    if (route === undefined) {
+        route = active()
+    }
+
+    let theParams = (params !== undefined) ? params : paramsFor(route.location, route.path)
+    let location = route.path
+
+    for (const key in theParams) {
+        if (theParams.hasOwnProperty(key)) {
+            location = location.replace(':' + key, theParams[key])
+        }
+    }
+
+    return location
 }
 
 /**
  * Add route to routes
  * @param definition
  */
-export function add(definition: AbstractRoute) {
+export function add(definition: Route) {
 
-    const route = Object.assign(
-        {},
-        _abstractRoute,
-        definition
-    )
+    const route: Route = Object.assign({
+        path: '',
+        regex: ''
+    }, definition)
 
     route.path = normalizePath(route.path, true)
 
@@ -296,11 +230,11 @@ export function add(definition: AbstractRoute) {
 }
 
 /**
- * Match the route based on given path
+ * Match and return the route based on given path
  * @param path
  * @returns
  */
-export function match(path: string): null | AbstractRoute {
+export function match(path: string): null | Route {
 
     const url = normalizePath(path, true)
     let match = null
@@ -321,8 +255,65 @@ export function match(path: string): null | AbstractRoute {
  * Return the current active route
  * @returns
  */
-export function active(): AbstractRoute {
+export function active(): Route {
+
+    if (_active === null || _active === undefined) {
+        _active = { path: '', regex: new RegExp('') }
+    }
+
     return _active
+}
+
+/**
+ * Process route change
+ * @param toLocation
+ * @param replace
+ */
+export async function change(toLocation: string, replace?: boolean) {
+
+    try {
+
+        const change: RouteChange = {
+            previous: _active,
+            next: match(toLocation),
+            toLocation: normalizePath(toLocation),
+            replace: replace
+        }
+
+        for (const callback of _before) {
+            try {
+                await callback.apply({}, [change])
+            } catch (error) {
+                return Promise.reject(error)
+            }
+        }
+
+        if (change.replace) {
+            options.prevent = true
+
+            if (options.mode === 'history') {
+                history.pushState({}, null, change.toLocation)
+            } else {
+                window.location.hash = change.toLocation
+            }
+
+            options.prevent = false
+        }
+
+        _active = (change.next) ? change.next : null
+
+        for (const callback of _after) {
+            try {
+                await callback.apply({}, [change])
+            } catch (error) {
+                return Promise.reject(error)
+            }
+        }
+
+    } catch (error) {
+        console.warn('[V] Route error:', error)
+    }
+
 }
 
 /**
@@ -368,8 +359,8 @@ function onPopState() {
 
     return change(
         (options.mode === 'hash')
-        ? window.location.hash.replace('#', '')
-        : window.location.href
+            ? window.location.hash.replace('#', '')
+            : window.location.href
     )
 }
 
@@ -377,7 +368,7 @@ function onPopState() {
  * Execute route change on link click event
  * @param event
  */
-function onLinkClick(event: KeyboardEvent) {
+function onLinkClick(event: MouseEvent) {
 
     const link = (event.target as HTMLAnchorElement).closest('a')
     const location = window.location

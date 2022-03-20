@@ -1,18 +1,26 @@
-declare interface RequestObject extends RequestInit {
+declare interface RequestDetails extends RequestInit {
     method: string
     url: string
     data: BodyInit
     headers: HeadersInit
 }
 
-let _before: Array<Function> = []
-let _after: Array<Function> = []
+declare interface ResponseDetails {
+    request: RequestDetails
+    response: Response
+    body: string
+}
+
+declare type Callback = (details: RequestDetails | ResponseDetails) => void | Promise<void>
+
+let _before: Array<Callback> = []
+let _after: Array<Callback> = []
 
 /**
  * Add interceptor callback before each HTTP request
  * @param callback
  */
-export function interceptBefore(callback: Function) {
+export function interceptBefore(callback: Callback) {
     _before.push(callback)
 }
 
@@ -20,7 +28,7 @@ export function interceptBefore(callback: Function) {
  * Add interceptor callback after each HTTP request
  * @param callback
  */
-export function interceptAfter(callback: Function) {
+export function interceptAfter(callback: Callback) {
     _after.push(callback)
 }
 
@@ -34,21 +42,24 @@ export function interceptAfter(callback: Function) {
  */
 export async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit) {
 
-    const request: RequestObject = {
+    const request: RequestDetails = {
         method: method,
         url: url,
         data: data,
         headers: headers
     }
 
-    for (const callback of _before) {
-        try {
-            await callback.apply(request)
-        } catch (error) {
-            return Promise.reject(error)
+    const runInterceptors = async (callbacks: Array<Callback>, data: RequestDetails | ResponseDetails) => {
+        for (const callback of callbacks) {
+            try {
+                await callback.apply({}, data)
+            } catch (error) {
+                return Promise.reject(error)
+            }
         }
     }
 
+    await runInterceptors(_before, request)
     const options = Object.assign({}, request)
 
     delete options.url
@@ -94,19 +105,13 @@ export async function request(method: string, url: string, data?: BodyInit, head
     } catch (error) {
     }
 
-    const details = {
+    const details: ResponseDetails = {
         request: request,
         response: response,
         body: body
     }
 
-    for (const callback of _after) {
-        try {
-            await callback.apply(details)
-        } catch (error) {
-            return Promise.reject(error)
-        }
-    }
+    await runInterceptors(_after, details)
 
     if (!response.ok) {
         throw details

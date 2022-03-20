@@ -1,6 +1,6 @@
 /*! Vanilla UI - https://github.com/mateussouzaweb/vanilla-ui */
 
-export const __version = "1.1.0"
+export const __version = "2.0.0"
 
 export * from "./core/selector"
 export * from "./core/events"

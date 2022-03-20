@@ -1,32 +1,31 @@
-V.component('[data-route-view]', {
+Vine.register('[data-route-view]', {
 
     /**
      * After mount
      * Attach route component changes
      */
-    afterMount: function(){
+    onMount: function(component){
 
-        var self = this;
-        var element = self.element;
+        var element = component.element;
 
-        V.route.beforeChange(function(){
-            if( !this.next ){
-                this.next = V.route.match('404');
+        Vine.Route.beforeChange(function(change){
+            if( !change.next ){
+                change.next = Vine.Route.match('404');
             }
         });
 
-        V.route.afterChange(async function(){
+        Vine.Route.afterChange(async function(change){
 
-            var previous = this.previous;
-            var next = this.next;
+            var previous = change.previous;
+            var next = change.next;
 
             if (previous && previous.component) {
-                await V.destroy(element);
+                await Vine.destroy(element);
             }
 
             if (next && next.component) {
                 element.innerHTML = next.component;
-                await V.mount(element);
+                await Vine.mount(element);
             }
 
         });

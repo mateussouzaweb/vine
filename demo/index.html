@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Vanilla UI Demo</title>
+    <title>Vine Demo</title>
 
-    <script src="../dist/vanilla.js"></script>
+    <script src="../dist/vine.js"></script>
     <script src="./route.view.js"></script>
 
 </head>
@@ -30,29 +30,27 @@
     </section>
 
     <script>
-    // V.on('button', 'click', function(){
+    // Vine.on('button', 'click', function(){
     //     console.log('button clicked. Default', this);
     // });
-    // V.on('section', 'click', 'button', function(){
+    // Vine.on('section', 'click', 'button', function(){
     //     console.log('button clicked. Section delegate', this);
     // });
-    // V.on('section', 'click', function(){
+    // Vine.on('section', 'click', function(){
     //     console.log('section clicked. Default', this);
     // });
-    // V.on(document, 'click', 'section', function(){
+    // Vine.on(document, 'click', 'section', function(){
     //     console.log('section clicked. Document delegate', this);
     // });
-    // V.on(document, 'click', function(){
+    // Vine.on(document, 'click', function(){
     //     console.log('document clicked. Default', this);
     // });
-    // V.on(window, 'click', function(){
+    // Vine.on(window, 'click', function(){
     //     console.log('window clicked. Default', this);
     // });
 
-    V.http.interceptBefore(function(){
-
-        console.log('HTTP intercept before');
-
+    Vine.HTTP.interceptBefore(function(request){
+        console.log('HTTP intercept before', request);
         return new Promise(function(resolve){
             window.setTimeout(function(){
                 console.log('After 1s...')
@@ -61,57 +59,59 @@
         })
     });
 
-    V.http.interceptAfter(function(){
+    Vine.HTTP.interceptAfter(function(result){
         console.log('HTTP intercept after');
-        console.log('HTTP is', this);
+        console.log('HTTP is', result);
     });
 
-    V.component('[data-home]', {
-        template: function(){
-            return 'Home'
-        },
+    Vine.register('[data-home]', {
+        template: 'Home',
         onRender: function(){
-            V.http.get('https://jsonplaceholder.typicode.com/todos/1')
-                .then(json => console.log(json));
+            Vine.HTTP.get('https://jsonplaceholder.typicode.com/todos/1')
+                .then(json => console.log('API response', json));
         }
     });
 
-    V.component('[data-episode]', {
-        template: function(){
-            return 'Episode {{ episodeId }}'
+    Vine.register('[data-episode]', {
+        template: function(component){
+            return Vine.Engine.parse('Episode {{ episodeId }}', component.state)
         },
-        beforeRender: function(){
-            this.set('episodeId', V.route.active().param('episodeId'))
+        onMount: function(component){
+            component.state = {
+                'episodeId': Vine.Route.getParam('episodeId')
+            }
         }
     });
 
-    V.component('[data-404]', {
+    Vine.register('[data-404]', {
         template: function(){
             return 'Ops, not found... 404'
         }
     });
 
     // Routes
-    V.route.mode = 'hash';
-    V.route.add({
+    Vine.Route.add({
         path: '/home',
         component: '<div data-home></div>'
     });
-    V.route.add({
+    Vine.Route.add({
         path: '/episode/:episodeId',
         component: '<div data-episode></div>'
     });
-    V.route.add({
+    Vine.Route.add({
         path: '/404',
         component: '<div data-404></div>'
     });
 
-    V.on(window, 'load', function() {
+    Vine.on(window, 'load', function() {
 
-        V.route.attachEvents()
-        V.mount(document.body).then(function(){
+        Vine.Route.init({
+            mode: 'hash'
+        })
+
+        Vine.mount(document.body).then(function(){
             console.log('Body mounted');
-            V.trigger(window, 'popstate');
+            Vine.trigger(window, 'popstate');
         });
 
     });

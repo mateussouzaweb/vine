@@ -280,41 +280,35 @@ async function change(toLocation: string, replace?: boolean) {
         }
     }
 
-    try {
-
-        const next = match(toLocation)
-        if( next !== null ){
-            next.location = toLocation
-        }
-
-        const change: RouteChange = {
-            previous: _active,
-            next: next,
-            toLocation: normalizePath(toLocation),
-            replace: replace
-        }
-
-        await runWatchers(_routeBefore, change)
-
-        if (change.replace) {
-            _options.prevent = true
-
-            if (_options.mode === 'history') {
-                history.pushState({}, null, change.toLocation)
-            } else {
-                window.location.hash = change.toLocation
-            }
-
-            _options.prevent = false
-        }
-
-        _active = (change.next) ? change.next : null
-
-        await runWatchers(_routeAfter, change)
-
-    } catch (error) {
-        console.warn('[VINE] Route error:', error)
+    const next = match(toLocation)
+    if( next !== null ){
+        next.location = toLocation
     }
+
+    const change: RouteChange = {
+        previous: _active,
+        next: next,
+        toLocation: normalizePath(toLocation),
+        replace: replace
+    }
+
+    await runWatchers(_routeBefore, change)
+
+    if (change.replace) {
+        _options.prevent = true
+
+        if (_options.mode === 'history') {
+            history.pushState({}, null, change.toLocation)
+        } else {
+            window.location.hash = change.toLocation
+        }
+
+        _options.prevent = false
+    }
+
+    _active = (change.next) ? change.next : null
+
+    await runWatchers(_routeAfter, change)
 
 }
 

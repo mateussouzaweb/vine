@@ -145,15 +145,9 @@ function parse(template: string, data?: Object) {
     parser.push('return r.join("");')
 
     const code = parser.join("\n")
+    const result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
 
-    try {
-        const result = new Function(code.replace(/[\r\t\n]/g, '')).apply(data || {})
-        return result as string
-    } catch (error) {
-        console.warn('[V] template parser error:', template, error)
-    }
-
-    return ''
+    return result as string
 }
 
 export const Engine = {

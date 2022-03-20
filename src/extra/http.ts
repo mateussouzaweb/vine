@@ -52,7 +52,7 @@ async function request(method: string, url: string, data?: BodyInit, headers?: H
     const runInterceptors = async (callbacks: Array<HTTPCallback>, data: HTTPRequest | HTTPResult) => {
         for (const callback of callbacks) {
             try {
-                await callback.apply({}, data)
+                await callback.apply({}, [data])
             } catch (error) {
                 return Promise.reject(error)
             }

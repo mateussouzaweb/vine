@@ -1,3 +1,5 @@
+import { $$ } from "./selector"
+
 declare type SelectorType = string | Array<string>
 declare type SelectorFunction = () => SelectorType | Promise<SelectorType>
 declare type Selector = SelectorType | SelectorFunction
@@ -41,10 +43,10 @@ const _definitions: Array<Definition> = []
  * @param data
  * @returns
  */
-async function solveResult(value: any, data?: Array<any>) {
+async function solveResult(value: any, data?: any) {
     try {
         if (typeof value === 'function') {
-            return await value.apply({}, data)
+            return await value.apply({}, [data])
         }
         return value
     } catch (error) {
@@ -99,9 +101,9 @@ async function register(selector: Selector, definition: {
 }
 
 /**
- * Remove the registered component definition
- * This method will not destroy current instances of the matching selector
- * You must destroy the current live components first if there is any
+ * Remove the registered component definition.
+ * This method will not destroy current instances of the matching selector.
+ * You must destroy the current live components first if there is any.
  * Tip: you can do it using the ${selector} as resolve function
  * @param selector
  */
@@ -122,9 +124,9 @@ async function unregister(selector: Selector) {
 }
 
 /**
- * Render the component by updating its final HTML
- * Also destroy and mount child elements if necessary
- * You must provide the final parsed template with the replaced state
+ * Render the component by updating its final HTML.
+ * Also destroy and mount child elements if necessary.
+ * You must provide the final parsed template with the replaced state.
  * Tip: Use the component template as function when need to replace state
  * @param component
  * @param callback
@@ -132,7 +134,7 @@ async function unregister(selector: Selector) {
 async function render(component: Component, callback: Callback) {
 
     // Fetch live template
-    const result = await solveResult(component.template, [component])
+    const result = await solveResult(component.template, component)
 
     // If has no valid result, no need to continue
     if (typeof result !== 'string') {
@@ -167,14 +169,13 @@ async function mount(target: Element) {
     for (const definition of _definitions) {
 
         const selector = await solveSelector(definition.selector)
-        const found = target.querySelectorAll(selector.join(', '))
-        const callbacks: Array<Function> = []
+        const found = $$(selector.join(', '), target) as Array<WithComponents>
 
         const namespace = definition.namespace
         const onMount = definition.onMount
         const onRender = definition.onRender
 
-        found.forEach(async (element: WithComponents) => {
+        for (const element of found) {
 
             if (element.__components === undefined) {
                 element.__components = {}
@@ -213,15 +214,11 @@ async function mount(target: Element) {
 
             element.__components[namespace] = component
 
-            callbacks.push(async () => {
-                await onMount(component)
-                isMounting = false
-                await render(component, onRender)
-            })
+            await onMount(component)
+            isMounting = false
+            await render(component, onRender)
 
-        })
-
-        await Promise.all(callbacks)
+        }
 
     }
 
@@ -236,13 +233,12 @@ async function destroy(target: Element) {
     for (const definition of _definitions) {
 
         const selector = await solveSelector(definition.selector)
-        const found = target.querySelectorAll(selector.join(', '))
-        const callbacks: Array<Function> = []
+        const found = $$(selector.join(', '), target) as Array<WithComponents>
 
         const namespace = definition.namespace
         const onDestroy = definition.onDestroy
 
-        found.forEach(async (element: WithComponents) => {
+        for (const element of found) {
 
             // Component not mounted yet
             if (element.__components === undefined) {
@@ -254,15 +250,10 @@ async function destroy(target: Element) {
 
             // Destroy the component instance
             const component = element.__components[namespace]
+            await onDestroy(component)
+            delete element.__components[namespace]
 
-            callbacks.push(async () => {
-                await onDestroy(component)
-                delete element.__components[namespace]
-            })
-
-        })
-
-        await Promise.all(callbacks)
+        }
 
     }
 

@@ -3,6 +3,7 @@ import { on } from "../core/events"
 declare interface RoutePath {
     path: string
     regex: RegExp
+    location?: string,
     [key: string]: any
 }
 
@@ -256,7 +257,7 @@ function match(path: string): null | RoutePath {
 function active(): RoutePath {
 
     if (_active === null || _active === undefined) {
-        _active = { path: '', regex: new RegExp('') }
+        _active = { path: '', regex: new RegExp(''), location: '' }
     }
 
     return _active
@@ -281,9 +282,14 @@ async function change(toLocation: string, replace?: boolean) {
 
     try {
 
+        const next = match(toLocation)
+        if( next !== null ){
+            next.location = toLocation
+        }
+
         const change: RouteChange = {
             previous: _active,
-            next: match(toLocation),
+            next: next,
             toLocation: normalizePath(toLocation),
             replace: replace
         }

@@ -75,7 +75,7 @@ function findVariables(line: string) {
 }
 
 /**
- * Parse a template with custom data
+ * Parse a template with custom data.
  * Template patterns:
  *
  * {{ VARIABLE }} - simple variable

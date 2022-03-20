@@ -1,26 +1,26 @@
-declare interface RequestDetails extends RequestInit {
+declare interface HTTPRequest extends RequestInit {
     method: string
     url: string
     data: BodyInit
     headers: HeadersInit
 }
 
-declare interface ResponseDetails {
-    request: RequestDetails
+declare interface HTTPResult {
+    request: HTTPRequest
     response: Response
     body: string
 }
 
-declare type Callback = (details: RequestDetails | ResponseDetails) => void | Promise<void>
+declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promise<void>
 
-let _before: Array<Callback> = []
-let _after: Array<Callback> = []
+let _before: Array<HTTPCallback> = []
+let _after: Array<HTTPCallback> = []
 
 /**
  * Add interceptor callback before each HTTP request
  * @param callback
  */
-export function interceptBefore(callback: Callback) {
+export function interceptBefore(callback: HTTPCallback) {
     _before.push(callback)
 }
 
@@ -28,7 +28,7 @@ export function interceptBefore(callback: Callback) {
  * Add interceptor callback after each HTTP request
  * @param callback
  */
-export function interceptAfter(callback: Callback) {
+export function interceptAfter(callback: HTTPCallback) {
     _after.push(callback)
 }
 
@@ -42,14 +42,14 @@ export function interceptAfter(callback: Callback) {
  */
 export async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit) {
 
-    const request: RequestDetails = {
+    const request: HTTPRequest = {
         method: method,
         url: url,
         data: data,
         headers: headers
     }
 
-    const runInterceptors = async (callbacks: Array<Callback>, data: RequestDetails | ResponseDetails) => {
+    const runInterceptors = async (callbacks: Array<HTTPCallback>, data: HTTPRequest | HTTPResult) => {
         for (const callback of callbacks) {
             try {
                 await callback.apply({}, data)
@@ -105,7 +105,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
     } catch (error) {
     }
 
-    const details: ResponseDetails = {
+    const details: HTTPResult = {
         request: request,
         response: response,
         body: body

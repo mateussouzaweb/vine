@@ -6,18 +6,18 @@ declare interface Route {
     [key: string]: any
 }
 
-declare interface Change {
+declare interface RouteChange {
     previous: Route,
     next: Route,
     toLocation: string,
     replace: boolean
 }
 
-declare type Callback = (change: Change) => void | Promise<void>
+declare type RouteCallback = (change: RouteChange) => void | Promise<void>
 
 let _routes: Array<Route> = []
-let _before: Array<Callback> = []
-let _after: Array<Callback> = []
+let _before: Array<RouteCallback> = []
+let _after: Array<RouteCallback> = []
 let _active: Route
 
 export const options = {
@@ -43,7 +43,7 @@ export const options = {
  * Add callback before each route transition
  * @param callback
  */
-export function beforeChange(callback: Callback) {
+export function beforeRouteChange(callback: RouteCallback) {
     _before.push(callback)
 }
 
@@ -51,7 +51,7 @@ export function beforeChange(callback: Callback) {
  * Add callback after each route transition
  * @param callback
  */
-export function afterChange(callback: Callback) {
+export function afterRouteChange(callback: RouteCallback) {
     _after.push(callback)
 }
 
@@ -269,7 +269,7 @@ export function active(): Route {
  */
 export async function change(toLocation: string, replace?: boolean) {
 
-    const runWatchers = async (callbacks: Array<Callback>, change: Change) => {
+    const runWatchers = async (callbacks: Array<RouteCallback>, change: RouteChange) => {
         for (const callback of callbacks) {
             try {
                 await callback.apply({}, [change])
@@ -281,7 +281,7 @@ export async function change(toLocation: string, replace?: boolean) {
 
     try {
 
-        const change: Change = {
+        const change: RouteChange = {
             previous: _active,
             next: match(toLocation),
             toLocation: normalizePath(toLocation),

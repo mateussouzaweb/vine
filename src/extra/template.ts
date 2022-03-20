@@ -1,4 +1,4 @@
-let _helpers: Record<string,Function> = {}
+let _helpers: Record<string, Function> = {}
 
 /**
  * Register a template helper

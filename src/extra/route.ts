@@ -6,14 +6,14 @@ declare interface Route {
     [key: string]: any
 }
 
-declare interface RouteChange {
+declare interface Change {
     previous: Route,
     next: Route,
     toLocation: string,
     replace: boolean
 }
 
-declare type Callback = (change: RouteChange) => void | Promise<void>
+declare type Callback = (change: Change) => void | Promise<void>
 
 let _routes: Array<Route> = []
 let _before: Array<Callback> = []
@@ -43,7 +43,7 @@ export const options = {
  * Add callback before each route transition
  * @param callback
  */
- export function beforeChange(callback: Callback) {
+export function beforeChange(callback: Callback) {
     _before.push(callback)
 }
 
@@ -239,9 +239,7 @@ export function match(path: string): null | Route {
     const url = normalizePath(path, true)
     let match = null
 
-    for (let index = 0; index < _routes.length; index++) {
-        const item = _routes[index]
-
+    for (const item of _routes) {
         if (url.match(item.regex)) {
             match = item
             break
@@ -271,22 +269,26 @@ export function active(): Route {
  */
 export async function change(toLocation: string, replace?: boolean) {
 
-    try {
-
-        const change: RouteChange = {
-            previous: _active,
-            next: match(toLocation),
-            toLocation: normalizePath(toLocation),
-            replace: replace
-        }
-
-        for (const callback of _before) {
+    const runWatchers = async (callbacks: Array<Callback>, change: Change) => {
+        for (const callback of callbacks) {
             try {
                 await callback.apply({}, [change])
             } catch (error) {
                 return Promise.reject(error)
             }
         }
+    }
+
+    try {
+
+        const change: Change = {
+            previous: _active,
+            next: match(toLocation),
+            toLocation: normalizePath(toLocation),
+            replace: replace
+        }
+
+        await runWatchers(_before, change)
 
         if (change.replace) {
             options.prevent = true
@@ -302,13 +304,7 @@ export async function change(toLocation: string, replace?: boolean) {
 
         _active = (change.next) ? change.next : null
 
-        for (const callback of _after) {
-            try {
-                await callback.apply({}, [change])
-            } catch (error) {
-                return Promise.reject(error)
-            }
-        }
+        await runWatchers(_after, change)
 
     } catch (error) {
         console.warn('[V] Route error:', error)

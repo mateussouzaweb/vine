@@ -45,7 +45,7 @@ const _definitions: Array<Definition> = []
  */
 async function solveResult(value: any, data?: Array<any>) {
     try {
-        if( typeof value === 'function' ){
+        if (typeof value === 'function') {
             return await value.apply({}, data)
         }
         return value
@@ -111,12 +111,13 @@ export async function unregister(selector: Selector) {
 
     const solved = await solveSelector(selector)
 
-    for (const [index, definition] of _definitions.entries()) {
+    for (let i = 0; i < _definitions.length; i++) {
+        const definition = _definitions[i]
         const definitionSolved = await solveSelector(definition.selector)
         const match = definitionSolved.some((item) => solved.indexOf(item) !== -1)
 
         if (match) {
-            delete _definitions[index]
+            delete _definitions[i]
         }
     }
 
@@ -169,7 +170,7 @@ export async function mount(target: Element) {
 
         const selector = await solveSelector(definition.selector)
         const found = target.querySelectorAll(selector.join(', '))
-        const callbacks = []
+        const callbacks: Array<Function> = []
 
         const namespace = definition.namespace
         const onMount = definition.onMount
@@ -238,7 +239,7 @@ export async function destroy(target: Element) {
 
         const selector = await solveSelector(definition.selector)
         const found = target.querySelectorAll(selector.join(', '))
-        const callbacks = []
+        const callbacks: Array<Function> = []
 
         const namespace = definition.namespace
         const onDestroy = definition.onDestroy

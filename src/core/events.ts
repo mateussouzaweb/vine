@@ -28,8 +28,8 @@ function _event(
 
     // Multi events
     if (events.length > 1) {
-        for (let i = 0; i < events.length; i++) {
-            _event(action, element, events[i], selector, callback)
+        for (const theEvent of events) {
+            _event(action, element, theEvent, selector, callback)
         }
         return
     }

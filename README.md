@@ -1,10 +1,11 @@
-# Vanilla UI
+# Vine Framework
 
-Easy and functional vanilla JS components to simplify your life:
+Tiny, easy and functional JS framework to simplify the building of enhanced web projects:
 
 - Just works, super easy usage.
-- No need of NPM scripts, build tools, anything.
 - Zero dependencies, including module loaders.
+- Import directly as Typescript.
+- Or use the compiled Javascript code.
 
 Some of the features:
 
@@ -24,9 +25,9 @@ Some of the features:
 Just put the distribution file in your project and start coding:
 
 ```html
-<script src="vanilla.min.js"></script>
+<script src="vine.min.js"></script>
 <script>
-    V... // Your code goes here
+    Vine... // Your code goes here
 </script>
 ```
 

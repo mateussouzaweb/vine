@@ -13,6 +13,8 @@ declare interface HTTPResult {
 
 declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promise<void>
 
+export type { HTTPRequest, HTTPResult, HTTPCallback }
+
 let _before: Array<HTTPCallback> = []
 let _after: Array<HTTPCallback> = []
 

@@ -6,6 +6,8 @@ declare interface Trigger {
     callback: Function
 }
 
+export type { Trigger }
+
 let _events: Array<Trigger> = []
 
 /**

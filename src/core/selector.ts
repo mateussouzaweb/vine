@@ -1,6 +1,8 @@
 declare type Selectable = HTMLElement | Element | Document
 declare type Context = string | Selectable
 
+export type { Selectable, Context }
+
 /**
  * Retrieve the resolved valid context
  * @param context

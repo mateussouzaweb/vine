@@ -3,6 +3,8 @@ declare interface Watcher {
     callback: Function
 }
 
+export type { Watcher }
+
 let _watches: Array<Watcher> = []
 
 /**

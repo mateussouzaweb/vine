@@ -15,6 +15,8 @@ declare interface RouteChange {
 
 declare type RouteCallback = (change: RouteChange) => void | Promise<void>
 
+export type { Route, RouteChange, RouteCallback }
+
 let _routes: Array<Route> = []
 let _before: Array<RouteCallback> = []
 let _after: Array<RouteCallback> = []

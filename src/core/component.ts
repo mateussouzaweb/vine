@@ -27,10 +27,8 @@ declare type Definition = {
 }
 
 declare interface WithComponents extends Element {
-    __components: Record<string, Component>
+    __components?: Record<string, Component>
 }
-
-export type { Selector, Template, State, Callback }
 
 /**
  * Store registered definitions
@@ -70,7 +68,7 @@ async function solveSelector(selector: Selector) {
  * @param selector
  * @param definition
  */
-export async function register(selector: Selector, definition: {
+async function register(selector: Selector, definition: {
     selector?: Selector,
     namespace?: string,
     state?: State,
@@ -107,7 +105,7 @@ export async function register(selector: Selector, definition: {
  * Tip: you can do it using the ${selector} as resolve function
  * @param selector
  */
-export async function unregister(selector: Selector) {
+async function unregister(selector: Selector) {
 
     const solved = await solveSelector(selector)
 
@@ -131,7 +129,7 @@ export async function unregister(selector: Selector) {
  * @param component
  * @param callback
  */
-export async function render(component: Component, callback: Callback) {
+async function render(component: Component, callback: Callback) {
 
     // Fetch live template
     const result = await solveResult(component.template, [component])
@@ -164,7 +162,7 @@ export async function render(component: Component, callback: Callback) {
  * Mount components on given target element
  * @param target
  */
-export async function mount(target: Element) {
+async function mount(target: Element) {
 
     for (const definition of _definitions) {
 
@@ -233,7 +231,7 @@ export async function mount(target: Element) {
  * Destroy components on given target element
  * @param target
  */
-export async function destroy(target: Element) {
+async function destroy(target: Element) {
 
     for (const definition of _definitions) {
 
@@ -269,3 +267,6 @@ export async function destroy(target: Element) {
     }
 
 }
+
+export type { Selector, Template, State, Callback }
+export { register, unregister, render, mount, destroy }

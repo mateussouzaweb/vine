@@ -1,11 +1,8 @@
 {
     "compilerOptions": {
-        "target": "ES6",
-        "module": "ES6",
         "lib": [
-            "DOM",
-            "ES6",
-            "ScriptHost"
+            "ES2018",
+            "DOM"
         ],
     },
     "include": ["src/**/*"]

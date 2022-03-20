@@ -5,7 +5,7 @@ let _helpers: Record<string, Function> = {}
  * @param key
  * @param callback
  */
-export function helper(key: string, callback?: Function) {
+function helper(key: string, callback?: Function) {
     _helpers[key] = callback
 }
 
@@ -101,7 +101,7 @@ function findVariables(line: string) {
  * @param data
  * @returns
  */
-export function parse(template: string, data?: Object) {
+function parse(template: string, data?: Object) {
 
     let tagRegex = /{{([^}}]+)?}}/g
     let parser = []
@@ -154,4 +154,9 @@ export function parse(template: string, data?: Object) {
     }
 
     return ''
+}
+
+export const Engine = {
+    helper,
+    parse
 }

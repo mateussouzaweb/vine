@@ -1,28 +1,26 @@
 import { on } from "../core/events"
 
-declare interface Route {
+declare interface RoutePath {
     path: string
     regex: RegExp
     [key: string]: any
 }
 
 declare interface RouteChange {
-    previous: Route,
-    next: Route,
+    previous: RoutePath,
+    next: RoutePath,
     toLocation: string,
     replace: boolean
 }
 
 declare type RouteCallback = (change: RouteChange) => void | Promise<void>
 
-export type { Route, RouteChange, RouteCallback }
+let _routes: Array<RoutePath> = []
+let _routeBefore: Array<RouteCallback> = []
+let _routeAfter: Array<RouteCallback> = []
+let _active: RoutePath
 
-let _routes: Array<Route> = []
-let _before: Array<RouteCallback> = []
-let _after: Array<RouteCallback> = []
-let _active: Route
-
-export const options = {
+const _options = {
 
     /**
      * Route mode definition
@@ -45,16 +43,16 @@ export const options = {
  * Add callback before each route transition
  * @param callback
  */
-export function beforeRouteChange(callback: RouteCallback) {
-    _before.push(callback)
+function beforeChange(callback: RouteCallback) {
+    _routeBefore.push(callback)
 }
 
 /**
  * Add callback after each route transition
  * @param callback
  */
-export function afterRouteChange(callback: RouteCallback) {
-    _after.push(callback)
+function afterChange(callback: RouteCallback) {
+    _routeAfter.push(callback)
 }
 
 /**
@@ -63,10 +61,10 @@ export function afterRouteChange(callback: RouteCallback) {
  * @param removeQuery
  * @returns
  */
-export function normalizePath(path: string, removeQuery?: boolean) {
+function normalizePath(path: string, removeQuery?: boolean) {
 
     path = path.replace(window.location.origin, '')
-    path = path.replace(options.base, '')
+    path = path.replace(_options.base, '')
     path = path.replace('/?', '?')
     path = path.replace(new RegExp('[/]*$'), '')
     path = path.replace(new RegExp('^[/]*'), '')
@@ -85,7 +83,7 @@ export function normalizePath(path: string, removeQuery?: boolean) {
  * @param format
  * @returns
  */
-export function paramsFor(path: string, format: string) {
+function paramsFor(path: string, format: string) {
 
     const url = normalizePath(path, true)
         .split('/')
@@ -112,7 +110,7 @@ export function paramsFor(path: string, format: string) {
  * @param location
  * @returns
  */
-export function queryFor(location: string) {
+function queryFor(location: string) {
 
     const query: Record<string, string> = {}
     let search = (location.indexOf('?') !== -1) ? location.split('?')[1] : ''
@@ -143,7 +141,7 @@ export function queryFor(location: string) {
  * @param route
  * @returns
  */
-export function getParam(name?: string, route?: Route) {
+function getParam(name?: string, route?: RoutePath) {
 
     if (route === undefined) {
         route = active()
@@ -164,7 +162,7 @@ export function getParam(name?: string, route?: Route) {
  * @param route
  * @returns
  */
-export function getQuery(name?: string, route?: Route) {
+function getQuery(name?: string, route?: RoutePath) {
 
     if (route === undefined) {
         route = active()
@@ -185,7 +183,7 @@ export function getQuery(name?: string, route?: Route) {
  * @param params
  * @returns
  */
-export function getLocation(route?: Route, params?: Record<string, string>) {
+function getLocation(route?: RoutePath, params?: Record<string, string>) {
 
     if (route === undefined) {
         route = active()
@@ -207,9 +205,9 @@ export function getLocation(route?: Route, params?: Record<string, string>) {
  * Add route to routes
  * @param definition
  */
-export function add(definition: Route) {
+function add(definition: RoutePath) {
 
-    const route: Route = Object.assign({
+    const route: RoutePath = Object.assign({
         path: '',
         regex: ''
     }, definition)
@@ -236,7 +234,7 @@ export function add(definition: Route) {
  * @param path
  * @returns
  */
-export function match(path: string): null | Route {
+function match(path: string): null | RoutePath {
 
     const url = normalizePath(path, true)
     let match = null
@@ -255,7 +253,7 @@ export function match(path: string): null | Route {
  * Return the current active route
  * @returns
  */
-export function active(): Route {
+function active(): RoutePath {
 
     if (_active === null || _active === undefined) {
         _active = { path: '', regex: new RegExp('') }
@@ -269,7 +267,7 @@ export function active(): Route {
  * @param toLocation
  * @param replace
  */
-export async function change(toLocation: string, replace?: boolean) {
+async function change(toLocation: string, replace?: boolean) {
 
     const runWatchers = async (callbacks: Array<RouteCallback>, change: RouteChange) => {
         for (const callback of callbacks) {
@@ -290,26 +288,26 @@ export async function change(toLocation: string, replace?: boolean) {
             replace: replace
         }
 
-        await runWatchers(_before, change)
+        await runWatchers(_routeBefore, change)
 
         if (change.replace) {
-            options.prevent = true
+            _options.prevent = true
 
-            if (options.mode === 'history') {
+            if (_options.mode === 'history') {
                 history.pushState({}, null, change.toLocation)
             } else {
                 window.location.hash = change.toLocation
             }
 
-            options.prevent = false
+            _options.prevent = false
         }
 
         _active = (change.next) ? change.next : null
 
-        await runWatchers(_after, change)
+        await runWatchers(_routeAfter, change)
 
     } catch (error) {
-        console.warn('[V] Route error:', error)
+        console.warn('[VINE] Route error:', error)
     }
 
 }
@@ -318,7 +316,7 @@ export async function change(toLocation: string, replace?: boolean) {
  * Redirect route to given location path
  * @param toLocation
  */
-export function redirect(toLocation: string) {
+function redirect(toLocation: string) {
     return change(toLocation, true)
 }
 
@@ -326,7 +324,7 @@ export function redirect(toLocation: string) {
  * Navigate on history
  * @param delta
  */
-export function go(delta?: number) {
+function go(delta?: number) {
     window.history.go(delta)
 }
 
@@ -334,7 +332,7 @@ export function go(delta?: number) {
  * Go to the next route
  * @param delta
  */
-export function forward(delta?: number) {
+function forward(delta?: number) {
     go(delta === undefined ? 1 : delta)
 }
 
@@ -342,7 +340,7 @@ export function forward(delta?: number) {
  * Go back to the previous route
  * @param delta
  */
-export function back(delta?: number) {
+function back(delta?: number) {
     go(delta === undefined ? -1 : delta)
 }
 
@@ -351,12 +349,12 @@ export function back(delta?: number) {
  */
 function onPopState() {
 
-    if (options.prevent) {
+    if (_options.prevent) {
         return
     }
 
     return change(
-        (options.mode === 'hash')
+        (_options.mode === 'hash')
             ? window.location.hash.replace('#', '')
             : window.location.href
     )
@@ -391,7 +389,7 @@ function onLinkClick(event: MouseEvent) {
     }
 
     // Ignore case when a hash is being tacked on the current URL
-    if (options.mode !== 'hash'
+    if (_options.mode !== 'hash'
         && link.href
         && link.href.indexOf('#') > -1
         && stripHash(link) === stripHash(location)) {
@@ -418,7 +416,41 @@ function onLinkClick(event: MouseEvent) {
 /**
  * Attach events route automation
  */
-export function attachEvents() {
+function attachEvents() {
     on(window, 'popstate', onPopState)
     on(document, 'click', 'a', onLinkClick)
+}
+
+/**
+ * Init route by setting options and attaching events
+ * @param options
+ */
+function init(options: Record<string, string>) {
+
+    Object.keys(options).map((key) => {
+        _options[key] = options[key]
+    })
+
+    attachEvents()
+}
+
+export type { RoutePath, RouteChange, RouteCallback }
+export const Route = {
+    beforeChange,
+    afterChange,
+    normalizePath,
+    paramsFor,
+    queryFor,
+    getParam,
+    getQuery,
+    getLocation,
+    add,
+    match,
+    change,
+    active,
+    redirect,
+    go,
+    forward,
+    back,
+    init
 }

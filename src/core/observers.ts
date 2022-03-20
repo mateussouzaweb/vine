@@ -3,8 +3,6 @@ declare interface Watcher {
     callback: Function
 }
 
-export type { Watcher }
-
 let _watches: Array<Watcher> = []
 
 /**
@@ -12,7 +10,7 @@ let _watches: Array<Watcher> = []
  * @param event
  * @param callback
  */
-export function watch(event: string, callback: Function) {
+function watch(event: string, callback: Function) {
     _watches.push({ event: event, callback: callback })
 }
 
@@ -21,7 +19,7 @@ export function watch(event: string, callback: Function) {
  * @param event
  * @param callback
  */
-export function unwatch(event: string, callback?: Function) {
+function unwatch(event: string, callback?: Function) {
     _watches = _watches.filter((watcher) => {
         return event !== watcher.event
             && (callback === undefined || callback !== watcher.callback)
@@ -33,7 +31,7 @@ export function unwatch(event: string, callback?: Function) {
  * @param event
  * @param data
  */
-export async function fire(event: string, data?: any) {
+async function fire(event: string, data?: any) {
     for (const watcher of _watches) {
         if (event === watcher.event) {
             try {
@@ -44,3 +42,6 @@ export async function fire(event: string, data?: any) {
         }
     }
 }
+
+export type { Watcher }
+export { watch, unwatch, fire }

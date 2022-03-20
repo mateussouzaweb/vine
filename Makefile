@@ -1,39 +1,41 @@
 install:
 	npm install -g typescript rollup terser
 
+merge:
+	mkdir -p dist/ && awk '{print}' \
+		src/vine.ts \
+		src/core/selector.ts \
+		src/core/events.ts \
+		src/core/observers.ts \
+		src/core/component.ts \
+		src/extra/engine.ts \
+		src/extra/http.ts \
+		src/extra/route.ts \
+		> dist/vine.ts
+
+	sed -i '/import/d' dist/vine.ts
+
 compile:
-	tsc src/vanilla.ts \
-		--target ES6 \
+	tsc dist/vine.ts \
+		--lib ES2018,DOM \
+		--target ES3 \
 		--module ES6 \
-		--removeComments \
 		--sourceMap \
-		--outDir compiled/
-
-bundle:
-	rollup compiled/vanilla.js \
-		--name V \
-		--format iife \
-		--sourcemap \
-		--file dist/vanilla.js \
-
-declaration:
-	tsc dist/vanilla.js \
-		--allowJs \
-		--target ES6 \
-		--removeComments \
 		--declaration \
-		--declarationMap \
-		--emitDeclarationOnly \
-		--outFile dist/vanilla.d.ts && \
-	sed -i 's/\"vanilla\"/V/' dist/vanilla.d.ts
+		--outDir dist
+
+	rollup dist/vine.js \
+		--exports named \
+		--format iife \
+		--context window \
+		--name Vine \
+		--sourcemap \
+		--file dist/vine.js \
 
 minify:
-	terser dist/vanilla.js \
+	terser dist/vine.js \
 		--comments \
-		--source-map includeSources,base='dist',filename='vanilla.min.js.map',url='vanilla.min.js.map' \
-		--output dist/vanilla.min.js
+		--source-map includeSources,base='dist',filename='vine.min.js.map',url='vine.min.js.map' \
+		--output dist/vine.min.js
 
-clean:
-	rm -r compiled
-
-build: compile bundle declaration minify clean
+build: merge compile minify

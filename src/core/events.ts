@@ -1,12 +1,10 @@
-import { $$ } from './selector'
+import { $$ } from "./selector"
 
 declare interface Trigger {
     event: string
     namespace: string,
     callback: Function
 }
-
-export type { Trigger }
 
 let _events: Array<Trigger> = []
 
@@ -112,7 +110,7 @@ function _event(
  * @param selector
  * @param callback
  */
-export function on(element: any, event: string, selector: string | Function, callback?: Function) {
+function on(element: any, event: string, selector: string | Function, callback?: Function) {
     return _event('add', element, event, selector, callback)
 }
 
@@ -123,7 +121,7 @@ export function on(element: any, event: string, selector: string | Function, cal
  * @param selector
  * @param callback
  */
-export function off(element: any, event: string, selector: string | Function, callback?: Function) {
+function off(element: any, event: string, selector: string | Function, callback?: Function) {
     return _event('remove', element, event, selector, callback)
 }
 
@@ -133,7 +131,7 @@ export function off(element: any, event: string, selector: string | Function, ca
  * @param event
  * @param selector
  */
-export function trigger(element: any, event: string, selector?: string) {
+function trigger(element: any, event: string, selector?: string) {
 
     const items = (selector !== undefined)
         ? $$(selector, element)
@@ -149,3 +147,6 @@ export function trigger(element: any, event: string, selector?: string) {
     })
 
 }
+
+export type { Trigger }
+export { on, off, trigger }

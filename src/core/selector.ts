@@ -1,8 +1,6 @@
 declare type Selectable = HTMLElement | Element | Document
 declare type Context = string | Selectable
 
-export type { Selectable, Context }
-
 /**
  * Retrieve the resolved valid context
  * @param context
@@ -20,7 +18,7 @@ function getContext(context?: Context): Selectable {
  * @param context
  * @returns
  */
-export function $(selector: string, context?: Context) {
+function $(selector: string, context?: Context) {
     return getContext(context).querySelector(selector)
 }
 
@@ -30,7 +28,7 @@ export function $(selector: string, context?: Context) {
  * @param context
  * @returns
  */
-export function $$(selector: any, context?: Context) {
+function $$(selector: any, context?: Context) {
 
     const items: Array<Selectable> = []
 
@@ -50,3 +48,6 @@ export function $$(selector: any, context?: Context) {
 
     return items
 }
+
+export type { Selectable, Context }
+export { $, $$ }

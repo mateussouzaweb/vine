@@ -13,25 +13,23 @@ declare interface HTTPResult {
 
 declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promise<void>
 
-export type { HTTPRequest, HTTPResult, HTTPCallback }
-
-let _before: Array<HTTPCallback> = []
-let _after: Array<HTTPCallback> = []
+let _requestBefore: Array<HTTPCallback> = []
+let _requestAfter: Array<HTTPCallback> = []
 
 /**
  * Add interceptor callback before each HTTP request
  * @param callback
  */
-export function interceptBefore(callback: HTTPCallback) {
-    _before.push(callback)
+function interceptBefore(callback: HTTPCallback) {
+    _requestBefore.push(callback)
 }
 
 /**
  * Add interceptor callback after each HTTP request
  * @param callback
  */
-export function interceptAfter(callback: HTTPCallback) {
-    _after.push(callback)
+function interceptAfter(callback: HTTPCallback) {
+    _requestAfter.push(callback)
 }
 
 /**
@@ -42,7 +40,7 @@ export function interceptAfter(callback: HTTPCallback) {
  * @param headers
  * @returns
  */
-export async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit) {
+async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit) {
 
     const request: HTTPRequest = {
         method: method,
@@ -61,7 +59,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
         }
     }
 
-    await runInterceptors(_before, request)
+    await runInterceptors(_requestBefore, request)
     const options = Object.assign({}, request)
 
     delete options.url
@@ -113,7 +111,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
         body: body
     }
 
-    await runInterceptors(_after, details)
+    await runInterceptors(_requestAfter, details)
 
     if (!response.ok) {
         throw details
@@ -129,7 +127,7 @@ export async function request(method: string, url: string, data?: BodyInit, head
  * @param headers
  * @returns
  */
-export async function options(url: string, data?: BodyInit, headers?: HeadersInit) {
+async function options(url: string, data?: BodyInit, headers?: HeadersInit) {
     return await request('OPTIONS', url, data, headers)
 }
 
@@ -140,7 +138,7 @@ export async function options(url: string, data?: BodyInit, headers?: HeadersIni
  * @param headers
  * @returns
  */
-export async function head(url: string, data?: BodyInit, headers?: HeadersInit) {
+async function head(url: string, data?: BodyInit, headers?: HeadersInit) {
     return await request('HEAD', url, data, headers)
 }
 
@@ -151,7 +149,7 @@ export async function head(url: string, data?: BodyInit, headers?: HeadersInit) 
  * @param headers
  * @returns
  */
-export async function get(url: string, data?: BodyInit, headers?: HeadersInit) {
+async function get(url: string, data?: BodyInit, headers?: HeadersInit) {
     return await request('GET', url, data, headers)
 }
 
@@ -162,7 +160,7 @@ export async function get(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param headers
  * @returns
  */
-export async function post(url: string, data?: BodyInit, headers?: HeadersInit) {
+async function post(url: string, data?: BodyInit, headers?: HeadersInit) {
     return await request('POST', url, data, headers)
 }
 
@@ -173,7 +171,7 @@ export async function post(url: string, data?: BodyInit, headers?: HeadersInit) 
  * @param headers
  * @returns
  */
-export async function put(url: string, data?: BodyInit, headers?: HeadersInit) {
+async function put(url: string, data?: BodyInit, headers?: HeadersInit) {
     return await request('PUT', url, data, headers)
 }
 
@@ -184,7 +182,7 @@ export async function put(url: string, data?: BodyInit, headers?: HeadersInit) {
  * @param headers
  * @returns
  */
-export async function patch(url: string, data?: BodyInit, headers?: HeadersInit) {
+async function patch(url: string, data?: BodyInit, headers?: HeadersInit) {
     return await request('PATCH', url, data, headers)
 }
 
@@ -195,6 +193,21 @@ export async function patch(url: string, data?: BodyInit, headers?: HeadersInit)
  * @param headers
  * @returns
  */
-export async function _delete(url: string, data?: BodyInit, headers?: HeadersInit) {
+async function _delete(url: string, data?: BodyInit, headers?: HeadersInit) {
     return await request('DELETE', url, data, headers)
+}
+
+export type { HTTPRequest, HTTPResult, HTTPCallback }
+
+export const HTTP = {
+    interceptBefore,
+    interceptAfter,
+    request,
+    options,
+    head,
+    get,
+    post,
+    put,
+    patch,
+    _delete
 }

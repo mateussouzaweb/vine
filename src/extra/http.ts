@@ -1,3 +1,5 @@
+import { fire, watch } from "../core/observers"
+
 declare interface HTTPRequest extends RequestInit {
     method: string
     url: string
@@ -13,15 +15,12 @@ declare interface HTTPResult {
 
 declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promise<void>
 
-let _requestBefore: Array<HTTPCallback> = []
-let _requestAfter: Array<HTTPCallback> = []
-
 /**
  * Add interceptor callback before each HTTP request
  * @param callback
  */
 function interceptBefore(callback: HTTPCallback) {
-    _requestBefore.push(callback)
+    watch('HTTPInterceptBefore', callback)
 }
 
 /**
@@ -29,7 +28,7 @@ function interceptBefore(callback: HTTPCallback) {
  * @param callback
  */
 function interceptAfter(callback: HTTPCallback) {
-    _requestAfter.push(callback)
+    watch('HTTPInterceptAfter', callback)
 }
 
 /**
@@ -49,17 +48,7 @@ async function request(method: string, url: string, data?: BodyInit, headers?: H
         headers: headers
     }
 
-    const runInterceptors = async (callbacks: Array<HTTPCallback>, data: HTTPRequest | HTTPResult) => {
-        for (const callback of callbacks) {
-            try {
-                await callback.apply({}, [data])
-            } catch (error) {
-                return Promise.reject(error)
-            }
-        }
-    }
-
-    await runInterceptors(_requestBefore, request)
+    await fire('HTTPInterceptBefore', request)
     const options = Object.assign({}, request)
 
     delete options.url
@@ -111,7 +100,7 @@ async function request(method: string, url: string, data?: BodyInit, headers?: H
         body: body
     }
 
-    await runInterceptors(_requestAfter, details)
+    await fire('HTTPInterceptAfter', details)
 
     if (!response.ok) {
         throw details

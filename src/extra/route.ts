@@ -1,4 +1,5 @@
 import { on } from "../core/events"
+import { fire, watch } from "../core/observers"
 
 declare interface RoutePath {
     path: string
@@ -17,8 +18,6 @@ declare interface RouteChange {
 declare type RouteCallback = (change: RouteChange) => void | Promise<void>
 
 let _routes: Array<RoutePath> = []
-let _routeBefore: Array<RouteCallback> = []
-let _routeAfter: Array<RouteCallback> = []
 let _active: RoutePath
 
 const _options = {
@@ -45,7 +44,7 @@ const _options = {
  * @param callback
  */
 function beforeChange(callback: RouteCallback) {
-    _routeBefore.push(callback)
+    watch('RouteChangeBefore', callback)
 }
 
 /**
@@ -53,7 +52,7 @@ function beforeChange(callback: RouteCallback) {
  * @param callback
  */
 function afterChange(callback: RouteCallback) {
-    _routeAfter.push(callback)
+    watch('RouteChangeAfter', callback)
 }
 
 /**
@@ -270,18 +269,8 @@ function active(): RoutePath {
  */
 async function change(toLocation: string, replace?: boolean) {
 
-    const runWatchers = async (callbacks: Array<RouteCallback>, change: RouteChange) => {
-        for (const callback of callbacks) {
-            try {
-                await callback.apply({}, [change])
-            } catch (error) {
-                return Promise.reject(error)
-            }
-        }
-    }
-
     const next = match(toLocation)
-    if( next !== null ){
+    if (next !== null) {
         next.location = toLocation
     }
 
@@ -292,7 +281,7 @@ async function change(toLocation: string, replace?: boolean) {
         replace: replace
     }
 
-    await runWatchers(_routeBefore, change)
+    await fire('RouteChangeBefore', change)
 
     if (change.replace) {
         _options.prevent = true
@@ -308,7 +297,7 @@ async function change(toLocation: string, replace?: boolean) {
 
     _active = (change.next) ? change.next : null
 
-    await runWatchers(_routeAfter, change)
+    await fire('RouteChangeAfter', change)
 
 }
 

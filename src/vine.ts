@@ -1,4 +1,4 @@
-/*! Vine JS (2.0.0) - https://github.com/mateussouzaweb/vine */
+/*! Vine JS (2.0.1) - https://github.com/mateussouzaweb/vine */
 
 declare global {
     interface Window {
@@ -6,8 +6,4 @@ declare global {
     }
 }
 
-const Vine = {
-    __version: "2.0.0"
-}
-
-export default Vine
+export const __version = "2.0.1"

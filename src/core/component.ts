@@ -12,7 +12,7 @@ declare type State = any
 declare type Callback = (component: Component) => void | Promise<void>
 
 declare type Component = {
-    element: Element,
+    element: HTMLElement,
     state: State,
     template: Template,
     render: (state?: State) => void | Promise<void>
@@ -28,7 +28,7 @@ declare type Definition = {
     onDestroy: Callback
 }
 
-declare interface WithComponents extends Element {
+declare interface WithComponents extends HTMLElement {
     __components?: Record<string, Component>
 }
 
@@ -164,7 +164,7 @@ async function render(component: Component, callback: Callback) {
  * Mount components on given target element
  * @param target
  */
-async function mount(target: Element) {
+async function mount(target: HTMLElement) {
 
     for (const definition of _definitions) {
 
@@ -228,7 +228,7 @@ async function mount(target: Element) {
  * Destroy components on given target element
  * @param target
  */
-async function destroy(target: Element) {
+async function destroy(target: HTMLElement) {
 
     for (const definition of _definitions) {
 
@@ -259,5 +259,5 @@ async function destroy(target: Element) {
 
 }
 
-export type { Selector, Template, State, Callback }
+export type { Selector, Template, State, Component, Callback }
 export { register, unregister, render, mount, destroy }

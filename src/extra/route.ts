@@ -3,7 +3,7 @@ import { fire, watch } from "../core/observers"
 
 declare interface RoutePath {
     path: string
-    regex: RegExp
+    regex?: RegExp
     location?: string,
     [key: string]: any
 }

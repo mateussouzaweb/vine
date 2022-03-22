@@ -1,4 +1,4 @@
-declare type Selectable = HTMLElement | Element | Document
+declare type Selectable = HTMLElement | Document
 declare type Context = string | Selectable
 
 /**
@@ -6,10 +6,10 @@ declare type Context = string | Selectable
  * @param context
  * @returns
  */
-function getContext(context?: Context): Selectable {
+function getContext(context?: Context) {
     context = (typeof context === 'string') ? $(context) : context
     context = (context instanceof Node) ? context : document
-    return context
+    return context as Selectable
 }
 
 /**
@@ -19,7 +19,7 @@ function getContext(context?: Context): Selectable {
  * @returns
  */
 function $(selector: string, context?: Context) {
-    return getContext(context).querySelector(selector)
+    return getContext(context).querySelector(selector) as Selectable
 }
 
 /**

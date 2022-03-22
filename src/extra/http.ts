@@ -39,7 +39,7 @@ function interceptAfter(callback: HTTPCallback) {
  * @param headers
  * @returns
  */
-async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit) {
+async function request(method: string, url: string, data?: BodyInit, headers?: HeadersInit): Promise<any> {
 
     const request: HTTPRequest = {
         method: method,

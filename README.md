@@ -16,7 +16,7 @@ Some of the features:
 - Components with `mount`, `render` and `destroy` events.
 - State and template management for components.
 - Support to build observable event system.
-- Template parse engine with IF/ELSE and FOR loops.
+- Template parse engine with `if` / `else` and `for` loops.
 - Route handling library.
 - HTTP request library.
 
@@ -25,10 +25,20 @@ Some of the features:
 Just put the distribution file in your project and start coding:
 
 ```html
-<script src="vine.min.js"></script>
+<script src="lib/vine.js"></script>
 <script>
-    Vine... // Your code goes here
+    // Your code goes here
+    Vine.register(...)
 </script>
+```
+
+You can also use it with TypeScript and ES6:
+
+```js
+import { register } from "lib/vine"
+
+// Your code goes here
+register(...)
 ```
 
 ## Component Lifecycle

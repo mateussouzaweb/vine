@@ -11,7 +11,7 @@ declare interface WithEvents extends EventTarget {
 }
 
 /**
- * Attach event to element
+ * Attach or detach event on element
  * @param action
  * @param element
  * @param event
@@ -72,7 +72,7 @@ function _event(
 
         for (const item of items) {
 
-            if (!item.__events) {
+            if (item.__events === undefined) {
                 item.__events = []
             }
 
@@ -94,7 +94,7 @@ function _event(
 
         for (const item of items) {
 
-            if (!item.__events) {
+            if (item.__events === undefined) {
                 continue
             }
 

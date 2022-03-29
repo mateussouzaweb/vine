@@ -95,7 +95,7 @@ function _event(
         for (const item of items) {
 
             if (!item.__events) {
-                return
+                continue
             }
 
             item.__events = item.__events.filter((watcher) => {

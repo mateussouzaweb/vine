@@ -183,7 +183,7 @@ async function mount(target: HTMLElement) {
 
             // Already mounted
             if (element.__components[namespace] !== undefined) {
-                return
+                continue
             }
 
             // Solve the state result
@@ -242,10 +242,10 @@ async function destroy(target: HTMLElement) {
 
             // Component not mounted yet
             if (element.__components === undefined) {
-                return
+                continue
             }
-            if (element.__components[namespace] !== undefined) {
-                return
+            if (element.__components[namespace] === undefined) {
+                continue
             }
 
             // Destroy the component instance

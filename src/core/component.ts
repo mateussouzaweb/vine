@@ -135,22 +135,22 @@ async function render(component: Component, callback: Callback) {
 
     // Fetch live template
     const result = await solveResult(component.template, component)
+    const current = component.element.innerHTML
 
     // If has no valid result, no need to continue
     if (typeof result !== 'string') {
         return
     }
 
-    const current = component.element.innerHTML
-    if (result === current) {
-        return
+    if (result !== current) {
+
+        // Destroy existing child elements
+        await destroy(component.element)
+
+        // Mount new HTML result
+        component.element.innerHTML = result
+
     }
-
-    // Destroy existing child elements
-    await destroy(component.element)
-
-    // Mount new HTML result
-    component.element.innerHTML = result
 
     // Render callback
     await callback(component)

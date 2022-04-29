@@ -164,7 +164,7 @@ async function render(component: Component, callback: Callback) {
  * Mount components on given target element
  * @param target
  */
-async function mount(target: HTMLElement) {
+async function mount(target: HTMLElement | Document) {
 
     for (const definition of _definitions) {
 
@@ -228,7 +228,7 @@ async function mount(target: HTMLElement) {
  * Destroy components on given target element
  * @param target
  */
-async function destroy(target: HTMLElement) {
+async function destroy(target: HTMLElement | Document) {
 
     for (const definition of _definitions) {
 

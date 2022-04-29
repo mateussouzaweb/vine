@@ -1,4 +1,4 @@
-import { fire, watch } from "../core/observers"
+import { fire, watch } from '../core/observers'
 
 declare interface HTTPRequest extends RequestInit {
     method: string

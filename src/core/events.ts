@@ -1,4 +1,4 @@
-import { $$ } from "./selector"
+import { $$ } from './selector'
 
 declare interface Trigger {
     event: string
@@ -19,7 +19,7 @@ declare interface WithEvents extends EventTarget {
  * @param callback
  */
 function _event(
-    action: "add" | "remove",
+    action: 'add' | 'remove',
     element: any,
     event: string,
     selector?: string | Function,

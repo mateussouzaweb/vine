@@ -1,5 +1,5 @@
-import { on } from "../core/events"
-import { fire, watch } from "../core/observers"
+import { on } from '../core/events'
+import { fire, watch } from '../core/observers'
 
 declare interface RoutePath {
     path: string

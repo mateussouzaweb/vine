@@ -1,4 +1,4 @@
-import { $$ } from "./selector"
+import { $$ } from './selector'
 
 declare type SelectorType = string | Array<string>
 declare type SelectorFunction = () => SelectorType | Promise<SelectorType>

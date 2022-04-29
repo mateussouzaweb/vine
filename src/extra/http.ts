@@ -10,7 +10,7 @@ declare interface HTTPRequest extends RequestInit {
 declare interface HTTPResult {
     request: HTTPRequest
     response: Response
-    body: string
+    body: any
 }
 
 declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promise<void>

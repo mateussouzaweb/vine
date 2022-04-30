@@ -181,6 +181,15 @@ async function render(component: Component, callback: Callback) {
 }
 
 /**
+ * Check if data is a object, excluding arrays
+ * @param data
+ * @returns
+ */
+function isObject(data: any) {
+    return data !== null && typeof data === 'object' && Array.isArray(data) === false;
+}
+
+/**
  * Mount components on given target element
  * @param target
  */
@@ -224,7 +233,14 @@ async function mount(target: HTMLElement | Document) {
                 template: template,
                 render: async (state?: State) => {
                     if (state !== undefined) {
-                        component.state = state
+                        if (isObject(component.state) && isObject(state)) {
+                            component.state = {
+                                ...component.state,
+                                state
+                            }
+                        } else {
+                            component.state = state
+                        }
                     }
                     if (!isMounting) {
                         await render(component, onRender)

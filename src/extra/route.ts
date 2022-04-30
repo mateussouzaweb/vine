@@ -207,10 +207,10 @@ function getLocation(route?: RoutePath, params?: Record<string, string>) {
  */
 function add(definition: RoutePath) {
 
-    const route: RoutePath = Object.assign({
+    const route: RoutePath = {
         path: '',
-        regex: ''
-    }, definition)
+        ...definition
+    }
 
     route.path = normalizePath(route.path, true)
 

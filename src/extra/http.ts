@@ -49,7 +49,9 @@ async function request(method: string, url: string, data?: BodyInit, headers?: H
     }
 
     await fire('HTTPInterceptBefore', request)
-    const options = Object.assign({}, request)
+    const options = {
+        ...request
+    }
 
     delete options.url
     delete options.data

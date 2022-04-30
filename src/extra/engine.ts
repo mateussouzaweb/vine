@@ -111,7 +111,10 @@ function parse(template: string, data?: Object) {
     let after = ''
     let match: RegExpExecArray | null
 
-    data = Object.assign({}, _helpers, data || {})
+    data = {
+        ..._helpers,
+        ...(data || {})
+    }
 
     const keys = Object.keys(data)
     for (const key of keys) {

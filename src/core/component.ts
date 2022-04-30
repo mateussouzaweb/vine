@@ -12,10 +12,30 @@ declare type State = any
 declare type Callback = (component: Component) => void | Promise<void>
 
 declare type Component = {
+
+    /**
+     * Main HTML element of this component
+     */
     element: HTMLElement,
+
+    /**
+     * State data for the component
+     */
     state: State,
+
+    /**
+     * Template representation of the component
+     * Fallbacks to element innerHTML if not declare
+     */
     template: Template,
+
+    /**
+     * Render the template on HTML element
+     * Also update state if value is present
+     * @param state
+     */
     render: (state?: State) => void | Promise<void>
+
 }
 
 declare type Definition = {

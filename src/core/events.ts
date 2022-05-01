@@ -48,14 +48,14 @@ function _event(
     } else if (callback === undefined) {
 
         // Bind
-        handler = <Function>selector
+        handler = selector as Function
         selector = null
 
     } else {
 
         // Delegated
         handler = (event: Event) => {
-            const target = (event.target as HTMLElement).closest(<string>selector)
+            const target = (event.target as HTMLElement).closest(selector as string)
             if (target) {
                 callback.apply(target, [event])
             }

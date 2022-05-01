@@ -7,8 +7,15 @@ declare type Selector = SelectorType | SelectorFunction
 declare type TemplateFunction = (component: Component) => string | Promise<string>
 declare type Template = string | TemplateFunction
 
+/**
+ * State is any data type that can be attached to one component.
+ * It's recommended to use it as return object that carry values
+ */
 declare type State = any
 
+/**
+ * Callback is any function that watch on the component lifecycle
+ */
 declare type Callback = (component: Component) => void | Promise<void>
 
 declare type Component = {
@@ -24,17 +31,18 @@ declare type Component = {
     state: State,
 
     /**
-     * Template representation of the component
+     * Template representation of the component.
      * Fallbacks to element innerHTML if not declare
      */
     template: Template,
 
     /**
-     * Render the template on HTML element
-     * Also update state if value is present
-     * @param state
+     * Render the template on HTML element and
+     * also update state if value is present.
+     * In case of object state update, data is merged with previous value
+     * @param update
      */
-    render: (state?: State) => void | Promise<void>
+    render: (update?: State) => void | Promise<void>
 
 }
 
@@ -53,7 +61,7 @@ declare interface WithComponents extends HTMLElement {
 }
 
 /**
- * Store registered definitions
+ * Registered definitions
  */
 const _definitions: Array<Definition> = []
 
@@ -231,15 +239,15 @@ async function mount(target: HTMLElement | Document) {
                 element: element,
                 state: state,
                 template: template,
-                render: async (state?: State) => {
-                    if (state !== undefined) {
-                        if (isObject(component.state) && isObject(state)) {
+                render: async (update?: State) => {
+                    if (update !== undefined) {
+                        if (isObject(component.state) && isObject(update)) {
                             component.state = {
                                 ...component.state,
-                                state
+                                update
                             }
                         } else {
-                            component.state = state
+                            component.state = update
                         }
                     }
                     if (!isMounting) {

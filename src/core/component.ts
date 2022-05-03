@@ -244,7 +244,7 @@ async function mount(target: HTMLElement | Document) {
                         if (isObject(component.state) && isObject(update)) {
                             component.state = {
                                 ...component.state,
-                                update
+                                ...update
                             }
                         } else {
                             component.state = update

@@ -5,7 +5,7 @@ import { $$ } from './selector'
  * Target resolves to the HTMLElement desired on delegated events.
  * In non-delegated events, target is just an alias to the event.target
  */
-declare type EventCallback = (event: Event, target?: HTMLElement) => any
+declare type EventCallback = (event: Event, target: HTMLElement) => any
 
 /**
  * Stores data about the event trigger defined by the user

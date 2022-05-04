@@ -372,7 +372,7 @@ function onPopState() {
  * Execute route change on link click event
  * @param event
  */
-function onLinkClick(event: MouseEvent) {
+function onLinkClick(event: Event) {
 
     const link = (event.target as HTMLAnchorElement).closest('a')
     const location = window.location
@@ -383,10 +383,10 @@ function onLinkClick(event: MouseEvent) {
 
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
-    if (event.metaKey
-        || event.ctrlKey
-        || event.shiftKey
-        || event.altKey) {
+    if ((event as MouseEvent).metaKey
+        || (event as MouseEvent).ctrlKey
+        || (event as MouseEvent).shiftKey
+        || (event as MouseEvent).altKey) {
         return
     }
 

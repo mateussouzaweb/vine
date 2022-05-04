@@ -20,7 +20,7 @@ declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promis
  * @param callback
  */
 function interceptBefore(callback: HTTPCallback) {
-    watch('HTTPInterceptBefore', callback)
+    watch('HTTP', 'HTTPInterceptBefore', callback)
 }
 
 /**
@@ -28,7 +28,7 @@ function interceptBefore(callback: HTTPCallback) {
  * @param callback
  */
 function interceptAfter(callback: HTTPCallback) {
-    watch('HTTPInterceptAfter', callback)
+    watch('HTTP', 'HTTPInterceptAfter', callback)
 }
 
 /**

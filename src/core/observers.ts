@@ -1,36 +1,37 @@
+/**
+ * Watcher represents a watcher that awaits for an observable event to run callback
+ * It also has a context to identify itself
+ */
 declare interface Watcher {
+    context: any,
     event: string,
-    namespace: string,
     callback: Function
 }
 
-let _watches: Array<Watcher> = []
+let _watchers: Array<Watcher> = []
 
 /**
- * Add or remove and event observer
+ * Add or remove an event watcher
  * @param action
+ * @param context
  * @param event
  * @param callback
  */
-function _watch(action: 'add' | 'remove', event: string, callback?: Function) {
-
-    const parts = event.split('.')
-    const theEvent = parts.shift()
-    const namespace = parts.join('.')
+function _watcher(action: 'add' | 'remove', context: any, event?: string, callback?: Function) {
 
     if (action === 'add') {
 
-        _watches.push({
-            event: theEvent,
-            namespace: namespace,
+        _watchers.push({
+            context: context,
+            event: event,
             callback: callback
         })
 
     } else if (action === 'remove') {
 
-        _watches = _watches.filter((watcher) => {
-            return theEvent !== watcher.event
-                && (namespace === '' || namespace !== watcher.namespace)
+        _watchers = _watchers.filter((watcher) => {
+            return context !== watcher.context
+                && (event === undefined || event !== watcher.event)
                 && (callback === undefined || callback !== watcher.callback)
         })
 
@@ -39,30 +40,32 @@ function _watch(action: 'add' | 'remove', event: string, callback?: Function) {
 }
 
 /**
- * Add watch to a event
+ * Watch to a event with given context
+ * @param context
  * @param event
  * @param callback
  */
-function watch(event: string, callback: Function) {
-    _watch('add', event, callback)
+function watch(context: any, event: string, callback: Function) {
+    _watcher('add', context, event, callback)
 }
 
 /**
- * Unwatch a event
+ * Unwatch to a event with given context
+ * @param context
  * @param event
  * @param callback
  */
-function unwatch(event: string, callback?: Function) {
-    _watch('remove', event, callback)
+function unwatch(context: any, event?: string, callback?: Function) {
+    _watcher('remove', context, event, callback)
 }
 
 /**
- * Fire event data
+ * Fire observable event with data
  * @param event
  * @param data
  */
 async function fire(event: string, data?: any) {
-    for (const watcher of _watches) {
+    for (const watcher of _watchers) {
         if (event === watcher.event) {
             try {
                 await watcher.callback.apply({}, [data])

@@ -44,7 +44,7 @@ const _options = {
  * @param callback
  */
 function beforeChange(callback: RouteCallback) {
-    watch('RouteChangeBefore', callback)
+    watch('Route', 'RouteChangeBefore', callback)
 }
 
 /**
@@ -52,7 +52,7 @@ function beforeChange(callback: RouteCallback) {
  * @param callback
  */
 function afterChange(callback: RouteCallback) {
-    watch('RouteChangeAfter', callback)
+    watch('Route', 'RouteChangeAfter', callback)
 }
 
 /**

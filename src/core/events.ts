@@ -17,7 +17,7 @@ declare interface EventTrigger {
 }
 
 /**
- * Extends EventTarget to allow storing of EventTrigger
+ * Extends EventTarget to allow storing of event triggers
  */
 declare interface ElementWithEvents extends EventTarget {
     __events?: Array<EventTrigger>

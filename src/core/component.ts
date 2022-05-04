@@ -1,23 +1,28 @@
 import { $$ } from './selector'
 
-declare type SelectorType = string | Array<string>
-declare type SelectorFunction = () => SelectorType | Promise<SelectorType>
+/**
+ * A representation of the selector to create components
+ */
 declare type Selector = SelectorType | SelectorFunction
+declare type SelectorFunction = () => SelectorType | Promise<SelectorType>
+declare type SelectorType = string | Array<string>
 
-declare type TemplateFunction = (component: Component) => string | Promise<string>
+/**
+ * A string representation of the DOM state that a component should have.
+ * You can use it as a function to return dynamic templates based on the component state
+ */
 declare type Template = string | TemplateFunction
+declare type TemplateFunction = (component: Component) => string | Promise<string>
 
 /**
  * State is any data type that can be attached to one component.
- * It's recommended to use it as return object that carry values
+ * It's recommended to use it as a return object that carries values
  */
 declare type State = any
 
 /**
- * Callback is any function that watch on the component lifecycle
+ * Component representation object
  */
-declare type Callback = (component: Component) => void | Promise<void>
-
 declare type Component = {
 
     /**
@@ -46,6 +51,14 @@ declare type Component = {
 
 }
 
+/**
+ * Function that watch on the component lifecycle
+ */
+declare type Callback = (component: Component) => void | Promise<void>
+
+/**
+ * Declares how a component should be created
+ */
 declare type Definition = {
     namespace: string,
     selector: Selector,
@@ -56,7 +69,10 @@ declare type Definition = {
     onDestroy: Callback
 }
 
-declare interface WithComponents extends HTMLElement {
+/**
+ * Extends HTMLElement to allow storing of components
+ */
+declare interface HTMLElementWithComponents extends HTMLElement {
     __components?: Record<string, Component>
 }
 
@@ -66,7 +82,7 @@ declare interface WithComponents extends HTMLElement {
 const _definitions: Array<Definition> = []
 
 /**
- * Solves a value, being a function promise or not and return the final value
+ * Solves a value, being a function promise or not, and return the final value
  * @param value
  * @param data
  * @returns
@@ -131,7 +147,7 @@ async function register(selector: Selector, definition: {
 /**
  * Remove the registered component definition.
  * This method will not destroy current instances of the matching selector.
- * You must destroy the current live components first if there is any.
+ * You must destroys the current live components first if there are any.
  * Tip: you can do it using the ${selector} as resolve function
  * @param selector
  */
@@ -153,7 +169,7 @@ async function unregister(selector: Selector) {
 
 /**
  * Render the component by updating its final HTML.
- * Also destroy and mount child elements if necessary.
+ * Also destroys and mounts child elements if necessary.
  * You must provide the final parsed template with the replaced state.
  * Tip: Use the component template as function when need to replace state
  * @param component
@@ -189,7 +205,7 @@ async function render(component: Component, callback: Callback) {
 }
 
 /**
- * Check if data is a object, excluding arrays
+ * Check if data is an object, excluding arrays
  * @param data
  * @returns
  */
@@ -206,7 +222,7 @@ async function mount(target: HTMLElement | Document) {
     for (const definition of _definitions) {
 
         const selector = await solveSelector(definition.selector)
-        const found = $$(selector.join(', '), target) as Array<WithComponents>
+        const found = $$(selector.join(', '), target) as Array<HTMLElementWithComponents>
 
         const namespace = definition.namespace
         const onMount = definition.onMount
@@ -277,7 +293,7 @@ async function destroy(target: HTMLElement | Document) {
     for (const definition of _definitions) {
 
         const selector = await solveSelector(definition.selector)
-        const found = $$(selector.join(', '), target) as Array<WithComponents>
+        const found = $$(selector.join(', '), target) as Array<HTMLElementWithComponents>
 
         const namespace = definition.namespace
         const onDestroy = definition.onDestroy

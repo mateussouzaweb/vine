@@ -1,5 +1,8 @@
 import { fire, watch } from '../core/observers'
 
+/**
+ * Represents a HTTP request
+ */
 declare interface HTTPRequest extends RequestInit {
     method: string
     url: string
@@ -7,12 +10,18 @@ declare interface HTTPRequest extends RequestInit {
     headers: HeadersInit
 }
 
+/**
+ * Represents the result of a HTTP request
+ */
 declare interface HTTPResult {
     request: HTTPRequest
     response: Response
     body: any
 }
 
+/**
+ * Callback to be executed when HTTP events are intercepted
+ */
 declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promise<void>
 
 /**
@@ -32,7 +41,7 @@ function interceptAfter(callback: HTTPCallback) {
 }
 
 /**
- * Make HTTP requests
+ * Make a HTTP request with given method
  * @param method
  * @param url
  * @param data
@@ -112,7 +121,7 @@ async function request(method: string, url: string, data?: BodyInit, headers?: H
 }
 
 /**
- * Make OPTIONS HTTP requests
+ * Make a HTTP OPTIONS request
  * @param url
  * @param data
  * @param headers
@@ -123,7 +132,7 @@ async function options(url: string, data?: BodyInit, headers?: HeadersInit) {
 }
 
 /**
- * Make HEAD HTTP requests
+ * Make a HTTP HEAD request
  * @param url
  * @param data
  * @param headers
@@ -134,7 +143,7 @@ async function head(url: string, data?: BodyInit, headers?: HeadersInit) {
 }
 
 /**
- * Make GET HTTP requests
+ * Make a HTTP GET request
  * @param url
  * @param data
  * @param headers
@@ -145,7 +154,7 @@ async function get(url: string, data?: BodyInit, headers?: HeadersInit) {
 }
 
 /**
- * Make POST HTTP requests
+ * Make a HTTP POST request
  * @param url
  * @param data
  * @param headers
@@ -156,7 +165,7 @@ async function post(url: string, data?: BodyInit, headers?: HeadersInit) {
 }
 
 /**
- * Make PUT HTTP requests
+ * Make a HTTP PUT request
  * @param url
  * @param data
  * @param headers
@@ -167,7 +176,7 @@ async function put(url: string, data?: BodyInit, headers?: HeadersInit) {
 }
 
 /**
- * Make PATCH HTTP requests
+ * Make a HTTP PATCH request
  * @param url
  * @param data
  * @param headers
@@ -178,7 +187,7 @@ async function patch(url: string, data?: BodyInit, headers?: HeadersInit) {
 }
 
 /**
- * Make DELETE HTTP requests
+ * Make a HTTP DELETE request
  * @param url
  * @param data
  * @param headers

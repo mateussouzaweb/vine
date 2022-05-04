@@ -1,4 +1,11 @@
+/**
+ * Represents an element that can be selectable
+ */
 declare type Selectable = HTMLElement | Document
+
+/**
+ * Represents a context that can select child elements
+ */
 declare type Context = string | Selectable
 
 /**
@@ -13,7 +20,7 @@ function getContext(context?: Context) {
 }
 
 /**
- * Select an single element
+ * Select a single element
  * @param selector
  * @param context
  * @returns

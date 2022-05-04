@@ -1,3 +1,6 @@
+/**
+ * Registered template helpers
+ */
 let _helpers: Record<string, Function> = {}
 
 /**
@@ -10,7 +13,7 @@ function helper(key: string, callback?: Function) {
 }
 
 /**
- * Clean line
+ * Cleans one line
  * @param line
  * @returns
  */
@@ -22,7 +25,7 @@ function clean(line: string) {
 }
 
 /**
- * Parse conditions in line
+ * Parse conditions in one line
  * @param line
  * @returns
  */
@@ -35,7 +38,7 @@ function parseConditions(line: string) {
 }
 
 /**
- * Parse loops in line
+ * Parse loops in one line
  * @param line
  * @returns
  */
@@ -47,7 +50,7 @@ function parseLoops(line: string) {
 }
 
 /**
- * Find variables in line
+ * Find variables in one line
  * @param line
  * @returns
  */

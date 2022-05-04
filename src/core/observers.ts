@@ -1,5 +1,5 @@
 /**
- * Watcher represents a watcher that awaits for an observable event to run callback
+ * Watcher represents a watcher that waits for an observable event to run callback.
  * It also has a context to identify itself
  */
 declare interface Watcher {
@@ -8,6 +8,9 @@ declare interface Watcher {
     callback: Function
 }
 
+/**
+ * Registered watchers
+ */
 let _watchers: Array<Watcher> = []
 
 /**
@@ -40,7 +43,7 @@ function _watcher(action: 'add' | 'remove', context: any, event?: string, callba
 }
 
 /**
- * Watch to a event with given context
+ * Watch an event with given context
  * @param context
  * @param event
  * @param callback
@@ -50,7 +53,7 @@ function watch(context: any, event: string, callback: Function) {
 }
 
 /**
- * Unwatch to a event with given context
+ * Unwatch an event with given context
  * @param context
  * @param event
  * @param callback
@@ -60,7 +63,7 @@ function unwatch(context: any, event?: string, callback?: Function) {
 }
 
 /**
- * Fire observable event with data
+ * Fires observable event with data
  * @param event
  * @param data
  */

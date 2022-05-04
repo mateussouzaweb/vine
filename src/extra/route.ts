@@ -1,6 +1,9 @@
 import { on } from '../core/events'
 import { fire, watch } from '../core/observers'
 
+/**
+ * Represents a route path with their definitions
+ */
 declare interface RoutePath {
     path: string
     regex?: RegExp
@@ -8,6 +11,9 @@ declare interface RoutePath {
     [key: string]: any
 }
 
+/**
+ * Declares how a route change should occur
+ */
 declare interface RouteChange {
     previous: RoutePath,
     next: RoutePath,
@@ -15,20 +21,33 @@ declare interface RouteChange {
     replace: boolean
 }
 
+/**
+ * Callback to be executed when a route change is requested
+ */
 declare type RouteCallback = (change: RouteChange) => void | Promise<void>
 
+/**
+ * Registered routes
+ */
 let _routes: Array<RoutePath> = []
+
+/**
+ * Current active route path
+ */
 let _active: RoutePath
 
+/**
+ * The route options
+ */
 const _options = {
 
     /**
-     * Route mode definition
+     * Mode definition
      */
     mode: window.history.pushState ? 'history' : 'hash',
 
     /**
-     * Route base URL
+     * Base URL
      */
     base: '',
 
@@ -56,7 +75,7 @@ function afterChange(callback: RouteCallback) {
 }
 
 /**
- * Normalize string path
+ * Normalizes string path
  * @param path
  * @param removeQuery
  * @returns
@@ -178,7 +197,7 @@ function getQuery(name?: string, route?: RoutePath) {
 }
 
 /**
- * Create and retrieve parsed route path location
+ * Creates and retrieve parsed route path location
  * @param route
  * @param params
  * @returns
@@ -202,7 +221,7 @@ function getLocation(route?: RoutePath, params?: Record<string, string>) {
 }
 
 /**
- * Add route to routes
+ * Add route to index
  * @param definition
  */
 function add(definition: RoutePath) {
@@ -250,7 +269,7 @@ function match(path: string): null | RoutePath {
 }
 
 /**
- * Return the current active route
+ * Returns the current active route
  * @returns
  */
 function active(): RoutePath {
@@ -263,7 +282,7 @@ function active(): RoutePath {
 }
 
 /**
- * Process route change
+ * Process one route change
  * @param toLocation
  * @param replace
  */
@@ -302,7 +321,7 @@ async function change(toLocation: string, replace?: boolean) {
 }
 
 /**
- * Redirect route to given location path
+ * Redirects route to given location path
  * @param toLocation
  */
 function redirect(toLocation: string) {
@@ -403,7 +422,7 @@ function onLinkClick(event: MouseEvent) {
 }
 
 /**
- * Attach events route automation
+ * Attach events route to automation
  */
 function attachEvents() {
     on(window, 'popstate', onPopState)

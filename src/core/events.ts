@@ -1,13 +1,27 @@
 import { $$ } from './selector'
 
-declare interface Trigger {
+/**
+ * Event callback contains the event details and the additional target argument.
+ * Target resolves to the HTMLElement desired on delegated events.
+ * In non-delegated events, target is just an alias to the event.target
+ */
+declare type EventCallback = (event: Event, target?: HTMLElement) => any
+
+/**
+ * Stores data about the event trigger defined by the user
+ * This data can be used later to remove event listeners
+ */
+declare interface EventTrigger {
     event: string
     namespace: string,
-    callback: Function
+    callback: EventCallback
 }
 
-declare interface WithEvents extends EventTarget {
-    __events?: Array<Trigger>
+/**
+ * Extends EventTarget to allow storing of EventTrigger
+ */
+declare interface ElementWithEvents extends EventTarget {
+    __events?: Array<EventTrigger>
 }
 
 /**
@@ -22,8 +36,8 @@ function _event(
     action: 'add' | 'remove',
     element: any,
     event: string,
-    selector?: string | Function,
-    callback?: Function
+    selector?: string | EventCallback,
+    callback?: EventCallback
 ) {
 
     const events = event.split(' ')
@@ -36,7 +50,7 @@ function _event(
         return
     }
 
-    let handler: Function
+    let handler: EventCallback
 
     // Determine handler
     if (callback === undefined && selector === undefined) {
@@ -48,8 +62,9 @@ function _event(
     } else if (callback === undefined) {
 
         // Bind
-        handler = selector as Function
-        selector = null
+        handler = (event: Event) => {
+            (selector as EventCallback).apply(event.target, [event, event.target])
+        }
 
     } else {
 
@@ -57,7 +72,7 @@ function _event(
         handler = (event: Event) => {
             const target = (event.target as HTMLElement).closest(selector as string)
             if (target) {
-                callback.apply(target, [event])
+                callback.apply(target, [event, target])
             }
         }
 
@@ -66,7 +81,7 @@ function _event(
     const split = event.split('.')
     const theEvent = split.shift()
     const namespace = split.join('.')
-    const items: Array<WithEvents> = element instanceof Window ? [element] : $$(element)
+    const items: Array<ElementWithEvents> = element instanceof Window ? [element] : $$(element)
 
     if (action === 'add' && typeof handler === 'function') {
 
@@ -130,7 +145,7 @@ function _event(
  * @param selector
  * @param callback
  */
-function on(element: any, event: string, selector: string | Function, callback?: Function) {
+function on(element: any, event: string, selector: string | EventCallback, callback?: EventCallback) {
     return _event('add', element, event, selector, callback)
 }
 
@@ -141,7 +156,7 @@ function on(element: any, event: string, selector: string | Function, callback?:
  * @param selector
  * @param callback
  */
-function off(element: any, event: string, selector?: string | Function, callback?: Function) {
+function off(element: any, event: string, selector?: string | EventCallback, callback?: EventCallback) {
     return _event('remove', element, event, selector, callback)
 }
 
@@ -168,5 +183,5 @@ function trigger(element: any, event: string, selector?: string) {
 
 }
 
-export type { Trigger }
+export type { EventTrigger, EventCallback }
 export { on, off, trigger }

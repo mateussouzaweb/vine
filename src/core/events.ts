@@ -13,7 +13,6 @@ declare type EventCallback = (event: Event, target?: HTMLElement) => any
  */
 declare interface EventTrigger {
     event: string
-    namespace: string,
     callback: EventCallback
 }
 
@@ -78,9 +77,6 @@ function _event(
 
     }
 
-    const split = event.split('.')
-    const theEvent = split.shift()
-    const namespace = split.join('.')
     const items: Array<ElementWithEvents> = element instanceof Window ? [element] : $$(element)
 
     if (action === 'add' && typeof handler === 'function') {
@@ -92,13 +88,12 @@ function _event(
             }
 
             item.__events.push({
-                event: theEvent,
-                namespace: namespace,
+                event: event,
                 callback: handler
             })
 
             item.addEventListener(
-                theEvent,
+                event,
                 handler.bind(item),
                 false
             )
@@ -115,8 +110,7 @@ function _event(
 
             item.__events = item.__events.filter((watcher) => {
                 const pass = Boolean(
-                    theEvent !== watcher.event
-                    && (namespace === '' || namespace !== watcher.namespace)
+                    event !== watcher.event
                     && (typeof handler !== 'function' || handler !== watcher.callback)
                 )
 

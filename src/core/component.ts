@@ -200,7 +200,8 @@ async function render(component: Component, callback: Callback) {
     await callback(component)
 
     // Mount child elements
-    await mount(component.element)
+    // No need to await, should get its own process
+    mount(component.element)
 
 }
 

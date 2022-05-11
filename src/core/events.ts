@@ -13,7 +13,7 @@ declare type EventCallback = (event: Event, target: HTMLElement) => any
  */
 declare interface EventTrigger {
     event: string
-    callback: EventCallback
+    callback: EventListener
 }
 
 /**
@@ -24,41 +24,19 @@ declare interface ElementWithEvents extends EventTarget {
 }
 
 /**
- * Attach or detach event on element
- * @param action
+ * Add event to element
  * @param element
  * @param event
  * @param selector
  * @param callback
  */
-function _event(
-    action: 'add' | 'remove',
-    element: any,
-    event: string,
-    selector?: string | EventCallback,
-    callback?: EventCallback
-) {
+function on(element: any, event: string, selector: string | EventCallback, callback?: EventCallback) {
 
+    const items: Array<ElementWithEvents> = element instanceof Window ? [element] : $$(element)
     const events = event.split(' ')
 
-    // Multi events
-    if (events.length > 1) {
-        for (const theEvent of events) {
-            _event(action, element, theEvent, selector, callback)
-        }
-        return
-    }
-
-    let handler: EventCallback
-
-    // Determine handler
-    if (callback === undefined && selector === undefined) {
-
-        // None
-        handler = null
-        selector = null
-
-    } else if (callback === undefined) {
+    let handler: EventListener
+    if (typeof selector === 'function') {
 
         // Bind
         handler = (event: Event) => {
@@ -77,70 +55,30 @@ function _event(
 
     }
 
-    const items: Array<ElementWithEvents> = element instanceof Window ? [element] : $$(element)
+    for (const item of items) {
 
-    if (action === 'add' && typeof handler === 'function') {
+        if (item.__events === undefined) {
+            item.__events = []
+        }
 
-        for (const item of items) {
-
-            if (item.__events === undefined) {
-                item.__events = []
-            }
+        for (const _event of events) {
 
             item.__events.push({
-                event: event,
+                event: _event,
                 callback: handler
             })
 
             item.addEventListener(
-                event,
-                handler.bind(item),
+                _event,
+                handler,
                 false
             )
-
-        }
-
-    } else if (action === 'remove') {
-
-        for (const item of items) {
-
-            if (item.__events === undefined) {
-                continue
-            }
-
-            item.__events = item.__events.filter((watcher) => {
-                const pass = Boolean(
-                    event !== watcher.event
-                    && (typeof handler !== 'function' || handler !== watcher.callback)
-                )
-
-                if (!pass) {
-                    item.removeEventListener(
-                        watcher.event,
-                        watcher.callback.bind(item),
-                        false
-                    )
-                }
-
-                return pass
-            })
 
         }
 
     }
 
     return handler
-}
-
-/**
- * Add event to element
- * @param element
- * @param event
- * @param selector
- * @param callback
- */
-function on(element: any, event: string, selector: string | EventCallback, callback?: EventCallback) {
-    return _event('add', element, event, selector, callback)
 }
 
 /**
@@ -151,7 +89,36 @@ function on(element: any, event: string, selector: string | EventCallback, callb
  * @param callback
  */
 function off(element: any, event: string, selector?: string | EventCallback, callback?: EventCallback) {
-    return _event('remove', element, event, selector, callback)
+
+    const items: Array<ElementWithEvents> = element instanceof Window ? [element] : $$(element)
+    const events = event.split(' ')
+    const handler = (typeof selector === 'function') ? selector : callback
+
+    for (const item of items) {
+
+        if (item.__events === undefined) {
+            continue
+        }
+
+        item.__events = item.__events.filter((watcher) => {
+            const pass = Boolean(
+                !events.includes(watcher.event)
+                && (typeof handler !== 'function' || handler !== watcher.callback)
+            )
+
+            if (!pass) {
+                item.removeEventListener(
+                    watcher.event,
+                    watcher.callback,
+                    false
+                )
+            }
+
+            return pass
+        })
+
+    }
+
 }
 
 /**

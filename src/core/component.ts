@@ -240,6 +240,9 @@ async function mount(target: HTMLElement | Document) {
                 continue
             }
 
+            // Attach placeholder while mounting
+            element.__components[namespace] = null
+
             // Solve the state result
             // State as function avoid pointer reference on objects
             const state = await solveResult(definition.state)

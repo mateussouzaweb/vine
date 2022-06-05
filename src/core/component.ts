@@ -186,15 +186,17 @@ async function render(component: Component, callback: Callback) {
         return
     }
 
-    if (result !== current) {
-
-        // Destroy existing child elements
-        await destroy(component.element)
-
-        // Mount new HTML result
-        component.element.innerHTML = result
-
+    // If has no real change, then just run render callback
+    if (result === current) {
+        await callback(component)
+        return
     }
+
+    // Destroy existing child elements
+    await destroy(component.element)
+
+    // Mount new HTML result
+    component.element.innerHTML = result
 
     // Render callback
     await callback(component)

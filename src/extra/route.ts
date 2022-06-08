@@ -1,5 +1,5 @@
 import { on } from '../core/events'
-import { fire, watch } from '../core/observers'
+import { fire } from '../core/observers'
 
 /**
  * Represents a route path with their definitions
@@ -56,22 +56,6 @@ const _options = {
      */
     prevent: false
 
-}
-
-/**
- * Add callback before each route transition
- * @param callback
- */
-function beforeChange(callback: RouteCallback) {
-    watch('Route', 'RouteChangeBefore', callback)
-}
-
-/**
- * Add callback after each route transition
- * @param callback
- */
-function afterChange(callback: RouteCallback) {
-    watch('Route', 'RouteChangeAfter', callback)
 }
 
 /**
@@ -300,7 +284,7 @@ async function change(toLocation: string, replace?: boolean) {
         replace: replace
     }
 
-    await fire('RouteChangeBefore', change)
+    await fire('route::before::change', change)
 
     if (change.replace) {
         _options.prevent = true
@@ -316,7 +300,7 @@ async function change(toLocation: string, replace?: boolean) {
 
     _active = (change.next) ? change.next : null
 
-    await fire('RouteChangeAfter', change)
+    await fire('route::after::change', change)
 
 }
 
@@ -444,8 +428,6 @@ function init(options: Record<string, string>) {
 
 export type { RoutePath, RouteChange, RouteCallback }
 export const Route = {
-    beforeChange,
-    afterChange,
     normalizePath,
     paramsFor,
     queryFor,

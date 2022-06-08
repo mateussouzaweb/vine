@@ -1,4 +1,4 @@
-import { fire, watch } from '../core/observers'
+import { fire } from '../core/observers'
 
 /**
  * Represents a HTTP request
@@ -25,22 +25,6 @@ declare interface HTTPResult {
 declare type HTTPCallback = (details: HTTPRequest | HTTPResult) => void | Promise<void>
 
 /**
- * Add interceptor callback before each HTTP request
- * @param callback
- */
-function interceptBefore(callback: HTTPCallback) {
-    watch('HTTP', 'HTTPInterceptBefore', callback)
-}
-
-/**
- * Add interceptor callback after each HTTP request
- * @param callback
- */
-function interceptAfter(callback: HTTPCallback) {
-    watch('HTTP', 'HTTPInterceptAfter', callback)
-}
-
-/**
  * Make a HTTP request with given method
  * @param method
  * @param url
@@ -57,7 +41,7 @@ async function request(method: string, url: string, data?: BodyInit, headers?: H
         headers: headers
     }
 
-    await fire('HTTPInterceptBefore', request)
+    await fire('http::request::before', request)
     const options = {
         ...request
     }
@@ -111,7 +95,7 @@ async function request(method: string, url: string, data?: BodyInit, headers?: H
         body: body
     }
 
-    await fire('HTTPInterceptAfter', details)
+    await fire('http::request::after', details)
 
     if (!response.ok) {
         throw details
@@ -200,8 +184,6 @@ async function _delete(url: string, data?: BodyInit, headers?: HeadersInit) {
 export type { HTTPRequest, HTTPResult, HTTPCallback }
 
 export const HTTP = {
-    interceptBefore,
-    interceptAfter,
     request,
     options,
     head,

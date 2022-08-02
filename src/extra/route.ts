@@ -66,8 +66,8 @@ const _options = {
  */
 function normalizePath(path: string, removeQuery?: boolean) {
 
-    path = path.replace(window.location.origin, '')
     path = path.replace(_options.base, '')
+    path = path.replace(window.location.origin, '')
     path = path.replace('/?', '?')
     path = path.replace(new RegExp('[/]*$'), '')
     path = path.replace(new RegExp('^[/]*'), '')
